@@ -14,7 +14,7 @@ then
     # Memoire
     #-------------------------------------------
     LEGENDE="% Full"
-    GRAPHFILE=$HOST.memory
+    GRAPHFILE=$HOST.sys.memory
 
     for VAR in $LISTE
     do

@@ -45,7 +45,7 @@ then
     # Nombre Processes
     #-------------------------------------------
     LEGENDE="# Processus"
-    GRAPHFILE=$HOST.process
+    GRAPHFILE=$HOST.sys.process
 
     for VAR in $LISTE
     do

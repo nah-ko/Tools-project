@@ -5,19 +5,19 @@
 
 source ../Common
 I=0
-for F in $(ls ../data/$HOST.*ntp.*.rrd)
+for F in $(ls ../data/$HOST.net.ntp.*.rrd)
 do
-    NTPINFO=`basename $F .rrd | sed -e 's:^.*ntp_::g'`
+    NTPINFO=`basename $F .rrd | sed -e 's:^.*ntp.::g'`
     RRDFILE=$F
     if [ -e $RRDFILE ]
     then
 	# Definitions
 	DEFS="DEF:ligne$I=$RRDFILE:offset:AVERAGE "$DEFS
-	INFOS="LINE2:ligne$I#${COLORS[$I]}:$MAILINFO\: \
-	       GPRINT:ligne$I:LAST:%8.0lf\n \
-	       GPRINT:ligne$I:MIN:Minimum\:%8.0lf \
-	       GPRINT:ligne$I:AVERAGE:Moyenne\:%8.0lf \
-	       GPRINT:ligne$I:MAX:Maximum\:%8.0lf\n "$INFOS
+	INFOS="LINE2:ligne$I#${COLORS[$I]}:$NTPINFO\: \
+	       GPRINT:ligne$I:LAST:%8.2lf%ss\n \
+	       GPRINT:ligne$I:MIN:Minimum\:%8.2lf%ss \
+	       GPRINT:ligne$I:AVERAGE:Moyenne\:%8.2lf%ss \
+	       GPRINT:ligne$I:MAX:Maximum\:%8.2lf%ss\n "$INFOS
 	I=`expr $I + 1`
     fi
 done
@@ -26,7 +26,7 @@ done
 # Offset NTP
 #-------------------------------------------
 LEGENDE="secondes"
-GRAPHFILE=$HOST.net.ntp_offset
+GRAPHFILE=$HOST.net.ntp.offset
 
 for VAR in $LISTE
 do
