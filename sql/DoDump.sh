@@ -147,4 +147,4 @@ then
 fi
 
 $BZIP2 -z9v $PROG_PATH/${PREFIX}*.out
-find $PROG_PATH -type f -mtime +7 -name "*.out.bz2" -exec rm -v {} \;
+find $PROG_PATH/ -type f -mtime +7 -name "*.out.bz2" -exec rm -v {} \;
