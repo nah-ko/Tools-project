@@ -6,8 +6,7 @@
 export PATH=/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin
 export LANG=fr_FR@euro
 
-HOST=`hostname`
-HOST=../data/$HOST
+HOST=../data/`hostname`
 LGDATE=`date +%s`
 
 #--------------------------------------------------------------------------------------
@@ -65,21 +64,37 @@ rrdtool update $RRDFILE $LGDATE:$SM_percent
 # Reseau (internet et local) / Latence
 #--------------------------------------------------------------------------------------
 echo "---> reseau"
-RRDFILE=$HOST.network.rrd
-ligne_eth0=`cat /proc/net/dev | grep eth0 | cut -d":" -f 2`
-	IN_eth0=`echo $ligne_eth0 | cut -d" " -f 1`
-	OUT_eth0=`echo $ligne_eth0 | cut -d" " -f 9`
-ligne_ppp0=`cat /proc/net/dev | grep ppp0 | cut -d":" -f 2`
-	IN_ppp0=`echo $ligne_ppp0 | cut -d" " -f 1`
-	OUT_ppp0=`echo $ligne_ppp0 | awk -F" " '{ print $9 }'`
-rrdtool update $RRDFILE $LGDATE:$IN_eth0:$OUT_eth0:$IN_ppp0:$OUT_ppp0
+IFACES=`awk -F":" '/:/{ if( !($1 ~ "lo")) print $1 }' /proc/net/dev`
+for I in $IFACES
+do
+    RRDFILE=$HOST.$I.rrd
+    if[ -e $RRDFILE ]
+    then
+	ligne=`cat /proc/net/dev | grep $I | cut -d":" -f 2`
+	    IN=`echo $ligne | cut -d" " -f 1`
+	    OUT=`echo $ligne | cut -d" " -f 9`
+	rrdtool update $RRDFILE $LGDATE:$IN:$OUT
+    else
+	rrdtool create $RRDFILE --start $LGDATE DS:IN:COUNTER:600:0:1e+06 DS:OUT:COUNTER:600:0:1e+06 RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
+    fi
+    # Latency test is done over WAN iface.
+    if[ $I == 'ppp0' ]
+    then
+	RRDFILE=$HOST.${I}_latence.rrd
+	if[ -e $RRDFILE ]
+	then
+	    # For latency it is better to do traceroute to ISP website.
+	    FIRSTHOP=`traceroute -n www.nerim.net 2>&1 | awk -F" " '{ print $2 }' | head -2 | tail -1`
+	    P=`ping -c3 $FIRSTHOP | grep round`
+	    LATmin=`echo $P | cut -d" " -f4 | cut -d"/" -f1`
+	    LATmax=`echo $P | cut -d"/" -f5 | cut -d" " -f1`
+	    rrdtool update $RRDFILE $LGDATE:$LATmin:$LATmax
+	else
+	    rrdtool create $RRDFILE --start $LGDATE DS:lat-min:GAUGE:600:0:U DS:lat-max:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
+	fi
+    fi
+done
 
-RRDFILE=$HOST.latence.rrd
-FIRSTHOP=`traceroute -n www.nerim.net 2>&1 | awk -F" " '{ print $2 }' | head -2 | tail -1`
-P=`ping -c3 $FIRSTHOP | grep round`
-	LATmin=`echo $P | cut -d" " -f4 | cut -d"/" -f1`
-	LATmax=`echo $P | cut -d"/" -f5 | cut -d" " -f1`
-rrdtool update $RRDFILE $LGDATE:$LATmin:$LATmax
 
 #--------------------------------------------------------------------------------------
 # Requetes SQL (moyenne x 1000)
