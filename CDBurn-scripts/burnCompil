@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+# Burn Iso file that contains software compilation.
+#
+# $Id$
+
+set -x
+
+FICHIER=$*
+NUM=`cat $HOME/bin/compil.num`
+IMG_SIZE=`/usr/bin/mkisofs -R -q -print-size $FICHIER`
+
+/usr/bin/mkisofs -v -D -l -L -J -jcharset iso8859-1 -R -d -graft-points -V Compil_$NUM $FICHIER | /usr/bin/cdrecord -v -overburn -pad -data -eject tsize=${IMG_SIZE}s dev=0,3,0 speed=4 -
+
+NUM=$(($NUM+1))
+echo $NUM > $HOME/bin/compil.num

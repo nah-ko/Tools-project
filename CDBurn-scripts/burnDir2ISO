@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# Make Iso file from a directory.
+#
+# $Id$
+
+TITRE=$1
+REP=/home/toffe/a_graver/
+
+/usr/bin/mkisofs -R -r -J --hide-rr-moved -V "$TITRE" -o $REP$TITRE.iso $REP

@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+# Burn mp3 files to make a music compilation.
+#
+# $Id$
+
+#set -x
+
+LISTE_FICHIERS=$1
+
+#mp3burn -d -o "-v speed=4 dev=0,3,0 -eject" -p $LISTE_FICHIERS
+
+for file in `cat $LISTE_FICHIERS`
+do
+	TCKSIZE=`mkisofs -R -q -print-size "$file"`
+	mpg123 --cdr - "$file" | cdrecord -v speed=4 dev=0,3,0 tsize=${TCKSIZE}s -audio -pad -nofix -
+done
+
+cdrecord dev=0,3,0 -fix

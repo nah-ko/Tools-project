@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# Burn Iso file that is a movie.
+#
+# $Id$
+
+FICHIER=$1
+TITRE=$2
+IMG_SIZE=`/usr/bin/mkisofs -R -q -print-size $FICHIER`
+
+/usr/bin/mkisofs -v -D -l -L -J -jcharset iso8859-1 -R -d -graft-points -V $TITRE "$FICHIER" | /usr/bin/cdrecord -v -overburn -pad -data -eject tsize=${IMG_SIZE}s dev=0,3,0 speed=4 -
+
