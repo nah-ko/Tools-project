@@ -20,3 +20,14 @@ Mise en place.
 La mise en place se fait grâce à la crontab, il suffit de mettre le
 script nommé «DoUpdate» dans la bonne crontab. Celui ci se charge de
 lancer tous les autres scripts se trouvant dans bin/
+
+Création des fichiers RRD.
+
+La version actuelle du 00-DoUpdate gère elle même cette manipulation ce
+qui en simplifie grandement sa gestion.
+
+/!\ ATTENTION !!
+
+    Il est très important de noter que cette version de scripts ne
+    fonctionnera correctement qu'avec la version 5.0.6 du paquet
+    sysstat.
