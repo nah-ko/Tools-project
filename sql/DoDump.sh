@@ -13,6 +13,10 @@ A=`which pg_dumpall`
 DA_PATH=`dirname $A`
 A=`which pg_dump`
 DLO_PATH=`dirname $A`
+if [ $DA_PATH == "" ]
+then
+    DA_PATH="/usr/lib/postgresql/bin"
+fi
 
 NO_ARGS=0
 E_OPTERROR=65
@@ -80,7 +84,7 @@ DumpLO() {
     # created database. -s Dump only the schema (data definitions), no
     # data. -a Dump only the data, not the schema (data definitions).
     # Read pg_dump manpage for more informations.
-    DLO_opts="-i -Fc -b -o"
+    DLO_opts="-i -Fc"
     if [ $VERBOSE ]
     then
 	DLO_opts=`echo $DLO_opts -v`
@@ -89,11 +93,11 @@ DumpLO() {
     do
 	eval `echo $ARGS | sed -r 's/^(.*)\/(.*)$/DBNAME=\1 TBLNAME=\2/g'`
 	echo "--- Schema dump of ${DBNAME} ---"
-	opts=`echo $DLO_opts -c -C -s`
+	opts=`echo $DLO_opts -cCs`
 	echo "pg_dump $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema.`date -I`.out"
 	$DLO_PATH/pg_dump $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema.`date -I`.out
 	echo "--- Data dump of ${DBNAME} ---"
-	opts=`echo $DLO_opts -a`
+	opts=`echo $DLO_opts -abo`
 	echo "pg_dump $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata.`date -I`.out"
 	$DLO_PATH/pg_dump $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata.`date -I`.out
     done
