@@ -1,0 +1,93 @@
+# Exim ldap schema
+# given by S. Gross
+
+# $Id$
+
+attributetype ( 2.16.840.1.113730.3.2.1
+	NAME 'spoolDirectory'
+	DESC 'The absolute path to the spool directory'
+	EQUALITY caseIgnoreMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+	SINGLE-VALUE )
+
+attributetype ( 2.16.840.1.113730.3.2.2 
+	NAME 'status'
+	DESC 'Mail domain/box status (enable/disable)'
+	EQUALITY caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26
+	SINGLE-VALUE )
+
+attributetype ( 2.16.840.1.113730.3.2.3
+	NAME 'forward'
+	DESC 'Forward mail addresses'
+	EQUALITY caseIgnoreMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 2.16.840.1.113730.3.2.4
+	NAME 'domain'
+	DESC 'Mail domain'
+	EQUALITY caseIgnoreMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+	SINGLE-VALUE )
+
+attributetype ( 2.16.840.1.113730.3.2.5
+	NAME 'primaryMX'
+	DESC 'Primary MX server (for backup server)'
+	EQUALITY caseIgnoreMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+	SINGLE-VALUE )
+
+attributetype ( 2.16.840.1.113730.3.2.6
+	NAME 'vacationSubject'
+	DESC 'Vacation reply subject'
+	EQUALITY caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26
+	SINGLE-VALUE )
+
+attributetype ( 2.16.840.1.113730.3.2.7
+	NAME 'vacationText'
+	DESC 'Vacation reply text'
+	EQUALITY caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26
+	SINGLE-VALUE )
+
+attributetype ( 2.16.840.1.113730.3.2.8
+	NAME 'domainAlias'
+	DESC 'Mail domain alias'
+	EQUALITY caseIgnoreMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+	SINGLE-VALUE )
+
+attributetype ( 2.16.840.1.113730.3.2.9
+	NAME 'boxPassword'
+	DESC 'Mail crypted password'
+	EQUALITY caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26
+	SINGLE-VALUE )
+
+attributetype ( 2.16.840.1.113730.3.2.10
+	NAME 'eximMail'
+	DESC 'RFC822 email address'
+	EQUALITY caseIgnoreMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+	SINGLE-VALUE )
+
+attributetype ( 2.16.840.1.113730.3.2.11
+	NAME 'boxQuota'
+	DESC 'Mail box quota'
+	EQUALITY caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26
+	SINGLE-VALUE )
+
+objectclass ( 2.16.840.1.113730.3.2
+	NAME 'eximAttributes'
+	SUP top STRUCTURAL 
+	DESC 'Mail account object (SHOULD be {crypt})'
+	MUST ( eximMail $ status $ boxQuota )
+	MAY ( spoolDirectory $ forward $ vacationSubject $ vacationText $ userPassword ) )
+
+objectclass ( 2.16.840.1.113730.3.3
+	NAME 'eximDomain'
+	DESC 'Mail domain object'
+	MAY ( primaryMX $ domainAlias )
+	MUST ( domain $ status ) )
