@@ -4,7 +4,7 @@
 # $Id$
 
 source ../Common
-RRDFILE=../data/$HOST.cpu.rrd
+RRDFILE=../data/$HOST.sys.cpu.rrd
 if [ -e $RRDFILE ]
 then
     # Definitions
@@ -14,7 +14,7 @@ then
     # Nombre Processes
     #-------------------------------------------
     LEGENDE="# Processus"
-    GRAPHFILE=$HOST.process
+    GRAPHFILE=$HOST.sys.process
 
     for VAR in $LISTE
     do

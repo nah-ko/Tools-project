@@ -4,7 +4,7 @@
 # $Id$
 
 source ../Common
-RRDFILE=../data/$HOST.uptime.rrd
+RRDFILE=../data/$HOST.sys.uptime.rrd
 if [ -e $RRDFILE ]
 then
     # Definitions
@@ -14,7 +14,7 @@ then
     # Uptime
     #-------------------------------------------
     LEGENDE="# Jours"
-    GRAPHFILE=$HOST.uptime
+    GRAPHFILE=$HOST.sys.uptime
 
     for VAR in $LISTE
     do
