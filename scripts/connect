@@ -1,0 +1,42 @@
+#!/bin/bash
+# Script de connection aux serveurs via un serveur dit de rebond.
+
+# $Id$
+
+Usage(){
+	echo "Usage : `basename $0` ServerName"
+}
+
+Rebond(){
+	case `basename $0` in
+		connect)
+			VIA=srv-rbd.dom.tld
+			;;
+		connect2)
+			VIA=srv-rbd_bis.dom.tld
+			;;
+	esac
+}
+
+if [ $# -eq 0 ]
+then
+	Usage
+	exit 1
+else
+	SERVEUR=$1
+fi
+
+Rebond
+
+case $SERVEUR in
+	srv-rbd)
+		# connection directe au serveur rebond.
+		ssh user@$VIA
+		;;
+	*)
+		# connection au serveur distant via le serveur rebond,
+		# la commande con sur le serveur rebond sert a se
+		# connecter a $SERVEUR via un echange de clef ssh.
+		ssh -t user@$VIA con $SERVEUR
+		;;
+esac
