@@ -6,7 +6,7 @@
 source ../Common
 I=0
 J=1
-for F in $(ls ../data/*hd_io*)
+for F in $(ls ../data/*hd.io*)
 do
     DISC=`basename $F .rrd | sed -e 's/^.*_//g'`
     RRDFILE=$F
@@ -34,7 +34,7 @@ done
 # Entree/sorties sur les disques
 #-------------------------------------------
 LEGENDE="secteurs/sec"
-GRAPHFILE=$HOST.disk_io
+GRAPHFILE=$HOST.hd.io
 
 for VAR in $LISTE
 do

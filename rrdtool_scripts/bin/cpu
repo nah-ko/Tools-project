@@ -4,7 +4,7 @@
 # $Id$
 
 source ../Common
-RRDFILE=../data/$HOST.cpu.rrd
+RRDFILE=../data/$HOST.sys.cpu.rrd
 if [ -e $RRDFILE ]
 then
     # Definitions
@@ -13,7 +13,7 @@ then
     # Usage CPU (User, Nice, System et Idle)
     #-------------------------------------------
     LEGENDE="% Utilise"
-    GRAPHFILE=$HOST.cpu
+    GRAPHFILE=$HOST.sys.cpu
 
     for VAR in $LISTE
     do

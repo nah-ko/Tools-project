@@ -4,7 +4,7 @@
 # $Id$
 
 source ../Common
-RRDFILE=../data/$HOST.load.rrd
+RRDFILE=../data/$HOST.sys.load.rrd
 if [ -e $RRDFILE ]
 then
     # Definitions
@@ -15,7 +15,7 @@ then
     # Charge Machine (load average)
     #-------------------------------------------
     LEGENDE="charge"
-    GRAPHFILE=$HOST.load
+    GRAPHFILE=$HOST.sys.load
 
     for VAR in $LISTE
     do

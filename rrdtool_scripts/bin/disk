@@ -5,7 +5,7 @@
 
 source ../Common
 I=0
-for F in $(ls ../data/*hd_part*)
+for F in $(ls ../data/*hd.part*)
 do
     PART=`basename $F .rrd | sed -e 's/^.*\._slash/_slash/g' -e 's:_slash_:/:g'`
     RRDFILE=$F
@@ -23,7 +23,7 @@ done
 # Espace disque
 #-------------------------------------------
 LEGENDE="% Total"
-GRAPHFILE=$HOST.disk_part
+GRAPHFILE=$HOST.hd.part
 
 for VAR in $LISTE
 do
