@@ -4,41 +4,42 @@
 # $Id$
 
 source ../Common
-
 RRDFILE=../data/$HOST.load.rrd
+if [ -e $RRDFILE ]
+then
+    # Definitions
+    DEFS="DEF:ligne1=$RRDFILE:la:AVERAGE"
+    CDEFS="CDEF:flaming1=ligne1,40,*,100,/ CDEF:flaming2=ligne1,5,*,100,/ "
 
-# Definitions
-DEFS="DEF:ligne1=$RRDFILE:la:AVERAGE"
-CDEFS="CDEF:flaming1=ligne1,40,*,100,/ CDEF:flaming2=ligne1,5,*,100,/ "
+    #-------------------------------------------
+    # Charge Machine (load average)
+    #-------------------------------------------
+    LEGENDE="charge"
+    GRAPHFILE=$HOST.load
 
-#-------------------------------------------
-# Charge Machine (load average)
-#-------------------------------------------
-LEGENDE="charge"
-GRAPHFILE=$HOST.load
-
-for VAR in $LISTE
-do
-    TITRE="Charge machine sur $VAR"
-    GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
-    START=e-$VAR
-# Creation du graph
-rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS $CDEFS \
-AREA:flaming1#ffff5f:"Charge \:" GPRINT:ligne1:LAST:"Actuelle\:%8.2lf\n"            \
-STACK:flaming2#fffc51                                                               \
-STACK:flaming2#fffc51                                                               \
-STACK:flaming2#fff046                                                               \
-STACK:flaming2#ffe95f                                                               \
-STACK:flaming2#ffd237                                                               \
-STACK:flaming2#ffc832                                                               \
-STACK:flaming2#ffbe2d                                                               \
-STACK:flaming2#ffaa23                                                               \
-STACK:flaming2#ff9619                                                               \
-STACK:flaming2#ff841e                                                               \
-STACK:flaming2#ff841e                                                               \
-STACK:flaming2#ff6600                                                               \
-GPRINT:ligne1:MIN:"Minimum\:%8.2lf"                                                 \
-GPRINT:ligne1:AVERAGE:"Moyenne\:%8.2lf"                                             \
-GPRINT:ligne1:MAX:"Maximum\:%8.2lf\n"                                               \
-COMMENT:"$STR_DATE\c"
-done
+    for VAR in $LISTE
+    do
+	TITRE="Charge machine sur $VAR"
+	GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
+	START=e-$VAR
+	# Creation du graph
+	rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS $CDEFS \
+	AREA:flaming1#ffff5f:"Charge \:" GPRINT:ligne1:LAST:"Actuelle\:%8.2lf\n"            \
+	STACK:flaming2#fffc51                                                               \
+	STACK:flaming2#fffc51                                                               \
+	STACK:flaming2#fff046                                                               \
+	STACK:flaming2#ffe95f                                                               \
+	STACK:flaming2#ffd237                                                               \
+	STACK:flaming2#ffc832                                                               \
+	STACK:flaming2#ffbe2d                                                               \
+	STACK:flaming2#ffaa23                                                               \
+	STACK:flaming2#ff9619                                                               \
+	STACK:flaming2#ff841e                                                               \
+	STACK:flaming2#ff841e                                                               \
+	STACK:flaming2#ff6600                                                               \
+	GPRINT:ligne1:MIN:"Minimum\:%8.2lf"                                                 \
+	GPRINT:ligne1:AVERAGE:"Moyenne\:%8.2lf"                                             \
+	GPRINT:ligne1:MAX:"Maximum\:%8.2lf\n"                                               \
+	COMMENT:"$STR_DATE\c"
+    done
+fi

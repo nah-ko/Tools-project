@@ -4,25 +4,26 @@
 # $Id$
 
 source ../Common
+RRDFILE=../data/$HOST.mysql.rrd
+if [ -e $RRDFILE ]
+then
+    # Definitions
+    DEFS="DEF:ligne1=$RRDFILE:sqlcnx:AVERAGE"
 
-RRDFILE=../data/$HOST.sql.rrd
-
-# Definitions
-DEFS="DEF:ligne1=$RRDFILE:sqlcnx:AVERAGE"
-
-#-------------------------------------------
-# SQL
-#-------------------------------------------
-LEGENDE="Moyenne"
-GRAPHFILE=$HOST.sql
-
-for VAR in $LISTE
-do
-    TITRE="Requetes SQL sur $VAR"
-    GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
-    START=e-$VAR
-# Creation du graph
-rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
-AREA:ligne1#00a000:"Connections SQL \:" GPRINT:ligne1:LAST:"%8.0lf\n" \
-COMMENT:"$STR_DATE\c"
-done
+    #-------------------------------------------
+    # SQL
+    #-------------------------------------------
+    LEGENDE="Moyenne"
+    GRAPHFILE=$HOST.sql
+    
+    for VAR in $LISTE
+    do
+	TITRE="Requetes SQL sur $VAR"
+	GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
+	START=e-$VAR
+	# Creation du graph
+	rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
+	AREA:ligne1#00a000:"Connections SQL \:" GPRINT:ligne1:LAST:"%8.0lf\n" \
+	COMMENT:"$STR_DATE\c"
+    done
+fi

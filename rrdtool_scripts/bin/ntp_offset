@@ -4,7 +4,6 @@
 # $Id$
 
 source ../Common
-
 RRDFILE=../data/$HOST.ntp_offset.rrd
 
 # Definitions

@@ -4,29 +4,30 @@
 # $Id$
 
 source ../Common
-
-RRDFILE1=../data/$HOST.sda_temp.rrd
+RRDFILE=../data/$HOST.sda_temp.rrd
 RRDFILE2=../data/$HOST.sdb_temp.rrd
+if [ -e $RRDFILE ]
+then
+    # Definitions
+    DEFS="DEF:ligne1=$RRDFILE1:temp:AVERAGE DEF:ligne2=$RRDFILE2:temp:AVERAGE"
 
-# Definitions
-DEFS="DEF:ligne1=$RRDFILE1:temp:AVERAGE DEF:ligne2=$RRDFILE2:temp:AVERAGE"
+    #-------------------------------------------
+    # Temperatures disques SCSI
+    #-------------------------------------------
+    LEGENDE="temperature"
+    GRAPHFILE=$HOST.scsi_temp
 
-#-------------------------------------------
-# Temperatures disques SCSI
-#-------------------------------------------
-LEGENDE="temperature"
-GRAPHFILE=$HOST.scsi_temp
-
-for VAR in $LISTE
-do
-    TITRE="Temperature disques SCSI sur $VAR"
-    GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
-    START=e-$VAR
-# Creation du graph
-rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
-LINE2:ligne1#00a000:"sda \:" GPRINT:ligne1:LAST:"%8.0lf°C - " \
-GPRINT:ligne1:MIN:"Minimum\:%8.0lf°C" GPRINT:ligne1:AVERAGE:"Moyenne\:%8.0lf°C" GPRINT:ligne1:MAX:"Maximum\:%8.0lf°C\n" \
-LINE2:ligne2#960000:"sdb \:" GPRINT:ligne2:LAST:"%8.0lf°C - " \
-GPRINT:ligne2:MIN:"Minimum\:%8.0lf°C" GPRINT:ligne2:AVERAGE:"Moyenne\:%8.0lf°C" GPRINT:ligne2:MAX:"Maximum\:%8.0lf°C\n" \
-COMMENT:"$STR_DATE\c"
-done
+    for VAR in $LISTE
+    do
+	TITRE="Temperature disques SCSI sur $VAR"
+	GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
+	START=e-$VAR
+	# Creation du graph
+	rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
+	LINE2:ligne1#00a000:"sda \:" GPRINT:ligne1:LAST:"%8.0lf°C - " \
+	GPRINT:ligne1:MIN:"Minimum\:%8.0lf°C" GPRINT:ligne1:AVERAGE:"Moyenne\:%8.0lf°C" GPRINT:ligne1:MAX:"Maximum\:%8.0lf°C\n" \
+	LINE2:ligne2#960000:"sdb \:" GPRINT:ligne2:LAST:"%8.0lf°C - " \
+	GPRINT:ligne2:MIN:"Minimum\:%8.0lf°C" GPRINT:ligne2:AVERAGE:"Moyenne\:%8.0lf°C" GPRINT:ligne2:MAX:"Maximum\:%8.0lf°C\n" \
+	COMMENT:"$STR_DATE\c"
+    done
+fi

@@ -4,28 +4,29 @@
 # $Id$
 
 source ../Common
-
 RRDFILE=../data/$HOST.cpu.rrd
+if [ -e $RRDFILE ]
+then
+    # Definitions
+    DEFS="DEF:ligne1=$RRDFILE:cpuU:AVERAGE DEF:ligne2=$RRDFILE:cpuN:AVERAGE DEF:ligne3=$RRDFILE:cpuS:AVERAGE DEF:ligne4=$RRDFILE:cpuI:AVERAGE DEF:ligne5=$RRDFILE:nbprocs:AVERAGE"
 
-# Definitions
-DEFS="DEF:ligne1=$RRDFILE:cpuU:AVERAGE DEF:ligne2=$RRDFILE:cpuN:AVERAGE DEF:ligne3=$RRDFILE:cpuS:AVERAGE DEF:ligne4=$RRDFILE:cpuI:AVERAGE DEF:ligne5=$RRDFILE:nbprocs:AVERAGE"
+    #-------------------------------------------
+    # Nombre Processes
+    #-------------------------------------------
+    LEGENDE="# Processus"
+    GRAPHFILE=$HOST.process
 
-#-------------------------------------------
-# Nombre Processes
-#-------------------------------------------
-LEGENDE="# Processus"
-GRAPHFILE=$HOST.process
-
-for VAR in $LISTE
-do
-    TITRE="Nombre de processus sur $VAR"
-    GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
-    START=e-$VAR
-# Creation du graph
-rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
-LINE2:ligne5#00a000:"Nombre de Processus \:" \
-GPRINT:ligne5:LAST:"Actuel\:%8.0lf" \
-GPRINT:ligne5:AVERAGE:"Moyenne\:%8.0lf" \
-GPRINT:ligne5:MAX:"Maximum\:%8.0lf\n" \
-COMMENT:"$STR_DATE\c"
-done
+    for VAR in $LISTE
+    do
+	TITRE="Nombre de processus sur $VAR"
+	GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
+	START=e-$VAR
+	# Creation du graph
+	rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
+	LINE2:ligne5#00a000:"Nombre de Processus \:" \
+	GPRINT:ligne5:LAST:"Actuel\:%8.0lf" \
+	GPRINT:ligne5:AVERAGE:"Moyenne\:%8.0lf" \
+	GPRINT:ligne5:MAX:"Maximum\:%8.0lf\n" \
+	COMMENT:"$STR_DATE\c"
+    done
+fi

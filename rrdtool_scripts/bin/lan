@@ -4,34 +4,35 @@
 # $Id$
 
 source ../Common
+RRDFILE=../data/$HOST.network.rrd
+if [ -e $RRDFILE ]
+then
+    # Definitions
+    DEFS="DEF:ligne1=$RRDFILE1:INeth0:AVERAGE  \
+    DEF:ligne2=$RRDFILE1:OUTeth0:AVERAGE"
 
-RRDFILE1=../data/$HOST.network.rrd
+    #----------------
+    # lien LAN
+    #----------------
+    LEGENDE="octets/sec"
+    GRAPHFILE=$HOST.network.LAN
 
-# Definitions
-DEFS="DEF:ligne1=$RRDFILE1:INeth0:AVERAGE  \
-      DEF:ligne2=$RRDFILE1:OUTeth0:AVERAGE"
-
-#----------------
-# lien LAN
-#----------------
-LEGENDE="octets/sec"
-GRAPHFILE=$HOST.network.LAN
-
-for VAR in $LISTE
-do
-    TITRE="Debit reseau sur $VAR"
-    GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
-    START=e-$VAR
-# Creation du graph
-rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
-HRULE:1250000#000DFF:"Limite des 10Mbps (1.25Mo/s)\n"                        \
-LINE2:ligne1#FF4CFE:"In   \:"                                                \
-GPRINT:ligne1:LAST:"Cur=%8.2lf%so/s"                                         \
-GPRINT:ligne1:AVERAGE:"Moy=%8.2lf%so/s"                                      \
-GPRINT:ligne1:MAX:"Max=%8.2lf%so/s\n"                                        \
-LINE2:ligne2#7DD643:"Out  \:"                                                \
-GPRINT:ligne2:LAST:"Cur=%8.2lf%so/s"                                         \
-GPRINT:ligne2:AVERAGE:"Moy=%8.2lf%so/s"                                      \
-GPRINT:ligne2:MAX:"Max=%8.2lf%so/s\n"                                        \
-COMMENT:"$STR_DATE\c"
-done
+    for VAR in $LISTE
+    do
+	TITRE="Debit reseau sur $VAR"
+	GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
+	START=e-$VAR
+	# Creation du graph
+	rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
+	HRULE:1250000#000DFF:"Limite des 10Mbps (1.25Mo/s)\n"                        \
+	LINE2:ligne1#FF4CFE:"In   \:"                                                \
+	GPRINT:ligne1:LAST:"Cur=%8.2lf%so/s"                                         \
+	GPRINT:ligne1:AVERAGE:"Moy=%8.2lf%so/s"                                      \
+	GPRINT:ligne1:MAX:"Max=%8.2lf%so/s\n"                                        \
+	LINE2:ligne2#7DD643:"Out  \:"                                                \
+	GPRINT:ligne2:LAST:"Cur=%8.2lf%so/s"                                         \
+	GPRINT:ligne2:AVERAGE:"Moy=%8.2lf%so/s"                                      \
+	GPRINT:ligne2:MAX:"Max=%8.2lf%so/s\n"                                        \
+	COMMENT:"$STR_DATE\c"
+    done
+fi

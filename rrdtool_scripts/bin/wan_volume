@@ -4,27 +4,27 @@
 # $Id$
 
 source ../Common
-
 RRDFILE=../data/$HOST.WAN_vol.rrd
+if [ -e $RRDFILE ]
+then
+    # Definitions
+    DEFS="DEF:ligne1=$RRDFILE:IN_vol:AVERAGE \
+    DEF:ligne2=$RRDFILE:OUT_vol:AVERAGE"
 
-# Definitions
-DEFS="DEF:ligne1=$RRDFILE:IN_vol:AVERAGE \
-      DEF:ligne2=$RRDFILE:OUT_vol:AVERAGE"
+    #-------------------------------------------
+    # Volume de transit sur internet
+    #-------------------------------------------
+    LEGENDE="Octet/sec"
+    GRAPHFILE=$HOST.WAN_vol
 
-#-------------------------------------------
-# Volume de transit sur internet
-#-------------------------------------------
-LEGENDE="Octet/sec"
-GRAPHFILE=$HOST.WAN_vol
-
-for VAR in $LISTE
-do
-    TITRE="Volume de transit sur lien internet sur $VAR"
-    GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
-    START=e-$VAR
-# Creation du graph
-rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
-COMMENT:"Volume de transit sur lien internet :\n"                            \
+    for VAR in $LISTE
+    do
+	TITRE="Volume de transit sur lien internet sur $VAR"
+	GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
+	START=e-$VAR
+	# Creation du graph
+	rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
+	COMMENT:"Volume de transit sur lien internet :\n"                            \
 LINE2:ligne1#0081FD:"Volume entrant "                                         \
 GPRINT:ligne1:LAST:"Cur\: %8.2lf%so"                                         \
 GPRINT:ligne1:MIN:"Min\: %8.2lf%so"                                          \
@@ -37,3 +37,4 @@ GPRINT:ligne2:AVERAGE:"Moy\: %8.2lf%so"                                      \
 GPRINT:ligne2:MAX:"Max\: %8.2lf%so\n"                                        \
 COMMENT:"$STR_DATE\c"
 done
+fi
