@@ -9,6 +9,11 @@
 export PATH=/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin
 export LANG=fr_FR@euro
 
+if [ -e /tmp/stop_rrd ]
+then
+    exit
+fi
+
 cd `dirname $0`
 
 for script in $(ls bin/ | grep -v -E '(.pl|inactive)')
