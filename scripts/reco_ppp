@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# script de recuperation des logs de connexion adsl avec un
+# enregistrement dans un fichier pour les logs ainsi qu'un envoi de mail
+# au final.
+#
+
+# $Id$
+
+FILE=/tmp/RecoADSL.log
+STRING="`grep  "Connect time.*minutes." /var/log/messages | tail -1 | awk '{ print "Reconnexion le "$2,$1" a "$3,"- Temps de connexion: "$8,$9}'`"
+
+if [ -z "$STRING" ]
+then
+	echo "Chaine non trouvee"
+else
+	echo $STRING | mail -s "Reconnection ADSL" toffe@nah-ko.org
+	echo $STRING >> $FILE
+fi
+
