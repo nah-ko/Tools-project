@@ -13,7 +13,7 @@ A=`which pg_dumpall`
 DA_PATH=`dirname $A`
 A=`which pg_dump`
 DLO_PATH=`dirname $A`
-if [ $DA_PATH == "" ]
+if [ "$DA_PATH" == "" ]
 then
     DA_PATH="/usr/lib/postgresql/bin"
 fi
