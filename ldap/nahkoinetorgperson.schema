@@ -6,9 +6,11 @@
 objectClass ( 1.3.6.1.4.1.20105.4
     NAME 'nahKoInetOrgPerson'
 	DESC 'User object'
-    SUP ( inetOrgPerson $ httpAuth $ mailAccount )
+    SUP ( inetOrgPerson $ httpAuth $ mailAccount $ PureFTPdUser )
     STRUCTURAL
 	MUST ( uid $ uidNumber $ gidNumber $ homeDirectory )
-	MAY ( userPassword $ loginShell )
+	MAY ( userPassword $ loginShell $ shadowLastChange $
+	      shadowMin $ shadowMax $ shadowWarning $
+	      shadowInactive $ shadowExpire $ shadowFlag )
     )
 
