@@ -1,0 +1,71 @@
+#!/bin/sh
+# Creation graph volume passant sur l'interface internet
+
+# $Id$
+
+export PATH=/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin
+export LANG=fr_FR@euro
+
+HOST=`hostname`
+LISTE="48h 12d 48d 576d"
+
+LGDATE=`date +%s`
+
+RRDFILE=../data/$HOST.WAN_vol.rrd
+GRAPHFILE=$HOST.WAN_vol
+GRAPHDIR=/usr2/web/rrd/graphs
+STR_DATE="Derniere mise a jour le `date +\"%A %d %B %Y a %T\"`"
+COULEURS="-c BACK#000000 -c FONT#AAAAAA -c FRAME#FFFFFF -c CANVAS#000000"
+OPTIONS="-w 576 -a PNG --alt-autoscale-max -l 0 $COULEURS"
+
+# Definitions
+DEFS="DEF:ligne1=$RRDFILE:IN_vol:AVERAGE \
+      DEF:ligne2=$RRDFILE:OUT_vol:AVERAGE"
+
+#-------------------------------------------
+# Volume de transit sur internet
+#-------------------------------------------
+LEGENDE="Octet/sec"
+GRAPHFILE=$HOST.WAN_vol
+
+for VAR in $LISTE
+do
+	TITRE="Volume de transit sur lien internet"
+	case $VAR in
+		48h)
+			GRAPH=$GRAPHDIR/$GRAPHFILE.hourly.png
+			START=e-48h
+			TITRE="$TITRE sur 48 h"
+			;;
+		12d)
+			GRAPH=$GRAPHDIR/$GRAPHFILE.daily.png
+			START=e-12d
+			TITRE="$TITRE sur 12 j"
+			;;
+		48d)
+			GRAPH=$GRAPHDIR/$GRAPHFILE.weekly.png
+			START=e-48d
+			TITRE="$TITRE sur 48 j"
+			;;
+		576d)
+			GRAPH=$GRAPHDIR/$GRAPHFILE.monthly.png
+			START=e-576d
+			TITRE="$TITRE sur 576 j"
+			;;
+	esac
+
+# Creation du graph
+rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
+COMMENT:"Volume de transit sur lien internet :\n"                            \
+LINE2:ligne1#0081FD:"Volume entrant "                                         \
+GPRINT:ligne1:LAST:"Cur\: %8.2lf%so"                                         \
+GPRINT:ligne1:MIN:"Min\: %8.2lf%so"                                          \
+GPRINT:ligne1:AVERAGE:"Moy\: %8.2lf%so"                                      \
+GPRINT:ligne1:MAX:"Max\: %8.2lf%so\n"                                        \
+LINE2:ligne2#ADD8E6:"Volume sortant "                                         \
+GPRINT:ligne2:LAST:"Cur\: %8.2lf%so"                                         \
+GPRINT:ligne2:MIN:"Min\: %8.2lf%so"                                          \
+GPRINT:ligne2:AVERAGE:"Moy\: %8.2lf%so"                                      \
+GPRINT:ligne2:MAX:"Max\: %8.2lf%so\n"                                        \
+COMMENT:"$STR_DATE\c"
+done

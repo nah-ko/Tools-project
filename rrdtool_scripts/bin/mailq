@@ -1,0 +1,61 @@
+#!/bin/sh
+# Creation graph queue de message
+
+# $Id$
+
+export PATH=/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin
+export LANG=fr_FR@euro
+
+HOST=`hostname`
+LISTE="48h 12d 48d 576d"
+
+LGDATE=`date +%s`
+
+RRDFILE=../data/$HOST.mailq.rrd
+GRAPHFILE=$HOST.mailq
+GRAPHDIR=/usr2/web/rrd/graphs
+STR_DATE="Derniere mise a jour le `date +\"%A %d %B %Y a %T\"`"
+COULEURS="-c BACK#000000 -c FONT#AAAAAA -c FRAME#FFFFFF -c CANVAS#000000"
+OPTIONS="-w 576 -a PNG --alt-autoscale-max -l 0 $COULEURS"
+
+# Definitions
+DEFS="DEF:ligne1=$RRDFILE:mailq:AVERAGE"
+
+#-------------------------------------------
+# Charge Machine (load average)
+#-------------------------------------------
+LEGENDE="# msg"
+GRAPHFILE=$HOST.mailq
+
+for VAR in $LISTE
+do
+	TITRE="Queue de message"
+	case $VAR in
+		48h)
+			GRAPH=$GRAPHDIR/$GRAPHFILE.hourly.png
+			START=e-48h
+			TITRE="$TITRE sur 48 h"
+			;;
+		12d)
+			GRAPH=$GRAPHDIR/$GRAPHFILE.daily.png
+			START=e-12d
+			TITRE="$TITRE sur 12 j"
+			;;
+		48d)
+			GRAPH=$GRAPHDIR/$GRAPHFILE.weekly.png
+			START=e-48d
+			TITRE="$TITRE sur 48 j"
+			;;
+		576d)
+			GRAPH=$GRAPHDIR/$GRAPHFILE.monthly.png
+			START=e-576d
+			TITRE="$TITRE sur 576 j"
+			;;
+	esac
+
+# Creation du graph
+rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
+AREA:ligne1#559FE2:"Queue de message \:" GPRINT:ligne1:LAST:"%8.0lf\n" \
+GPRINT:ligne1:MIN:"Minimum\:%8.0lf" GPRINT:ligne1:AVERAGE:"Moyenne\:%8.0lf" GPRINT:ligne1:MAX:"Maximum\:%8.0lf\n" \
+COMMENT:"$STR_DATE\c"
+done

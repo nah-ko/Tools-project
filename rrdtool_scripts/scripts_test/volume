@@ -1,0 +1,14 @@
+#! /bin/sh
+in=`sudo ifconfig $1 | grep "RX bytes" | cut -d":" -f2 | cut -d" " -f1`
+out=`sudo ifconfig $1 | grep "TX bytes" | cut -d":" -f3 | cut -d" " -f1`
+if ! [ "$in" ]; then
+in=0
+fi
+if ! [ "$out" ]; then
+out=0
+fi
+echo $in
+echo $out
+
+
+

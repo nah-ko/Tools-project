@@ -1,0 +1,84 @@
+#!/bin/sh
+# Creation graph I/O sur les disques ide
+
+# $Id$
+
+export PATH=/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin
+export LANG=fr_FR@euro
+
+HOST=`hostname`
+LISTE="48h 12d 48d 576d"
+
+LGDATE=`date +%s`
+
+GRAPHDIR=/usr2/web/rrd/graphs
+STR_DATE="Derniere mise a jour le `date +\"%A %d %B %Y a %T\"`"
+COULEURS="-c BACK#000000 -c FONT#AAAAAA -c FRAME#FFFFFF -c CANVAS#000000"
+OPTIONS="-w 576 -a PNG --alt-autoscale-max -l 0 $COULEURS"
+
+#-------------------------------------------
+# Entree/sorties sur hda et hdd
+#-------------------------------------------
+LEGENDE="secteurs/sec"
+RRDFILE=../data/$HOST.hda_io.rrd
+RRDFILE1=../data/$HOST.hdd_io.rrd
+GRAPHFILE=$HOST.disk_io
+
+# Definitions
+DEFS="DEF:ligne1=$RRDFILE:read_sec:AVERAGE  \
+      DEF:ligne2=$RRDFILE:write_sec:AVERAGE \
+      DEF:ligne3=$RRDFILE1:read_sec:AVERAGE \
+      DEF:ligne4=$RRDFILE1:write_sec:AVERAGE"
+
+for VAR in $LISTE
+do
+	TITRE="Entrees sorties sur les disques"
+	case $VAR in
+		48h)
+			GRAPH=$GRAPHDIR/$GRAPHFILE.hourly.png
+			START=e-48h
+			TITRE="$TITRE sur 48 h"
+			;;
+		12d)
+			GRAPH=$GRAPHDIR/$GRAPHFILE.daily.png
+			START=e-12d
+			TITRE="$TITRE sur 12 j"
+			;;
+		48d)
+			GRAPH=$GRAPHDIR/$GRAPHFILE.weekly.png
+			START=e-48d
+			TITRE="$TITRE sur 48 j"
+			;;
+		576d)
+			GRAPH=$GRAPHDIR/$GRAPHFILE.monthly.png
+			START=e-576d
+			TITRE="$TITRE sur 576 j"
+			;;
+	esac
+
+# Creation du graph
+rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
+COMMENT:"Secteurs lus    \:"                                                 \
+LINE1:ligne1#ff0000:"hda1 \:"                                                \
+GPRINT:ligne1:LAST:"%8.2lf"                                                  \
+GPRINT:ligne1:MIN:"Minimum\:%8.0lf"                                          \
+GPRINT:ligne1:AVERAGE:"Moyenne\:%8.0lf"                                      \
+GPRINT:ligne1:MAX:"Maximum\:%8.0lf\n"                                        \
+LINE1:ligne3#2aff00:"hdd1 \:"                                                \
+GPRINT:ligne3:LAST:"%8.0lf"                                                  \
+GPRINT:ligne3:MIN:"Minimum\:%8.0lf"                                          \
+GPRINT:ligne3:AVERAGE:"Moyenne\:%8.0lf"                                      \
+GPRINT:ligne3:MAX:"Maximum\:%8.0lf\n"                                        \
+COMMENT:"Secteurs ecrits \:"                                                 \
+LINE1:ligne2#178329:"hda1 \:"                                                \
+GPRINT:ligne2:LAST:"%8.0lf"                                                  \
+GPRINT:ligne2:MIN:"Minimum\:%8.0lf"                                          \
+GPRINT:ligne2:AVERAGE:"Moyenne\:%8.0lf"                                      \
+GPRINT:ligne2:MAX:"Maximum\:%8.0lf\n"                                        \
+LINE1:ligne4#B5321B:"hdd1 \:"                                                \
+GPRINT:ligne4:LAST:"%8.0lf"                                                  \
+GPRINT:ligne4:MIN:"Minimum\:%8.0lf"                                          \
+GPRINT:ligne4:AVERAGE:"Moyenne\:%8.0lf"                                      \
+GPRINT:ligne4:MAX:"Maximum\:%8.0lf\n"                                        \
+COMMENT:"$STR_DATE\c"
+done

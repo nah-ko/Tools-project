@@ -1,0 +1,63 @@
+#!/bin/sh
+# Creation de base RRD
+
+host=`hostname`
+lgdate=`date +%s`
+#echo $lgdate
+
+# Reseau
+#rrdtool create bilbo.network.rrd --start $lgdate DS:INeth0:COUNTER:600:0:1e+06 DS:OUTeth0:COUNTER:600:0:1e+06 DS:INppp0:COUNTER:600:0:100e+03 DS:OUTppp0:COUNTER:600:0:100e+03 RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
+#rrdtool create bilbo.latence.rrd --start $lgdate DS:lat-min:GAUGE:600:0:U DS:lat-max:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
+
+# Cpu & nb process
+#rrdtool create bilbo.cpu.rrd --start $lgdate DS:nbprocs:GAUGE:600:0:500 DS:cpuU:GAUGE:600:0:100 DS:cpuN:GAUGE:600:0:100 DS:cpuS:GAUGE:600:0:100 DS:cpuI:GAUGE:600:0:100 RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
+
+# Disques
+#rrdtool create bilbo.slash.rrd --start $lgdate DS:percent:GAUGE:600:0:100 RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
+#rrdtool create bilbo.var.rrd --start $lgdate DS:percent:GAUGE:600:0:100 RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
+#rrdtool create bilbo.home.rrd --start $lgdate DS:percent:GAUGE:600:0:100 RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
+#rrdtool create bilbo.VG1_web.rrd --start $lgdate DS:percent:GAUGE:600:0:100 RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
+#rrdtool create bilbo.VG1_ftp.rrd --start $lgdate DS:percent:GAUGE:600:0:100 RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
+#rrdtool create bilbo.VG1_samba.rrd --start $lgdate DS:percent:GAUGE:600:0:100 RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
+
+# Memoire
+#rrdtool create bilbo.real.mem.rrd --start $lgdate DS:percent:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+#rrdtool create bilbo.swap.mem.rrd --start $lgdate DS:percent:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+
+# Load average
+#rrdtool create bilbo.la.rrd --start $lgdate DS:la:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+
+# Mysql
+#rrdtool create bilbo.sql.rrd --start $lgdate DS:sqlcnx:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+
+# Uptime
+#rrdtool create bilbo.uptime.rrd --start $lgdate DS:uptime:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+
+# Temperature disques SCSI
+#rrdtool create bilbo.sda_temp.rrd --start $lgdate DS:temp:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+#rrdtool create bilbo.sdb_temp.rrd --start $lgdate DS:temp:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+
+# Courriels dans la queue de messages
+#rrdtool create $host.mailq.rrd --start $lgdate DS:mailq:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+
+# IO sur les disques
+#rrdtool create $host.hda_io.rrd --start $lgdate DS:read_sec:GAUGE:600:0:U DS:write_sec:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+#rrdtool create $host.hdd_io.rrd --start $lgdate DS:read_sec:GAUGE:600:0:U DS:write_sec:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+
+# Volume transitant sur l'interface internet
+#rrdtool create $host.WAN_vol.rrd --start $lgdate DS:IN_vol:GAUGE:600:0:U DS:OUT_vol:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+
+# Derive du serveur de temps
+rrdtool create $host.ntp_offset.rrd --start $lgdate DS:offset:GAUGE:600:U:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+
+
+#-------------------
+# Exemples divers
+#-------------------
+#rrdtool create disques.rrd --step 300 DS:disk:GAUGE:600:-273:5000 RRA:AVERAGE:0.5:1:1200 RRA:MIN:0.5:12:2400 RRA:MAX:0.5:12:2400 RRA:AVERAGE:0.5:12:2400
+
+# exemples de creation de graphs
+#rrdtool graph demo.gif --title="Demo Graph" DEF:cel=disques.rrd:disk:AVERAGE CDEF:far=cel,1.8,*,32,+"" LINE2:cel#00a000:"D. Celsius" LINE2:far#ff0000:"D. Fahrenheit\c"
+
+#rrdtool graph demo.gif --title="Demo Graph" DEF:cel=admprs.dev75.cvf.disk,root.rrd:pct:AVERAGE  LINE2:cel#00a000:"/root" DEF:cel2=admprs.dev75.cvf.disk,usr2.rrd:pct:AVERAGE  LINE2:cel2#00FF00:"/usr2" DEF:cel3=admprs.dev75.cvf.disk,var.rrd:pct:AVERAGE  LINE2:cel3#FF0000:"/var"
+

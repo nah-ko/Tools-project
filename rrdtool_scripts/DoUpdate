@@ -1,0 +1,18 @@
+#!/bin/sh
+# Script de mise a jour des bases rrd et de creation des graphs
+# associes.
+
+# $Id$
+
+#set -x
+
+export LANG=fr_FR@euro
+
+cd /usr2/tools/rrdtool-1.0.35/
+
+for script in $(ls bin/ | grep -v -E '(.pl|inactive)')
+do
+	cd bin
+	echo "sh $script"
+	cd ..
+done

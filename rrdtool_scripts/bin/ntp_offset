@@ -1,0 +1,62 @@
+#!/bin/sh
+# Creation graph offset NTP
+
+# $Id$
+
+export PATH=/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin
+export LANG=fr_FR@euro
+
+HOST=`hostname`
+LISTE="48h 12d 48d 576d"
+
+RRDFILE=../data/$HOST.ntp_offset.rrd
+GRAPHDIR=/usr2/web/rrd/graphs
+STR_DATE="Derniere mise a jour le `date +\"%A %d %B %Y a %T\"`"
+COULEURS="-c BACK#000000 -c FONT#AAAAAA -c FRAME#FFFFFF -c CANVAS#000000"
+OPTIONS="-w 576 -a PNG -l 0 --alt-autoscale-max $COULEURS"
+
+# Definitions
+DEFS="DEF:ligne1=$RRDFILE:offset:AVERAGE"
+
+#-------------------------------------------
+# Offset NTP
+#-------------------------------------------
+LEGENDE="secondes"
+GRAPHFILE=$HOST.ntp_offset
+
+for VAR in $LISTE
+do
+	TITRE="Offset NTP"
+	case $VAR in
+		48h)
+			GRAPH=$GRAPHDIR/$GRAPHFILE.hourly.png
+			START=e-48h
+			TITRE="$TITRE sur 48 h"
+			;;
+		12d)
+			GRAPH=$GRAPHDIR/$GRAPHFILE.daily.png
+			START=e-12d
+			TITRE="$TITRE sur 12 j"
+			;;
+		48d)
+			GRAPH=$GRAPHDIR/$GRAPHFILE.weekly.png
+			START=e-48d
+			TITRE="$TITRE sur 48 j"
+			;;
+		576d)
+			GRAPH=$GRAPHDIR/$GRAPHFILE.monthly.png
+			START=e-576d
+			TITRE="$TITRE sur 576 j"
+			;;
+	esac
+
+# Creation du graph
+rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
+LINE2:ligne1#FFF900:"Offset \:" \
+GPRINT:ligne1:LAST:"Actuel\:%8.2lf%s sec" \
+GPRINT:ligne1:MIN:"Minimum\:%8.2lf%s sec" \
+GPRINT:ligne1:AVERAGE:"Moyenne\:%8.2lf%s sec" \
+GPRINT:ligne1:MAX:"Maximum\:%8.2lf%s sec\n" \
+COMMENT:"$STR_DATE\c"
+done
+

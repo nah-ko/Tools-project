@@ -1,0 +1,158 @@
+#!/bin/sh
+# Mise a jour des fichiers RRD
+
+# $Id$
+
+export PATH=/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin
+export LANG=fr_FR@euro
+
+HOST=`hostname`
+HOST=../data/$HOST
+LGDATE=`date +%s`
+
+#--------------------------------------------------------------------------------------
+# Usage CPU (User, Nice, System et Idle) et Nombre Processes
+#--------------------------------------------------------------------------------------
+echo "---> CPU"
+RRDFILE=$HOST.cpu.rrd
+nb_processes=`sar -q | tail -2 | head -1 | awk '{ print $3 }'`
+CPU_user=`sar -u | tail -2 | head -1 | awk '{ print $3 }' | sed 's/\,/\./g'`
+CPU_nice=`sar -u | tail -2 | head -1 | awk '{ print $4 }' | sed 's/\,/\./g'`
+CPU_system=`sar -u | tail -2 | head -1 | awk '{ print $5 }' | sed 's/\,/\./g'`
+CPU_idle=`sar -u | tail -2 | head -1 | awk '{ print $6 }' | sed 's/\,/\./g'`
+rrdtool update $RRDFILE $LGDATE:$nb_processes:$CPU_user:$CPU_nice:$CPU_system:$CPU_idle 
+
+#--------------------------------------------------------------------------------------
+# Espace disque
+#--------------------------------------------------------------------------------------
+echo "---> disque"
+# ---- Partition /
+RRDFILE=$HOST.slash.rrd
+VALUE=`df / | tail -1 | awk '{ print $5 }' | sed -e s/%//`
+rrdtool update $RRDFILE $LGDATE:$VALUE
+# ---- Partition /var
+RRDFILE=$HOST.var.rrd
+VALUE=`df /var | tail -1 | awk '{ print $5 }' | sed -e s/%//`
+rrdtool update $RRDFILE $LGDATE:$VALUE
+# ---- Partition /home
+RRDFILE=$HOST.home.rrd
+VALUE=`df /home | tail -1 | awk '{ print $5 }' | sed -e s/%//`
+rrdtool update $RRDFILE $LGDATE:$VALUE
+# ---- Partition /usr2/web
+RRDFILE=$HOST.VG1_web.rrd
+VALUE=`df /usr2/web | tail -1 | awk '{ print $5 }' | sed -e s/%//`
+rrdtool update $RRDFILE $LGDATE:$VALUE
+# ---- Partition /usr2/ftp
+RRDFILE=$HOST.VG1_ftp.rrd
+VALUE=`df /usr2/ftp | tail -1 | awk '{ print $5 }' | sed -e s/%//`
+rrdtool update $RRDFILE $LGDATE:$VALUE
+# ---- Partition /usr2/samba
+RRDFILE=$HOST.VG1_samba.rrd
+VALUE=`df /usr2/samba | tail -1 | awk '{ print $5 }' | sed -e s/%//`
+rrdtool update $RRDFILE $LGDATE:$VALUE
+
+#--------------------------------------------------------------------------------------
+# Charge Machine (load average)
+#--------------------------------------------------------------------------------------
+echo "---> load"
+RRDFILE=$HOST.la.rrd
+LOAD_AV=`sar -q | tail -2 | head -1 | awk '{ print $5 }' | sed 's/\,/\./g'`
+rrdtool update $RRDFILE $LGDATE:$LOAD_AV
+
+#--------------------------------------------------------------------------------------
+# Etat memoire (reelle et swap)
+#--------------------------------------------------------------------------------------
+echo "---> memoire"
+# ---- Memoire reelle
+RRDFILE=$HOST.real.mem.rrd
+RM_percent=`sar -r | tail -2 | head -1 | awk '{ print $4 }' | sed 's/\,/\./g'`
+rrdtool update $RRDFILE $LGDATE:$RM_percent
+# ---- Memoire swap
+RRDFILE=$HOST.swap.mem.rrd
+SM_percent=`sar -r | tail -2 | head -1 | awk '{ print $10 }' | sed 's/\,/\./g'`
+rrdtool update $RRDFILE $LGDATE:$SM_percent
+
+#--------------------------------------------------------------------------------------
+# Reseau (internet et local) / Latence
+#--------------------------------------------------------------------------------------
+echo "---> reseau"
+RRDFILE=$HOST.network.rrd
+ligne_eth0=`cat /proc/net/dev | grep eth0 | cut -d":" -f 2`
+	IN_eth0=`echo $ligne_eth0 | cut -d" " -f 1`
+	OUT_eth0=`echo $ligne_eth0 | cut -d" " -f 9`
+ligne_ppp0=`cat /proc/net/dev | grep ppp0 | cut -d":" -f 2`
+	IN_ppp0=`echo $ligne_ppp0 | cut -d" " -f 1`
+	OUT_ppp0=`echo $ligne_ppp0 | awk -F" " '{ print $9 }'`
+rrdtool update $RRDFILE $LGDATE:$IN_eth0:$OUT_eth0:$IN_ppp0:$OUT_ppp0
+
+RRDFILE=$HOST.latence.rrd
+P=`ping -c3 62.4.16.248|grep round`
+	LATmin=`echo $P | cut -d" " -f4 | cut -d"/" -f1`
+	LATmax=`echo $P | cut -d"/" -f5 | cut -d" " -f1`
+rrdtool update $RRDFILE $LGDATE:$LATmin:$LATmax
+
+#--------------------------------------------------------------------------------------
+# Requetes SQL (moyenne x 1000)
+#--------------------------------------------------------------------------------------
+echo "---> sql"
+RRDFILE=$HOST.sql.rrd
+sql_cnx=`/usr/bin/mysqladmin -uroot -pclaire2408 status | sed 's/^.*avg: //' | sed 's/\.//' | sed 's/ //'`
+rrdtool update $RRDFILE $LGDATE:$sql_cnx
+
+#--------------------------------------------------------------------------------------
+# Uptime
+#--------------------------------------------------------------------------------------
+echo "---> uptime"
+RRDFILE=$HOST.uptime.rrd
+my_upt=`./uptime.pl`
+rrdtool update $RRDFILE $LGDATE:$my_upt
+
+#--------------------------------------------------------------------------------------
+# Temperature disques SCSI
+#--------------------------------------------------------------------------------------
+echo "---> temperature disques"
+RRDFILE=$HOST.sda_temp.rrd
+temp=`sudo /usr/sbin/smartctl -H /dev/sda |tail -1 |cut -d: -f2 |sed -e 's/\ //g' -e 's/C//g'`
+rrdtool update $RRDFILE $LGDATE:$temp
+RRDFILE=$HOST.sdb_temp.rrd
+temp=`sudo /usr/sbin/smartctl -H /dev/sdb |tail -1 |cut -d: -f2 |sed -e 's/\ //g' -e 's/C//g'`
+rrdtool update $RRDFILE $LGDATE:$temp
+
+#--------------------------------------------------------------------------------------
+# Etat de la queue de messages
+#--------------------------------------------------------------------------------------
+echo "---> mail queue"
+RRDFILE=$HOST.mailq.rrd
+mail_in_queue=`sudo /usr/bin/mailq | grep -c "<"`
+rrdtool update $RRDFILE $LGDATE:$mail_in_queue
+
+#--------------------------------------------------------------------------------------
+# Volume transitant via l'interface internet
+#--------------------------------------------------------------------------------------
+echo "---> WAN volume"
+RRDFILE=$HOST.WAN_vol.rrd
+IN_vol=`sudo ifconfig ppp0 | grep "RX bytes" | cut -d":" -f2 | cut -d" " -f1`
+OUT_vol=`sudo ifconfig ppp0 | grep "TX bytes" | cut -d":" -f3 | cut -d" " -f1`
+rrdtool update $RRDFILE $LGDATE:$IN_vol:$OUT_vol
+
+#--------------------------------------------------------------------------------------
+# Lectures et ecritures de secteurs sur les disques
+#--------------------------------------------------------------------------------------
+echo "---> Sectors IO"
+RRDFILE=$HOST.hda_io.rrd
+read_sec=`iostat -d -x hda1 | tail -2 | head -1 | awk '{ print $6 }' | sed -e 's/\,/\./g'`
+write_sec=`iostat -d -x hda1 | tail -2 | head -1 | awk '{ print $7 }' | sed -e 's/\,/\./g'`
+rrdtool update $RRDFILE $LGDATE:$read_sec:$write_sec
+
+RRDFILE=$HOST.hdd_io.rrd
+read_sec=`iostat -d -x hdd1 | tail -2 | head -1 | awk '{ print $6 }' | sed -e 's/\,/\./g'`
+write_sec=`iostat -d -x hdd1 | tail -2 | head -1 | awk '{ print $7 }' | sed -e 's/\,/\./g'`
+rrdtool update $RRDFILE $LGDATE:$read_sec:$write_sec
+
+#--------------------------------------------------------------------------------------
+# Offset ntp sur le log loopstats
+#--------------------------------------------------------------------------------------
+echo "---> Offset NTP"
+RRDFILE=$HOST.ntp_offset.rrd
+offset=`ntpdc -c loopinfo | head -1 | awk '{ print $2 }' `
+rrdtool update $RRDFILE $LGDATE:$offset
