@@ -4,36 +4,33 @@
 # $Id$
 
 source ../Common
-RRDFILE=../data/$HOST.slash.rrd
-RRDFILE2=../data/$HOST.var.rrd
-RRDFILE3=../data/$HOST.home.rrd
-RRDFILE4=../data/$HOST.VG1_web.rrd
-RRDFILE5=../data/$HOST.VG1_ftp.rrd
-RRDFILE6=../data/$HOST.VG1_samba.rrd
-if [ -e $RRDFILE ]
-then
-    # Definitions
-    DEFS="DEF:ligne1=$RRDFILE1:percent:AVERAGE DEF:ligne2=$RRDFILE2:percent:AVERAGE DEF:ligne3=$RRDFILE3:percent:AVERAGE DEF:ligne4=$RRDFILE4:percent:AVERAGE DEF:ligne5=$RRDFILE5:percent:AVERAGE DEF:ligne6=$RRDFILE6:percent:AVERAGE"
+I=0
+for F in $(ls ../data/*hd_part*)
+do
+    PART=`basename $F .rrd | sed -e 's/^.*_s/_s/g'`
+    RRDFILE=$F
+    if [ -e $RRDFILE ]
+    then
+	# Definitions
+	DEFS="DEF:ligne$I=$RRDFILE:percent:AVERAGE "$DEFS
+	INFOS="LINE2:ligne$I#${COLORS[$I]}:$PART\: \
+	       GPRINT:ligne$I:LAST:%.0lf%%\n "$INFOS
+	I=`expr $I + 1`
+    fi
+done
 
-    #-------------------------------------------
-    # Espace disque
-    #-------------------------------------------
-    LEGENDE="% Total"
-    GRAPHFILE=$HOST.disk
+#-------------------------------------------
+# Espace disque
+#-------------------------------------------
+LEGENDE="% Total"
+GRAPHFILE=$HOST.disk_part
 
-    for VAR in $LISTE
-    do
-	TITRE="Espace disque sur $VAR"
-	GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
-	START=e-$VAR
-	# Creation du graph
-	rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
-	LINE2:ligne1#00a000:"/           \:" GPRINT:ligne1:LAST:"%8.0lf%% utilise\n" \
-	LINE2:ligne2#960000:"/var        \:" GPRINT:ligne2:LAST:"%8.0lf%% utilise\n" \
-	LINE2:ligne3#0000FF:"/home       \:" GPRINT:ligne3:LAST:"%8.0lf%% utilise\n" \
-	LINE2:ligne4#C53DFF:"/usr2/web   \:" GPRINT:ligne4:LAST:"%8.0lf%% utilise\n" \
-	LINE2:ligne5#FF0000:"/usr2/ftp   \:" GPRINT:ligne5:LAST:"%8.0lf%% utilise\n" \
-	LINE2:ligne6#7DD643:"/usr2/samba \:" GPRINT:ligne6:LAST:"%8.0lf%% utilise\n" \
-	COMMENT:"$STR_DATE\c"
-    done
-fi
+for VAR in $LISTE
+do
+    TITRE="Espace disque sur $VAR"
+    GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
+    START=e-$VAR
+    # Creation du graph
+    rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS $INFOS \
+    COMMENT:"$STR_DATE\c"
+done
