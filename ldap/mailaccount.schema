@@ -1,0 +1,53 @@
+# Compte Mail
+#
+# $Id$
+
+attributetype ( 1.3.6.1.4.1.20105.3.1
+    NAME 'mailSpoolDirectory'
+    DESC 'Location of the spool directory'
+    EQUALITY caseIgnoreMatch
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+    )
+
+attributetype ( 1.3.6.1.4.1.20105.3.2
+    NAME 'mailNeedSubject'
+    DESC 'Boolean attribute to reject or not empty subject mail'
+    EQUALITY booleanMatch
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.7
+    )
+
+attributetype ( 1.3.6.1.4.1.20105.3.3
+    NAME 'mailNeedTo'
+    DESC 'Boolean attribute to reject or not empty To: header'
+    EQUALITY booleanMatch
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.7
+    )
+
+attributetype ( 1.3.6.1.4.1.20105.3.4
+    NAME 'mailVacationText'
+    DESC 'Message of the vacation response'
+    EQUALITY caseIgnoreMatch
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+    )
+
+attributetype ( 1.3.6.1.4.1.20105.3.5
+    NAME 'mailVacationSubject'
+    DESC 'Subject of the vacation response'
+    EQUALITY caseIgnoreMatch
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+    )
+
+attributetype ( 1.3.6.1.4.1.20105.3.6
+    NAME 'mailForward'
+    DESC 'Forwarding adress'
+    EQUALITY caseIgnoreMatch
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+    )
+
+objectClass ( 1.3.6.1.4.1.20105.3
+    NAME 'mailAccount'
+	DESC 'Mail account'
+    STRUCTURAL
+	MAY (
+	    mailSpoolDirectory $ mailNeedSubject $ mailNeedTo $ mailVacationText $ mailVacationSubject $ mailForward )
+    )
