@@ -5,21 +5,30 @@
 
 # $Id$
 
-import os, time, email
+import os, time, email, sys
 
+progname = sys.argv[0]
 timefile = '/tmp/elapsedtime'
 logfile  = '/home/toffe/public_html/log_adsl'
 sender   = 'toffe@nah-ko.org'
 receiver = sender
 
-# timefile existe pas: on considere que c'est le premier lancement.
-if not os.path.exists(timefile):
+# recuperation du suffix permettant l'ordonnancement
+# le nom sera donc: elapsedtime-{up|down}.py
+# [0] sur le premier split pour avoir le nom sans l'extension
+# [1] sur le second pour obtenir le suffixe
+suffix = progname.split('.')[0].split('-')[1]
+
+# on considere que c'est le premier lancement.
+# (pas de timefile, suffix a up)
+if not os.path.exists(timefile) and suffix == 'up':
     start = time.time()
     fd = open(timefile, "w+")
     fd.write(str(start))
     fd.close()
-# timefile existe: on le lit pour faire le calcul.
-else:
+# on le lit pour faire le calcul.
+# (timefile cree precedemment, suffix a down)
+elif os.path.exists(timefile) and suffix == 'down':
     # recuperation du timestamp
     fd = open(timefile, "r")
     start = float(fd.readlines()[0])
