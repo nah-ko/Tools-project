@@ -28,7 +28,16 @@ then
 	CPU_idle=`sar -u | tail -2 | head -1 | awk '{ print $7 }' | sed 's/\,/\./g'`
 	rrdtool update $RRDFILE $LGDATE:$nb_processes:$CPU_user:$CPU_nice:$CPU_system:$CPU_idle 
     else
-	rrdtool create $RRDFILE --start $LGDATE DS:nbprocs:GAUGE:600:0:500 DS:cpuU:GAUGE:600:0:100 DS:cpuN:GAUGE:600:0:100 DS:cpuS:GAUGE:600:0:100 DS:cpuI:GAUGE:600:0:100 RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
+	rrdtool create $RRDFILE --start $LGDATE \
+	DS:nbprocs:GAUGE:600:0:U \
+	DS:cpuU:GAUGE:600:0:100 \
+	DS:cpuN:GAUGE:600:0:100 \
+	DS:cpuS:GAUGE:600:0:100 \
+	DS:cpuI:GAUGE:600:0:100 \
+	RRA:AVERAGE:0.5:1:576 \
+	RRA:AVERAGE:0.5:6:576 \
+	RRA:AVERAGE:0.5:24:576 \
+	RRA:AVERAGE:0.5:288:576 
     fi
 
     #--------------------------------------------------------------------------------------
@@ -41,7 +50,12 @@ then
 	LOAD_AV=`sar -q | tail -2 | head -1 | awk '{ print $5 }' | sed 's/\,/\./g'`
 	rrdtool update $RRDFILE $LGDATE:$LOAD_AV
     else
-	rrdtool create $RRDFILE --start $LGDATE DS:la:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+	rrdtool create $RRDFILE --start $LGDATE \
+	DS:la:GAUGE:600:0:U \
+	RRA:AVERAGE:0.5:1:576 \
+	RRA:AVERAGE:0.5:6:576 \
+	RRA:AVERAGE:0.5:24:576 \
+	RRA:AVERAGE:0.5:288:576
     fi
 
     #--------------------------------------------------------------------------------------
@@ -55,7 +69,13 @@ then
 	SM_percent=`sar -r | tail -2 | head -1 | awk '{ sub('/\,/', ".", $9); print $9 }'`
 	rrdtool update $RRDFILE $LGDATE:$RM_percent:$SM_percent
     else
-	rrdtool create $RRDFILE --start $LGDATE DS:RMpercent:GAUGE:600:0:U DS:SMpercent:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+	rrdtool create $RRDFILE --start $LGDATE \
+	DS:RMpercent:GAUGE:600:0:100 \
+	DS:SMpercent:GAUGE:600:0:100 \
+	RRA:AVERAGE:0.5:1:576 \
+	RRA:AVERAGE:0.5:6:576 \
+	RRA:AVERAGE:0.5:24:576 \
+	RRA:AVERAGE:0.5:288:576
     fi
 fi # if sar does not exists it ends here.
 
@@ -72,7 +92,12 @@ do
         VALUE=`df $P | tail -1 | awk '{ print $5 }' | sed -e s/%//`
         rrdtool update $RRDFILE $LGDATE:$VALUE
     else
-        rrdtool create $RRDFILE --start $LGDATE DS:percent:GAUGE:600:0:100 RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+        rrdtool create $RRDFILE --start $LGDATE \
+	DS:percent:GAUGE:600:0:100 \
+	RRA:AVERAGE:0.5:1:576 \
+	RRA:AVERAGE:0.5:6:576 \
+	RRA:AVERAGE:0.5:24:576 \
+	RRA:AVERAGE:0.5:288:576
     fi
 done
 
@@ -112,7 +137,13 @@ do
 	    LATmax=`echo $P | cut -d"/" -f5 | cut -d" " -f1`
 	    rrdtool update $RRDFILE $LGDATE:$LATmin:$LATmax
 	else
-	    rrdtool create $RRDFILE --start $LGDATE DS:lat-min:GAUGE:600:0:U DS:lat-max:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
+	    rrdtool create $RRDFILE --start $LGDATE \
+	    DS:lat-min:GAUGE:600:0:U \
+	    DS:lat-max:GAUGE:600:0:U \
+	    RRA:AVERAGE:0.5:1:576 \
+	    RRA:AVERAGE:0.5:6:576 \
+	    RRA:AVERAGE:0.5:24:576 \
+	    RRA:AVERAGE:0.5:288:576 
 	fi
 	RRDFILE=$HOST.net.${I}.vol.rrd
 	if [ -e $RRDFILE ]
@@ -121,7 +152,13 @@ do
 	    OUT_vol=`sudo ifconfig $I | grep "TX bytes" | cut -d":" -f3 | cut -d" " -f1`
 	    rrdtool update $RRDFILE $LGDATE:$IN_vol:$OUT_vol
 	else
-	    rrdtool create $RRDFILE --start $LGDATE DS:IN_vol:GAUGE:600:0:U DS:OUT_vol:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+	    rrdtool create $RRDFILE --start $LGDATE \
+	    DS:IN_vol:GAUGE:600:0:U \
+	    DS:OUT_vol:GAUGE:600:0:U \
+	    RRA:AVERAGE:0.5:1:576 \
+	    RRA:AVERAGE:0.5:6:576 \
+	    RRA:AVERAGE:0.5:24:576 \
+	    RRA:AVERAGE:0.5:288:576
 	fi
     fi
 done
@@ -139,7 +176,12 @@ then
 	sql_cnx=`$MYSQLADMIN -uroot -pclaire2408 status | sed 's/^.*avg: //' | sed 's/\.//' | sed 's/ //'`
 	rrdtool update $RRDFILE $LGDATE:$sql_cnx
     else
-	rrdtool create $RRDFILE --start $LGDATE DS:sqlcnx:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+	rrdtool create $RRDFILE --start $LGDATE \
+	DS:sqlcnx:GAUGE:600:0:U \
+	RRA:AVERAGE:0.5:1:576 \
+	RRA:AVERAGE:0.5:6:576 \
+	RRA:AVERAGE:0.5:24:576 \
+	RRA:AVERAGE:0.5:288:576
     fi
 fi
 
@@ -156,7 +198,12 @@ then
 	my_upt=`./uptime.pl`
 	rrdtool update $RRDFILE $LGDATE:$my_upt
     else
-	rrdtool create $RRDFILE --start $LGDATE DS:uptime:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+	rrdtool create $RRDFILE --start $LGDATE \
+	DS:uptime:GAUGE:600:0:U \
+	RRA:AVERAGE:0.5:1:576 \
+	RRA:AVERAGE:0.5:6:576 \
+	RRA:AVERAGE:0.5:24:576 \
+	RRA:AVERAGE:0.5:288:576
     fi
 fi
 
@@ -176,7 +223,12 @@ then
 	    temp=`sudo $SMARTCTL -H -A $D | grep -i -E 'current.*temperature' |cut -d: -f2 |sed -e 's/\ //g' -e 's/C//g'`
 	    rrdtool update $RRDFILE $LGDATE:$temp
 	else
-	    rrdtool create $RRDFILE --start $LGDATE DS:temp:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+	    rrdtool create $RRDFILE --start $LGDATE \
+	    DS:temp:GAUGE:600:0:U \
+	    RRA:AVERAGE:0.5:1:576 \
+	    RRA:AVERAGE:0.5:6:576 \
+	    RRA:AVERAGE:0.5:24:576 \
+	    RRA:AVERAGE:0.5:288:576
 	fi
     done
 fi
@@ -194,7 +246,12 @@ then
 	mail_in_queue=`sudo $MAILQ | grep -c "<"`
 	rrdtool update $RRDFILE $LGDATE:$mail_in_queue
     else
-	rrdtool create $RRDFILE --start $LGDATE DS:value:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+	rrdtool create $RRDFILE --start $LGDATE \
+	DS:value:GAUGE:600:0:U \
+	RRA:AVERAGE:0.5:1:576 \
+	RRA:AVERAGE:0.5:6:576 \
+	RRA:AVERAGE:0.5:24:576 \
+	RRA:AVERAGE:0.5:288:576
     fi
     # Comptage des virus
     VIRUSLOG=/var/log/clamav/clamav.log
@@ -206,7 +263,12 @@ then
 		virus=`sudo grep -c FOUND $VIRUSLOG`
 		rrdtool update $RRDFILE $LGDATE:$virus
     	else
-    		rrdtool create $RRDFILE --start $LGDATE DS:value:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+    		rrdtool create $RRDFILE --start $LGDATE \
+		DS:value:GAUGE:600:0:U \
+		RRA:AVERAGE:0.5:1:576 \
+		RRA:AVERAGE:0.5:6:576 \
+		RRA:AVERAGE:0.5:24:576 \
+		RRA:AVERAGE:0.5:288:576
     	fi
     fi
 fi
@@ -255,7 +317,13 @@ then
 	    write_sec=`$IOSTAT -d -x $HD | tail -2 | head -1 | awk '{ print $7 }' | sed -e 's/\,/\./g'`
 	    rrdtool update $RRDFILE $LGDATE:$read_sec:$write_sec
 	else
-	    rrdtool create $RRDFILE --start $LGDATE DS:read_sec:GAUGE:600:0:U DS:write_sec:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+	    rrdtool create $RRDFILE --start $LGDATE \
+	    DS:read_sec:GAUGE:600:0:U \
+	    DS:write_sec:GAUGE:600:0:U \
+	    RRA:AVERAGE:0.5:1:576 \
+	    RRA:AVERAGE:0.5:6:576 \
+	    RRA:AVERAGE:0.5:24:576 \
+	    RRA:AVERAGE:0.5:288:576
 	fi
     done
 fi
@@ -273,7 +341,12 @@ then
 	offset=`$NTPDC -c loopinfo | head -1 | awk '{ print $2 }' `
 	rrdtool update $RRDFILE $LGDATE:$offset
     else
-	rrdtool create $RRDFILE --start $LGDATE DS:offset:GAUGE:600:U:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+	rrdtool create $RRDFILE --start $LGDATE \
+	DS:offset:GAUGE:600:U:U \
+	RRA:AVERAGE:0.5:1:576 \
+	RRA:AVERAGE:0.5:6:576 \
+	RRA:AVERAGE:0.5:24:576 \
+	RRA:AVERAGE:0.5:288:576
     fi
 fi
 
