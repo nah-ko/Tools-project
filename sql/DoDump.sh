@@ -7,8 +7,6 @@
 
 # $Id$
 
-#set -x
-
 PROG=`basename $0`
 NO_ARGS=0
 E_OPTERROR=65
@@ -18,11 +16,13 @@ cat << EOF
 
 $PROG, dump all databases including those who contains large object
 
-Usage : $PROG -p PREFIX_FILENAME [-d DBNAME -t TABLENAME]
+Usage : $PROG -p PREFIX_FILENAME [-l DBNAME/TABLENAME -v]
     -p PREFIX_FILENAME	    Give a prefix to output filename.
-    -d DBNAME		    Name of database containing large object. Need -t.
-    -t TABLENAME	    Give the table name where large object are.
-    -v			    Verbose
+    -l DBNAME/TABLENAME	    Give the name of database and table where to
+			    dump large object. You may have two or more
+			    couple here. Then you'll need to put it into
+			    doublequote (eg "db1/tbl1 db2/tbl2")
+    -v			    Verbose, dumping will use the verbose mode
 
 EOF
     exit $E_OPTERROR
@@ -31,8 +31,8 @@ EOF
 DumpAll() {
     # Default options: -c Include SQL commands to clean (drop) the
     # databases before recreating them. -i Ignore version mismatch
-    # between  pg_dumpall  and  the  database server. Read manpage for
-    # pg_dumpall for more informations.
+    # between  pg_dumpall  and  the  database server. Read pg_dumpall
+    # manpage for more informations.
     DA_opts="-c -i"
     if [ $VERBOSE ]
     then
@@ -42,12 +42,23 @@ DumpAll() {
 }
 
 DumpLO() {
+    # Default options: -Ft Selects the format of the output. Here it's a
+    # tar archive suitable for input into  pg_restore. -b Include large
+    # objects in dump. -o Dump object identifiers (OIDs) for every
+    # table. -c Output  commands  to clean (drop) database objects prior
+    # to (the commands for) creating them. -C Begin the output with a
+    # command to create  the  database  itself and  reconnect  to  the
+    # created database. Read pg_dump manpage for more informations.
     DLO_opts="-Ft -b -o -c -C"
     if [ $VERBOSE ]
     then
 	DLO_opts=`echo $DLO_opts -v`
     fi
-    echo "pg_dump $DLO_opts > ${PREFIX}_${DBNAME}-${TBLNAME}_DumpLO.`date -I`.out"
+    for ARGS in $LO_NAMES
+    do
+	eval `echo $ARGS | sed -r 's/^(.*)\/(.*)$/DBNAME=\1 TBLNAME=\2/g'`
+	echo "pg_dump $DLO_opts > ${PREFIX}_${DBNAME}-${TBLNAME}_DumpLO.`date -I`.out"
+    done
 }
 
 # Main code
@@ -56,23 +67,23 @@ then
     usage
 fi
 
-while getopts ":vp:d:t:" OPTIONS
+while getopts ":vp:l:" OPTIONS
 do
     case $OPTIONS in
+	d)
+	    set -x
+	    ;;
 	v)
 	    VERBOSE=true
 	    ;;
 	p)
 	    PREFIX=$OPTARG
 	    ;;
-	d)
-	    DBNAME=$OPTARG
-	    ;;
-	t)
-	    TBLNAME=$OPTARG
+	l)
+	    LO_NAMES=$OPTARG
 	    ;;
 	*)
-	    echo "No matching option, retry."
+	    echo "No matching option for -$OPTARG, retry."
 	    usage
 	    ;;
 	:)
@@ -83,7 +94,7 @@ do
 done
 
 DumpAll
-if [ "$DBNAME" != "" -a "$TBLNAME" != "" ]
+if [ "$LO_NAMES" != "" ]
 then
     DumpLO
 else
