@@ -15,7 +15,7 @@ COUNT=`mailq | grep -c -E '<.+{0,}>'`
 
 echo "There is $COUNT mail into the mail queue"
 
-if [ $COUNT -gt 1 ]
+if [ $COUNT -ge 1 ]
 then
     echo -e "Mails come from:"
     mailq | awk '/<.*>/{ print $4 }' | sort | awk -f /usr/share/awk/getopt.awk -f /usr/share/awk/join.awk -f /usr/share/doc/gawk/examples/prog/uniq.awk -- -c
