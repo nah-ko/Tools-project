@@ -1,0 +1,22 @@
+# $Id$
+
+Description
+
+Scripts RRDTool pour la surveillance de différents service et matériels
+sytème.
+
+Arborescence
+
+Le répertoire bin/ contient le script de mise à jour des bases rrd créées
+au préalable ainsi que les script qui permettent de faire les graphs.
+Ces deux tâches sont séparées afin de permettre une mise à jour des
+bases dans un temps le plus court possible, les graphs n'étant
+finalement que moins important.
+Ensuite data/ contient les fameuses bases rrd, elles sont préfixées par
+le hostname du serveur en question.
+
+Mise en place.
+
+La mise en place se fait grâce à la crontab, il suffit de mettre le
+script nommé «DoUpdate» dans la bonne crontab. Celui ci se charge de
+lancer tous les autres scripts se trouvant dans bin/
