@@ -1,0 +1,10 @@
+# Mes headers
+
+# $Id$
+
+#my_hdr X-Useless-Header: Look ma, it's a \# sign! # real comment
+my_hdr X-Operating-System: `uname -a`
+my_hdr From: Toffe <toffe@nah-ko.org>
+my_hdr X-Mailer: Mutt http://www.mutt.org/
+my_hdr X-Url: http://nah-ko.org/~toffe/
+

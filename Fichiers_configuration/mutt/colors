@@ -1,0 +1,45 @@
+# Mes couleurs
+#
+# Tire d'exemples divers.
+
+# $Id$
+
+color normal white default
+color hdrdefault red default
+color quoted cyan default
+color signature red default
+color indicator brightgreen default
+color error brightred default
+#color status yellow blue
+color tree magenta default	# the thread tree in the index menu
+color tilde magenta default
+color message brightcyan default
+color markers brightcyan default
+color attachment brightmagenta default
+color search default green	# how to hilite search patterns in the pager
+
+#color header brightred default ^(From|Subject):
+color body magenta default "(ftp|http)://[^ ]+"	# point out URLs
+color body magenta default [-a-z_0-9.]+@[-a-z_0-9.]+	# e-mail addresses
+color underline brightgreen default
+
+#color hdrdefault cyan default
+#color quoted    green default
+#color signature cyan default
+#color attachment green default
+#color indicator green default
+color status    brightgreen blue
+#color tree      red default
+#color markers   brightred default
+#color tilde     blue default
+color header    brightred default ^From:
+color header    brightred default ^From:
+color header    cyan default ^To:
+color header    cyan default ^Reply-To:
+color header    cyan default ^Cc:
+color header    green default ^Subject:
+color header    cyan default ^Date:
+#color body      brightred default [\-\.+_a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+
+#color body      brightblue default (http|ftp)://[\-\.\,/%~_:?\#\=\?\&a-zA-Z0-9]+
+#color underline brightgreen default
+#color normal white default

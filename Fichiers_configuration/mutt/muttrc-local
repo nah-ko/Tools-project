@@ -1,0 +1,27 @@
+# Mes macros
+#
+# Une macro pour le spam, une pour marquer tous les mails comme lus.
+# (merci Dim)
+
+# $Id$
+
+macro index "\Cn" "<enter-command>unset wait_key\n\
+<pipe-entry>bogofilter -Nsl\n\
+<enter-command>set wait_key\n\
+<delete-message>" "Mark message as spam (and remove from not-spam list)"
+macro index "\Cs" "<enter-command>unset wait_key\n\
+<pipe-entry>bogofilter -Snl\n\
+<enter-command>set wait_key\n\
+<delete-message>" "Mark message as not-spam (and remove from spam list)"
+
+macro pager "\Cn" "<enter-command>unset wait_key\n\
+<pipe-entry>bogofilter -Nsl\n\
+<enter-command>set wait_key\n\
+<delete-message>" "Mark message as spam (and remove from not-spam list)"
+macro pager "\Cs" "<enter-command>unset wait_key\n\
+<pipe-entry>bogofilter -Snl\n\
+<enter-command>set wait_key\n\
+<delete-message>" "Mark message as not-spam (and remove from spam list)"
+
+macro index "\Cx" "<tag-pattern>~N<enter><tag-prefix><clear-flag>N<tag-prefix><clear-flag>*" "Mark all new messages as read"
+

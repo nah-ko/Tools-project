@@ -1,0 +1,6 @@
+# Mon login et mot de passe sur le serveur imap.
+
+# $Id$
+
+set imap_user = user@dom.tld
+set imap_pass = XXX

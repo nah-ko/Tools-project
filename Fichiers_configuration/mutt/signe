@@ -1,0 +1,7 @@
+#!/bin/bash
+# Ma signature aleatoire.
+
+# $Id$
+
+cat ~/.mutt/signature
+fortune -s
