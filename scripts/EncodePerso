@@ -1,0 +1,11 @@
+#!/bin/bash
+
+SOURCE=$1
+DESTINATION=NewEncoding_${SOURCE}
+
+mencoder -oac mp3lame \
+         -lameopts preset=medium \
+	 -ovc divx4 \
+	 -xvidencopts vhq=3 \
+	 $SOURCE \
+	 -o $DESTINATION
