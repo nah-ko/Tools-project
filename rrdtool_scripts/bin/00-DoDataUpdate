@@ -9,50 +9,52 @@ export LANG=fr_FR@euro
 HOST=../data/`hostname`
 LGDATE=`date +%s`
 
-#--------------------------------------------------------------------------------------
-# Usage CPU (User, Nice, System et Idle) et Nombre Processes
-#--------------------------------------------------------------------------------------
-echo "---> CPU"
-if[ -x `which sar` ] # some update depends of sar tool
+SAR=`which sar` 
+if test $SAR && test -x $SAR # some update depends of sar tool
 then
-RRDFILE=$HOST.cpu.rrd
-if [ -e $RRDFILE ]
-then
-    nb_processes=`sar -q | tail -2 | head -1 | awk '{ print $3 }'`
-    CPU_user=`sar -u | tail -2 | head -1 | awk '{ print $3 }' | sed 's/\,/\./g'`
-    CPU_nice=`sar -u | tail -2 | head -1 | awk '{ print $4 }' | sed 's/\,/\./g'`
-    CPU_system=`sar -u | tail -2 | head -1 | awk '{ print $5 }' | sed 's/\,/\./g'`
-    CPU_idle=`sar -u | tail -2 | head -1 | awk '{ print $6 }' | sed 's/\,/\./g'`
-    rrdtool update $RRDFILE $LGDATE:$nb_processes:$CPU_user:$CPU_nice:$CPU_system:$CPU_idle 
-else
-    rrdtool create $RRDFILE --start $LGDATE DS:nbprocs:GAUGE:600:0:500 DS:cpuU:GAUGE:600:0:100 DS:cpuN:GAUGE:600:0:100 DS:cpuS:GAUGE:600:0:100 DS:cpuI:GAUGE:600:0:100 RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
-fi
+    #--------------------------------------------------------------------------------------
+    # Usage CPU (User, Nice, System et Idle) et Nombre Processes
+    #--------------------------------------------------------------------------------------
+    echo "---> CPU"
+    RRDFILE=$HOST.cpu.rrd
+    if [ -e $RRDFILE ]
+    then
+	nb_processes=`sar -q | tail -2 | head -1 | awk '{ print $3 }'`
+	CPU_user=`sar -u | tail -2 | head -1 | awk '{ print $3 }' | sed 's/\,/\./g'`
+	CPU_nice=`sar -u | tail -2 | head -1 | awk '{ print $4 }' | sed 's/\,/\./g'`
+	CPU_system=`sar -u | tail -2 | head -1 | awk '{ print $5 }' | sed 's/\,/\./g'`
+	CPU_idle=`sar -u | tail -2 | head -1 | awk '{ print $6 }' | sed 's/\,/\./g'`
+	rrdtool update $RRDFILE $LGDATE:$nb_processes:$CPU_user:$CPU_nice:$CPU_system:$CPU_idle 
+    else
+	rrdtool create $RRDFILE --start $LGDATE DS:nbprocs:GAUGE:600:0:500 DS:cpuU:GAUGE:600:0:100 DS:cpuN:GAUGE:600:0:100 DS:cpuS:GAUGE:600:0:100 DS:cpuI:GAUGE:600:0:100 RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
+    fi
 
-#--------------------------------------------------------------------------------------
-# Charge Machine (load average)
-#--------------------------------------------------------------------------------------
-echo "---> load"
-RRDFILE=$HOST.la.rrd
-if [ -e $RRDFILE ]
-then
-    LOAD_AV=`sar -q | tail -2 | head -1 | awk '{ print $5 }' | sed 's/\,/\./g'`
-    rrdtool update $RRDFILE $LGDATE:$LOAD_AV
-else
-fi
+    #--------------------------------------------------------------------------------------
+    # Charge Machine (load average)
+    #--------------------------------------------------------------------------------------
+    echo "---> load"
+    RRDFILE=$HOST.load.rrd
+    if [ -e $RRDFILE ]
+    then
+	LOAD_AV=`sar -q | tail -2 | head -1 | awk '{ print $5 }' | sed 's/\,/\./g'`
+	rrdtool update $RRDFILE $LGDATE:$LOAD_AV
+    else
+	rrdtool create $RRDFILE --start $LGDATE DS:la:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+    fi
 
-#--------------------------------------------------------------------------------------
-# Etat memoire (reelle et swap)
-#--------------------------------------------------------------------------------------
-echo "---> memoire"
-RRDFILE=$HOST.memory.rrd
-if [ -e $RRDFILE ]
-then
-    RM_percent=`sar -r | tail -2 | head -1 | awk '{ print $4 }' | sed 's/\,/\./g'`
-    SM_percent=`sar -r | tail -2 | head -1 | awk '{ print $10 }' | sed 's/\,/\./g'`
-    rrdtool update $RRDFILE $LGDATE:$RM_percent:$SM_percent
-else
-    rrdtool create $RRDFILE --start $LGDATE DS:RMpercent:GAUGE:600:0:U DS:SMpercent:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
-fi
+    #--------------------------------------------------------------------------------------
+    # Etat memoire (reelle et swap)
+    #--------------------------------------------------------------------------------------
+    echo "---> memoire"
+    RRDFILE=$HOST.memory.rrd
+    if [ -e $RRDFILE ]
+    then
+	RM_percent=`sar -r | tail -2 | head -1 | awk '{ print $4 }' | sed 's/\,/\./g'`
+	SM_percent=`sar -r | tail -2 | head -1 | awk '{ print $10 }' | sed 's/\,/\./g'`
+	rrdtool update $RRDFILE $LGDATE:$RM_percent:$SM_percent
+    else
+	rrdtool create $RRDFILE --start $LGDATE DS:RMpercent:GAUGE:600:0:U DS:SMpercent:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+    fi
 fi # if sar does not exists it ends here.
 
 #--------------------------------------------------------------------------------------
@@ -60,10 +62,9 @@ fi # if sar does not exists it ends here.
 #--------------------------------------------------------------------------------------
 echo "---> disque"
 PARTITIONS=`df -l | grep ^.dev | awk '{ print $6 }'`
-
 for P in $PARTITIONS
 do  
-    RRDFILE=$HOST.`echo $P | sed -e 's/\//_slash_/g'`.rrd
+    RRDFILE=$HOST.hd_part.`echo $P | sed -e 's/\//_slash_/g'`.rrd
     if [ -e $RRDFILE ]
     then
         VALUE=`df $P | tail -1 | awk '{ print $5 }' | sed -e s/%//`
@@ -80,8 +81,8 @@ echo "---> reseau"
 IFACES=`awk -F":" '/:/{ if( !($1 ~ "lo")) print $1 }' /proc/net/dev`
 for I in $IFACES
 do
-    RRDFILE=$HOST.$I.rrd
-    if[ -e $RRDFILE ]
+    RRDFILE=$HOST.net.$I.rrd
+    if [ -e $RRDFILE ]
     then
 	ligne=`cat /proc/net/dev | grep $I | cut -d":" -f 2`
 	    IN=`echo $ligne | cut -d" " -f 1`
@@ -91,10 +92,10 @@ do
 	rrdtool create $RRDFILE --start $LGDATE DS:IN:COUNTER:600:0:1e+06 DS:OUT:COUNTER:600:0:1e+06 RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
     fi
     # Latency test is done over WAN iface.
-    if[ $I == 'ppp0' ]
+    if [ $I == 'ppp0' ]
     then
-	RRDFILE=$HOST.${I}_latence.rrd
-	if[ -e $RRDFILE ]
+	RRDFILE=$HOST.net.${I}_latence.rrd
+	if [ -e $RRDFILE ]
 	then
 	    # For latency it is better to do traceroute to ISP website.
 	    FIRSTHOP=`traceroute -n www.nerim.net 2>&1 | awk -F" " '{ print $2 }' | head -2 | tail -1`
@@ -105,7 +106,7 @@ do
 	else
 	    rrdtool create $RRDFILE --start $LGDATE DS:lat-min:GAUGE:600:0:U DS:lat-max:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
 	fi
-	RRDFILE=$HOST.${I}_vol.rrd
+	RRDFILE=$HOST.net.${I}_vol.rrd
 	if [ -e $RRDFILE ]
 	then
 	    IN_vol=`sudo ifconfig $I | grep "RX bytes" | cut -d":" -f2 | cut -d" " -f1`
@@ -120,21 +121,26 @@ done
 #--------------------------------------------------------------------------------------
 # Requetes SQL (moyenne x 1000)
 #--------------------------------------------------------------------------------------
-echo "---> sql"
-RRDFILE=$HOST.sql.rrd
-if [ -e $RRDFILE ]
+echo "---> mysql"
+MYSQLADMIN=`which mysqladmin` 
+if test $MYSQLADMIN && test -x $MYSQLADMIN
 then
-    sql_cnx=`/usr/bin/mysqladmin -uroot -pclaire2408 status | sed 's/^.*avg: //' | sed 's/\.//' | sed 's/ //'`
-    rrdtool update $RRDFILE $LGDATE:$sql_cnx
-else
-    rrdtool create $RRDFILE --start $LGDATE DS:sqlcnx:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+    RRDFILE=$HOST.mysql.rrd
+    if [ -e $RRDFILE ]
+    then
+	sql_cnx=`$MYSQLADMIN -uroot -pclaire2408 status | sed 's/^.*avg: //' | sed 's/\.//' | sed 's/ //'`
+	rrdtool update $RRDFILE $LGDATE:$sql_cnx
+    else
+	rrdtool create $RRDFILE --start $LGDATE DS:sqlcnx:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+    fi
 fi
 
 #--------------------------------------------------------------------------------------
 # Uptime
 #--------------------------------------------------------------------------------------
 echo "---> uptime"
-if[ -x `which perl` ]
+PERL=`which perl` 
+if test $PERL && test -x $PERL
 then
     RRDFILE=$HOST.uptime.rrd
     if [ -e $RRDFILE ]
@@ -150,15 +156,16 @@ fi
 # Temperature disques SCSI
 #--------------------------------------------------------------------------------------
 echo "---> temperature disques"
-if[ -x `which smartctl` ]
+SMARTCTL=`which smartctl` 
+if test $SMARTCTL && test -x $SMARTCTL
 then
     SCSIDISKS=`df -l | grep ^.dev.sd | awk '{ print $1 }' | sed -e 's/.$//g'`
     for D in $SCSIDISKS
     do
-	RRDFILE=$HOST.`echo $D | sed -e 's/\//_slash_/g'`.rrd
+	RRDFILE=$HOST.hd_temp.`echo $D | sed -e 's/\//_slash_/g'`.rrd
 	if [ -e $RRDFILE ]
 	then
-	    temp=`sudo /usr/sbin/smartctl -H -A $D | grep -i -E 'current.*temperature' |cut -d: -f2 |sed -e 's/\ //g' -e 's/C//g'`
+	    temp=`sudo $SMARTCTL -H -A $D | grep -i -E 'current.*temperature' |cut -d: -f2 |sed -e 's/\ //g' -e 's/C//g'`
 	    rrdtool update $RRDFILE $LGDATE:$temp
 	else
 	    rrdtool create $RRDFILE --start $LGDATE DS:temp:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
@@ -170,29 +177,34 @@ fi
 # Etat de la queue de messages
 #--------------------------------------------------------------------------------------
 echo "---> mail queue"
-RRDFILE=$HOST.mailq.rrd
-if [ -e $RRDFILE ]
+MAILQ=`sudo which mailq`
+if test $MAILQ && test -x $MAILQ
 then
-    mail_in_queue=`sudo /usr/bin/mailq | grep -c "<"`
-    rrdtool update $RRDFILE $LGDATE:$mail_in_queue
-else
-    rrdtool create $RRDFILE --start $LGDATE DS:mailq:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+    RRDFILE=$HOST.mailq.rrd
+    if [ -e $RRDFILE ]
+    then
+	mail_in_queue=`sudo $MAILQ | grep -c "<"`
+	rrdtool update $RRDFILE $LGDATE:$mail_in_queue
+    else
+	rrdtool create $RRDFILE --start $LGDATE DS:mailq:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+    fi
 fi
 
 #--------------------------------------------------------------------------------------
 # Lectures et ecritures de secteurs sur les disques
 #--------------------------------------------------------------------------------------
 echo "---> Sectors IO"
-if[ -x `which iostat` ]
+IOSTAT=`which iostat` 
+if test $IOSTAT && test -x $IOSTAT
 then
-    HARDDRIVES=`df -l | awk '/\/dev/{ print $1 }' | sed -e 's/[0-9]\+$//g' | sort -u`
+    HARDDRIVES=`df -l | awk '/^\/dev/{ print $1 }' | sed -e 's/[0-9]\+$//g' | sort -u`
     for HD in $HARDDRIVES
     do
-	RRDFILE=$HOST.`echo $HD | sed -e 's/\//_slash_/g'`.rrd
+	RRDFILE=$HOST.hd_io.`echo $HD | sed -e 's/\//_slash_/g'`.rrd
 	if [ -e $RRDFILE ]
 	then
-	    read_sec=`iostat -d -x $HD | tail -2 | head -1 | awk '{ print $6 }' | sed -e 's/\,/\./g'`
-	    write_sec=`iostat -d -x $HD | tail -2 | head -1 | awk '{ print $7 }' | sed -e 's/\,/\./g'`
+	    read_sec=`$IOSTAT -d -x $HD | tail -2 | head -1 | awk '{ print $6 }' | sed -e 's/\,/\./g'`
+	    write_sec=`$IOSTAT -d -x $HD | tail -2 | head -1 | awk '{ print $7 }' | sed -e 's/\,/\./g'`
 	    rrdtool update $RRDFILE $LGDATE:$read_sec:$write_sec
 	else
 	    rrdtool create $RRDFILE --start $LGDATE DS:read_sec:GAUGE:600:0:U DS:write_sec:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
@@ -204,14 +216,18 @@ fi
 # Offset ntp sur le log loopstats
 #--------------------------------------------------------------------------------------
 echo "---> Offset NTP"
-if[ -x `which ntpdc` ]
+NTPDC=`which ntpdc` 
+if test $NTPDC && test -x $NTPDC
 then
     RRDFILE=$HOST.ntp_offset.rrd
     if [ -e $RRDFILE ]
     then
-	offset=`ntpdc -c loopinfo | head -1 | awk '{ print $2 }' `
+	offset=`$NTPDC -c loopinfo | head -1 | awk '{ print $2 }' `
 	rrdtool update $RRDFILE $LGDATE:$offset
     else
 	rrdtool create $RRDFILE --start $LGDATE DS:offset:GAUGE:600:U:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
     fi
 fi
+
+#--------------------------------------------------------------------------------------
+echo "---> Fin update"

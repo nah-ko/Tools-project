@@ -3,18 +3,7 @@
 
 # $Id$
 
-export PATH=/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin
-export LANG=fr_FR@euro
-
-HOST=`hostname`
-LISTE="48h 12d 48d 576d"
-
-LGDATE=`date +%s`
-
-GRAPHDIR=/usr2/web/rrd/graphs
-STR_DATE="Derniere mise a jour le `date +\"%A %d %B %Y a %T\"`"
-COULEURS="-c BACK#000000 -c FONT#AAAAAA -c FRAME#FFFFFF -c CANVAS#000000"
-OPTIONS="-w 576 -a PNG --alt-autoscale-max -l 0 $COULEURS"
+source ../Common
 
 #-------------------------------------------
 # Entree/sorties sur hda et hdd
@@ -32,30 +21,9 @@ DEFS="DEF:ligne1=$RRDFILE:read_sec:AVERAGE  \
 
 for VAR in $LISTE
 do
-	TITRE="Entrees sorties sur les disques"
-	case $VAR in
-		48h)
-			GRAPH=$GRAPHDIR/$GRAPHFILE.hourly.png
-			START=e-48h
-			TITRE="$TITRE sur 48 h"
-			;;
-		12d)
-			GRAPH=$GRAPHDIR/$GRAPHFILE.daily.png
-			START=e-12d
-			TITRE="$TITRE sur 12 j"
-			;;
-		48d)
-			GRAPH=$GRAPHDIR/$GRAPHFILE.weekly.png
-			START=e-48d
-			TITRE="$TITRE sur 48 j"
-			;;
-		576d)
-			GRAPH=$GRAPHDIR/$GRAPHFILE.monthly.png
-			START=e-576d
-			TITRE="$TITRE sur 576 j"
-			;;
-	esac
-
+    TITRE="Entrees sorties sur les disques sur $VAR"
+    GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
+    START=e-$VAR
 # Creation du graph
 rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
 COMMENT:"Secteurs lus    \:"                                                 \

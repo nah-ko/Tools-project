@@ -3,17 +3,12 @@
 
 # $Id$
 
-export PATH=/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin
-export LANG=fr_FR@euro
-
-HOST=`hostname`
-LISTE="48h 12d 48d 576d"
+source ../Common
 
 RRDFILE=../data/$HOST.cpu.rrd
-GRAPHDIR=/usr2/web/rrd/graphs
-STR_DATE="Derniere mise a jour le `date +\"%A %d %B %Y a %T\"`"
-COULEURS="-c BACK#000000 -c FONT#AAAAAA -c FRAME#FFFFFF -c CANVAS#000000"
-OPTIONS="-w 576 -a PNG -l 0 --alt-autoscale-max $COULEURS"
+
+if [ -e $RRDFILE ]
+then
 
 # Definitions
 DEFS="DEF:ligne1=$RRDFILE:cpuU:AVERAGE DEF:ligne2=$RRDFILE:cpuN:AVERAGE DEF:ligne3=$RRDFILE:cpuS:AVERAGE DEF:ligne4=$RRDFILE:cpuI:AVERAGE DEF:ligne5=$RRDFILE:nbprocs:AVERAGE"
@@ -21,35 +16,14 @@ DEFS="DEF:ligne1=$RRDFILE:cpuU:AVERAGE DEF:ligne2=$RRDFILE:cpuN:AVERAGE DEF:lign
 #-------------------------------------------
 # Usage CPU (User, Nice, System et Idle)
 #-------------------------------------------
-LEGENDE="% Full"
+LEGENDE="% Utilise"
 GRAPHFILE=$HOST.cpu
 
 for VAR in $LISTE
 do
-	TITRE="Usage CPU"
-	case $VAR in
-		48h)
-			GRAPH=$GRAPHDIR/$GRAPHFILE.hourly.png
-			START=e-48h
-			TITRE="$TITRE sur 48 h"
-			;;
-		12d)
-			GRAPH=$GRAPHDIR/$GRAPHFILE.daily.png
-			START=e-12d
-			TITRE="$TITRE sur 12 j"
-			;;
-		48d)
-			GRAPH=$GRAPHDIR/$GRAPHFILE.weekly.png
-			START=e-48d
-			TITRE="$TITRE sur 48 j"
-			;;
-		576d)
-			GRAPH=$GRAPHDIR/$GRAPHFILE.monthly.png
-			START=e-576d
-			TITRE="$TITRE sur 576 j"
-			;;
-	esac
-
+    TITRE="Usage CPU sur $VAR"
+    GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
+    START=e-$VAR
 # Creation du graph
 rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
 LINE2:ligne1#00a000:"User     \:" \
@@ -79,30 +53,9 @@ GRAPHFILE=$HOST.process
 
 for VAR in $LISTE
 do
-	TITRE="Nombre de processus"
-	case $VAR in
-		48h)
-			GRAPH=$GRAPHDIR/$GRAPHFILE.hourly.png
-			START=e-48h
-			TITRE="$TITRE sur 48 h"
-			;;
-		12d)
-			GRAPH=$GRAPHDIR/$GRAPHFILE.daily.png
-			START=e-12d
-			TITRE="$TITRE sur 12 j"
-			;;
-		48d)
-			GRAPH=$GRAPHDIR/$GRAPHFILE.weekly.png
-			START=e-48d
-			TITRE="$TITRE sur 48 j"
-			;;
-		576d)
-			GRAPH=$GRAPHDIR/$GRAPHFILE.monthly.png
-			START=e-576d
-			TITRE="$TITRE sur 576 j"
-			;;
-	esac
-
+    TITRE="Nombre de processus sur $VAR"
+    GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
+    START=e-$VAR
 # Creation du graph
 rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
 LINE2:ligne5#00a000:"Nombre de Processus \:" \
@@ -111,3 +64,4 @@ GPRINT:ligne5:AVERAGE:"Moyenne\:%8.0lf" \
 GPRINT:ligne5:MAX:"Maximum\:%8.0lf\n" \
 COMMENT:"$STR_DATE\c"
 done
+fi # the RRDFILE does not exists
