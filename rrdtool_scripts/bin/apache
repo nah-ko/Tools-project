@@ -1,0 +1,41 @@
+#!/bin/sh
+# Creation du graph Apache
+
+# $Id$
+
+source ../Common
+RRDFILE=../data/$HOST.apache.rrd
+if [ -e $RRDFILE ]
+then
+    # Definitions
+    DEFS="DEF:ligne1=$RRDFILE:prochttp:AVERAGE \
+          DEF:ligne2=$RRDFILE:cnx_established:AVERAGE \
+	  DEF:ligne3=$RRDFILE:cnx_timewait:AVERAGE"
+    #-------------------------------------------
+    # Process Apache, cnx etablie et time wait
+    #-------------------------------------------
+    LEGENDE="# of data"
+    GRAPHFILE=$HOST.apache
+
+    for VAR in $LISTE
+    do
+	TITRE="Usage Apache sur $VAR"
+	GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
+	START=e-$VAR
+	# Creation du graph
+	rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
+	AREA:ligne1#00a000:"# Apache      \:" \
+	GPRINT:ligne1:LAST:"Actuel\:%8.2lf%%" \
+	GPRINT:ligne1:AVERAGE:"Moyenne\:%8.2lf%%" \
+	GPRINT:ligne1:MAX:"Maximum\:%8.2lf%%\n" \
+	LINE2:ligne2#00cccc:"# Established \:" \
+	GPRINT:ligne2:LAST:"Actuel\:%8.2lf%%" \
+	GPRINT:ligne2:AVERAGE:"Moyenne\:%8.2lf%%" \
+	GPRINT:ligne2:MAX:"Maximum\:%8.2lf%%\n" \
+	LINE2:ligne3#ff0000:"# Time Wait   \:" \
+	GPRINT:ligne3:LAST:"Actuel\:%8.2lf%%" \
+	GPRINT:ligne3:AVERAGE:"Moyenne\:%8.2lf%%" \
+	GPRINT:ligne3:MAX:"Maximum\:%8.2lf%%\n" \
+	COMMENT:"$STR_DATE\c"
+    done
+fi # the RRDFILE does not exists
