@@ -197,12 +197,39 @@ echo "---> Sectors IO"
 IOSTAT=`which iostat` 
 if test $IOSTAT && test -x $IOSTAT
 then
+    eval grep host /proc/partitions > /dev/null
+    ISDEVFS=`echo $?` 
+    if [ $ISDEVFS == '0' ]
+    then
+	DL=(a b c d e f g h i j k l m n o p q r s t u v w x y z)
+	i=0
+	s=0
+	for DD in `cat /proc/partitions | awk '/disc/{ print $4 }'`
+	do
+	    TYPE=`echo $DD | sed -e 's:/.*$::g'`
+	    case $TYPE in
+		'ide')
+		    eval hd${DL[$i]}=$DD
+		    i=`expr $i + 1`
+		    ;;
+		'scsi')
+		    eval sd${DL[$s]}=$DD
+		    s=`expr $s + 1`
+		    ;;
+	    esac
+	done
+    fi
     HARDDRIVES=`df -l | awk '/^\/dev/{ print $1 }' | sed -e 's/[0-9]\+$//g' | sort -u`
     for HD in $HARDDRIVES
     do
 	RRDFILE=$HOST.hd_io.`echo $HD | sed -e 's/\//_slash_/g'`.rrd
 	if [ -e $RRDFILE ]
 	then
+	    if [ $ISDEVFS == '0' ]
+	    then
+		DISC=`echo $HD | sed -e 's:^/.\+/::g'`
+		HD=`eval echo "$"${DISC}`
+	    fi
 	    read_sec=`$IOSTAT -d -x $HD | tail -2 | head -1 | awk '{ print $6 }' | sed -e 's/\,/\./g'`
 	    write_sec=`$IOSTAT -d -x $HD | tail -2 | head -1 | awk '{ print $7 }' | sed -e 's/\,/\./g'`
 	    rrdtool update $RRDFILE $LGDATE:$read_sec:$write_sec

@@ -9,8 +9,6 @@ I=0
 J=1
 for F in $(ls ../data/*hd_io*)
 do
-    C1=${COLORS[$I]}
-    C2=${COLORS[$J]}
     DISC=`basename $F .rrd | sed -e 's/^.*_//g'`
     RRDFILE=$F
     if [ -e $RRDFILE ]
@@ -19,13 +17,13 @@ do
 	DEFS="DEF:ligne$I=$RRDFILE:read_sec:AVERAGE \
 	      DEF:ligne$J=$RRDFILE:write_sec:AVERAGE "$DEFS
 	INFOS="COMMENT:Lus\n \
-	       LINE1:ligne$I#$C1:$DISC\: \
+	       LINE1:ligne$I#${COLORS[$I]}:$DISC\: \
 	       GPRINT:ligne$I:LAST:%8.2lf \
 	       GPRINT:ligne$I:MIN:Minimum\:%8.0lf \
 	       GPRINT:ligne$I:AVERAGE:Moyenne\:%8.0lf \
 	       GPRINT:ligne$I:MAX:Maximum\:%8.0lf\n \
 	       COMMENT:Ecrits\n \
-	       LINE1:ligne$J#$C2:$DISC\: \
+	       LINE1:ligne$J#${COLORS[$J]}:$DISC\: \
 	       GPRINT:ligne$J:LAST:%8.2lf \
 	       GPRINT:ligne$J:MIN:Minimum\:%8.0lf \
 	       GPRINT:ligne$J:AVERAGE:Moyenne\:%8.0lf \
