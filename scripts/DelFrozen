@@ -1,0 +1,10 @@
+#!/bin/sh
+# Remove frozen mails from queue
+
+# $Id$
+
+FROZEN_COUNT=`mailq | grep -c -E '<.*>.*frozen'
+
+echo "Going to remove $FROZEN_COUNT mail(s) in 5 seconds"
+sleep 5
+exim -bpu | awk '/\*\*\* frozen \*\*\*/ {print $3}' | xargs exim -Mrm

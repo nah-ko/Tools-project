@@ -1,0 +1,9 @@
+#!/bin/sh
+# Delete the whole mail queue
+
+# $Id$
+
+COUNT=`mailq | grep -c -E '<.*>'`
+echo "About to delete the whole mail queue: $COUNT to be deleted in 5 seconds"
+sleep 5
+mailq | awk '/^.*[0-9a-zA-Z]/ {print $3}' | xargs exim -Mrm
