@@ -4,29 +4,36 @@
 # $Id$
 
 source ../Common
-RRDFILE=../data/$HOST.ntp_offset.rrd
-
-# Definitions
-DEFS="DEF:ligne1=$RRDFILE:offset:AVERAGE"
+I=0
+for F in $(ls ../data/$HOST.*ntp.*.rrd)
+do
+    NTPINFO=`basename $F .rrd | sed -e 's:^.*ntp_::g'`
+    RRDFILE=$F
+    if [ -e $RRDFILE ]
+    then
+	# Definitions
+	DEFS="DEF:ligne$I=$RRDFILE:offset:AVERAGE "$DEFS
+	INFOS="LINE2:ligne$I#${COLORS[$I]}:$MAILINFO\: \
+	       GPRINT:ligne$I:LAST:%8.0lf\n \
+	       GPRINT:ligne$I:MIN:Minimum\:%8.0lf \
+	       GPRINT:ligne$I:AVERAGE:Moyenne\:%8.0lf \
+	       GPRINT:ligne$I:MAX:Maximum\:%8.0lf\n "$INFOS
+	I=`expr $I + 1`
+    fi
+done
 
 #-------------------------------------------
 # Offset NTP
 #-------------------------------------------
 LEGENDE="secondes"
-GRAPHFILE=$HOST.ntp_offset
+GRAPHFILE=$HOST.net.ntp_offset
 
 for VAR in $LISTE
 do
-    TITRE="Offset NTP sur $VAR"
-    GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
-    START=e-$VAR
-# Creation du graph
-rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
-LINE2:ligne1#FFF900:"Offset \:" \
-GPRINT:ligne1:LAST:"Actuel\:%8.2lf%s sec" \
-GPRINT:ligne1:MIN:"Minimum\:%8.2lf%s sec" \
-GPRINT:ligne1:AVERAGE:"Moyenne\:%8.2lf%s sec" \
-GPRINT:ligne1:MAX:"Maximum\:%8.2lf%s sec\n" \
-COMMENT:"$STR_DATE\c"
+	TITRE="Offset NTP sur $VAR"
+	GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
+	START=e-$VAR
+	# Creation du graph
+	rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS $INFOS\
+	COMMENT:"$STR_DATE\c"
 done
-

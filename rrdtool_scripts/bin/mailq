@@ -27,7 +27,7 @@ done
 # Status mail
 #-------------------------------------------
 LEGENDE="# msg"
-GRAPHFILE=$HOST.mail
+GRAPHFILE=$HOST.net.mail
 
 for VAR in $LISTE
 do

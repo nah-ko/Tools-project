@@ -32,7 +32,7 @@ done
 # lien WAN
 #----------------
 LEGENDE="octets/sec"
-GRAPHFILE=$HOST.network.WAN
+GRAPHFILE=$HOST.net.WAN
 
 for VAR in $LISTE
 do

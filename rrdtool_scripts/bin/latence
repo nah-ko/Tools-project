@@ -32,7 +32,7 @@ done
 # latence sur nerim
 #----------------
 LEGENDE="millisecondes"
-GRAPHFILE=$HOST.network.WAN_lat
+GRAPHFILE=$HOST.net.WAN_lat
 
 for VAR in $LISTE
 do

@@ -32,7 +32,7 @@ done
 # Volume de transit sur internet
 #-------------------------------------------
 LEGENDE="Octet/sec"
-GRAPHFILE=$HOST.network.WAN_vol
+GRAPHFILE=$HOST.net.WAN_vol
 
 for VAR in $LISTE
 do
