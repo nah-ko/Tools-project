@@ -57,7 +57,7 @@ DumpLO() {
     for ARGS in $LO_NAMES
     do
 	eval `echo $ARGS | sed -r 's/^(.*)\/(.*)$/DBNAME=\1 TBLNAME=\2/g'`
-	echo "pg_dump $DLO_opts > ${PREFIX}_${DBNAME}-${TBLNAME}_DumpLO.`date -I`.out"
+	echo "pg_dump $DLO_opts -t ${TBLNAME} ${DBNAME} > ${PREFIX}_${DBNAME}-${TBLNAME}_DumpLO.`date -I`.out"
     done
 }
 
