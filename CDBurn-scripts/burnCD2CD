@@ -1,0 +1,7 @@
+#!/bin/bash
+#
+# Copy CD to another on the fly.
+#
+# $Id$
+
+/usr/bin/sudo /usr/bin/cdrdao copy --source-driver generic-mmc --source-device 0,3,0 --device 0,0,0 --on-the-fly
