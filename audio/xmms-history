@@ -1,5 +1,7 @@
 #! /bin/bash
 
+# $Id$
+
 if [ $# -ne 1 ]
 then
 	prog=`basename $0`

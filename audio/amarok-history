@@ -1,5 +1,7 @@
 #! /bin/bash
 
+# $Id$
+
 if [ $# -ne 1 ]
 then
 	prog=`basename $0`
@@ -11,7 +13,10 @@ fi
 
 delay=60
 current=""
+logfile_rep=`dirname $logfile`
+jaquette_rep="tmp"
 
+#echo "<HTML><BODY>" >> $logfile
 while :
 do
 	date=`date +"%a %d/%m %H:%M"`
@@ -21,11 +26,17 @@ do
 	if test "$T_title" != "$current"
 	then
 		jaquette=`dcop amarok player coverImage`
+		if test -s $jaquette
+		then
+		    convert -resize 120x90 $jaquette $logfile_rep/$jaquette_rep/`basename $jaquette`
+		    image="<img src=\"$jaquette_rep/`basename $jaquette`\">"
+		fi
 		album=`dcop amarok player album`
 		year=`dcop amarok player year`
 		bitrate=`dcop amarok player bitrate`
-		echo "$date - [$album $year] $title ($bitrate) $jaquette" >> $logfile
+		echo "$date - [$album $year] $title ($bitrate) $image<br>" >> $logfile
 		current=$T_title
+		image=""
 	fi
 	sleep $delay
 done
