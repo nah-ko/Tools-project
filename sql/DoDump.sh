@@ -39,6 +39,7 @@ DumpAll() {
 	DA_opts=`echo $DA_opts -v`
     fi
     echo "pg_dumpall $DA_opts > ${PREFIX}_DumpAll.`date -I`.out"
+    pg_dumpall $DA_opts > ${PREFIX}_DumpAll.`date -I`.out
 }
 
 DumpLO() {
@@ -49,7 +50,7 @@ DumpLO() {
     # to (the commands for) creating them. -C Begin the output with a
     # command to create  the  database  itself and  reconnect  to  the
     # created database. Read pg_dump manpage for more informations.
-    DLO_opts="-Ft -b -o -c -C"
+    DLO_opts="-i -Ft -b -o -c -C"
     if [ $VERBOSE ]
     then
 	DLO_opts=`echo $DLO_opts -v`
@@ -58,6 +59,7 @@ DumpLO() {
     do
 	eval `echo $ARGS | sed -r 's/^(.*)\/(.*)$/DBNAME=\1 TBLNAME=\2/g'`
 	echo "pg_dump $DLO_opts ${DBNAME} > ${PREFIX}_${DBNAME}-${TBLNAME}_DumpLO.`date -I`.out"
+	pg_dump $DLO_opts ${DBNAME} > ${PREFIX}_${DBNAME}-${TBLNAME}_DumpLO.`date -I`.out
     done
 }
 
