@@ -8,7 +8,8 @@
 
 export LANG=fr_FR@euro
 
-cd /usr2/tools/rrdtool-1.0.35/
+#cd /usr2/tools/rrdtool-1.0.35/
+cd `dirname $0`
 
 for script in $(ls bin/ | grep -v -E '(.pl|inactive)')
 do
