@@ -7,6 +7,8 @@
 
 # $Id$
 
+PATH=/bin:/usr/bin:/usr/lib/postgresql/bin
+
 PROG=`basename $0`
 PROG_PATH=`dirname $0`
 A=`which pg_dumpall`
@@ -145,3 +147,4 @@ then
 fi
 
 $BZIP2 -z9v $PROG_PATH/${PREFIX}*.out
+find $PROG_PATH -type f -mtime +7 -name "*.out.bz2" -exec rm -v {} \;
