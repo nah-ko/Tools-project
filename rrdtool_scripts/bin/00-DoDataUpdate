@@ -91,7 +91,13 @@ do
 	    OUT=`echo $ligne | cut -d" " -f 9`
 	rrdtool update $RRDFILE $LGDATE:$IN:$OUT
     else
-	rrdtool create $RRDFILE --start $LGDATE DS:IN:COUNTER:600:0:1e+06 DS:OUT:COUNTER:600:0:1e+06 RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576 
+	rrdtool create $RRDFILE --start $LGDATE \
+	DS:IN:COUNTER:600:0:U \
+	DS:OUT:COUNTER:600:0:U \
+	RRA:AVERAGE:0.5:1:576 \
+	RRA:AVERAGE:0.5:6:576 \
+	RRA:AVERAGE:0.5:24:576 \
+	RRA:AVERAGE:0.5:288:576 
     fi
     # Latency test is done over WAN iface.
     if [ $I == 'ppp0' ]
