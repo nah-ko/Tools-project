@@ -40,8 +40,6 @@ do
 		BLOCK_INFO=${BLOCK_INFO}"$date - [$album $year] $title ($bitrate) </div></div>"
 		echo $BLOCK_INFO >> $logfile
 		current=$T_title
-		BLOCK_INFO=""
-		image=""
+		sleep $delay
 	fi
-	sleep $delay
 done
