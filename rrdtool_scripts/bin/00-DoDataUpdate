@@ -302,7 +302,7 @@ then
 	    esac
 	done
     fi
-    HARDDRIVES=`df -l | awk '/^\/dev/{ sub('/[0-9]\+$/', "", $1); print $1 }' | sort -u`
+    HARDDRIVES=`df -l | awk '/^\/dev\//{ sub('/[0-9]\+$/', "", $1); print $1 }' | sort -u`
     for HD in $HARDDRIVES
     do
 	RRDFILE=$HOST.hd.io.`echo $HD | sed -e 's/\//_slash_/g'`.rrd
