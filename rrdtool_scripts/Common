@@ -13,3 +13,8 @@ STR_DATE="Derniere mise a jour le `date +\"%A %d %B %Y a %T\"`"
 COULEURS="-c BACK#000000 -c FONT#AAAAAA -c FRAME#FFFFFF -c CANVAS#000000"
 OPTIONS="-w 576 -a PNG -l 0 --alt-autoscale-max $COULEURS"
 COLORS=(00a000 B5321B C53DFF 7DD643 eb9821 829BFF 0081FD FF9752 ADD8E6 FF0000 0000FF 2AFF00 960000 0CC0FF 70F00F 35F2FB 178329)
+
+# Transfert variables
+DEST_USER=toto
+DEST_HOST=mymachine.overtheinter.net
+DEST_DIR=/tmp/
