@@ -1,0 +1,32 @@
+$Id$
+
+Restauration de données contenant des gros objets sous PostgreSQL.
+
+Pour mes besoins personnels je fait des sauvegardes de mes bases de
+données régulièrement. J'utilise la commande «pg_dumpall» d'une part
+mais aussi «pg_dump» pour sauvegarder les gros objets.
+
+Faire ces sauvegardes s'avère facile à mettre en place, il n'en est pas
+de même pour la restauration, hormis le «pg_dumpall» qu'il est facile de
+remettre en place, pour les gros objets l'opération est nettement plus
+délicate...
+
+Voici donc les opérations à faire pour restaurer une base contenant des
+gros objets.
+
+1/ Afin de ne pas avoir de problème de conflit avec les données que le
+«pg_dumpall» il faut, pour chacunes des tables des bases concernées,
+faire un TRUNCATE MA_TABLE dans la console psql.
+
+2/ Une fois ceci fait il faut rétablir la numérotation initiale par un
+SELECT setval sur l'index associé à la table.
+
+3/ Enfin, il est alors possible de faire la restauration avec la
+commande suivante:
+    pg_restore -Fc -o -v -d MA_BASE
+
+
+!!! ATTENTION !!!
+
+Ces opérations sont à faire sur TOUTES les tables de la base et ce pour
+chaques base contenant des gros objets.
