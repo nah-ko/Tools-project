@@ -3,6 +3,22 @@
 
 # $Id$
 
-COUNT=`mailq | grep -c -E '<.*>'`
+if ! test -e /usr/share/awk/getopt.awk || ! test -e /usr/share/awk/join.awk || ! test -e /usr/share/doc/gawk/examples/prog/uniq.awk
+then
+    echo "Cannot count mailq senders:"
+    echo "getopt.awk, join.awk or uniq.awk does not exists."
+    echo "Check gawk version"
+    exit 1
+fi
+
+COUNT=`mailq | grep -c -E '<.+{0,}>'`
 
 echo "There is $COUNT mail into the mail queue"
+
+if [ $COUNT -gt 1 ]
+then
+    echo -e "Mails come from:"
+    mailq | awk '/<.*>/{ print $4 }' | sort | awk -f /usr/share/awk/getopt.awk -f /usr/share/awk/join.awk -f /usr/share/doc/gawk/examples/prog/uniq.awk -- -c
+    echo -e "Mails for:"
+    mailq | grep -v -E '(<.+{0,}>|^$)' | sort | tr -d " " | awk -f /usr/share/awk/getopt.awk -f /usr/share/awk/join.awk -f /usr/share/doc/gawk/examples/prog/uniq.awk -- -c
+fi
