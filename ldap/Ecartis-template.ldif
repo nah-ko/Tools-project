@@ -4,55 +4,55 @@
 # $Id$
 
 # Liste
-dn: eximMail=LISTNAME@nah-ko.org,domain=nah-ko.org,ou=mail,dc=nah-ko,dc=org
+dn: eximMail=LISTNAME@DOMAIN,domain=DOMAIN,ou=mail,dc=nah-ko,dc=org
 objectClass: top
 objectClass: eximAttributes
-eximMail: LISTNAME@nah-ko.org
+eximMail: LISTNAME@DOMAIN
 status: active
 boxQuota: 0M
 pipe: |/usr/lib/ecartis/ecartis -s LISTNAME
 
 # Liste-request
-dn: eximMail=LISTNAME-request@nah-ko.org,domain=nah-ko.org,ou=mail,dc=nah-ko,dc=org
+dn: eximMail=LISTNAME-request@DOMAIN,domain=DOMAIN,ou=mail,dc=nah-ko,dc=org
 objectClass: top
 objectClass: eximAttributes
-eximMail: LISTNAME-request@nah-ko.org
+eximMail: LISTNAME-request@DOMAIN
 status: active
 boxQuota: 0M
 pipe: |/usr/lib/ecartis/ecartis -r LISTNAME
 
 # Liste-repost
-dn: eximMail=LISTNAME-repost@nah-ko.org,domain=nah-ko.org,ou=mail,dc=nah-ko,dc=org
+dn: eximMail=LISTNAME-repost@DOMAIN,domain=DOMAIN,ou=mail,dc=nah-ko,dc=org
 objectClass: top
 objectClass: eximAttributes
-eximMail: LISTNAME-repost@nah-ko.org
+eximMail: LISTNAME-repost@DOMAIN
 status: active
 boxQuota: 0M
 pipe: |/usr/lib/ecartis/ecartis -a LISTNAME
 
 # Liste-admins
-dn: eximMail=LISTNAME-admins@nah-ko.org,domain=nah-ko.org,ou=mail,dc=nah-ko,dc=org
+dn: eximMail=LISTNAME-admins@DOMAIN,domain=DOMAIN,ou=mail,dc=nah-ko,dc=org
 objectClass: top
 objectClass: eximAttributes
-eximMail: LISTNAME-admins@nah-ko.org
+eximMail: LISTNAME-admins@DOMAIN
 status: active
 boxQuota: 0M
 pipe: |/usr/lib/ecartis/ecartis -admins LISTNAME
 
 # Liste-moderators
-dn: eximMail=LISTNAME-moderators@nah-ko.org,domain=nah-ko.org,ou=mail,dc=nah-ko,dc=org
+dn: eximMail=LISTNAME-moderators@DOMAIN,domain=DOMAIN,ou=mail,dc=nah-ko,dc=org
 objectClass: top
 objectClass: eximAttributes
-eximMail: LISTNAME-moderators@nah-ko.org
+eximMail: LISTNAME-moderators@DOMAIN
 status: active
 boxQuota: 0M
 pipe: |/usr/lib/ecartis/ecartis -moderators LISTNAME
 
 # Liste-bounce
-dn: eximMail=LISTNAME-bounce@nah-ko.org,domain=nah-ko.org,ou=mail,dc=nah-ko,dc=org
+dn: eximMail=LISTNAME-bounce@DOMAIN,domain=DOMAIN,ou=mail,dc=nah-ko,dc=org
 objectClass: top
 objectClass: eximAttributes
-eximMail: LISTNAME-bounce@nah-ko.org
+eximMail: LISTNAME-bounce@DOMAIN
 status: active
 boxQuota: 0M
 pipe: |/usr/lib/ecartis/ecartis -bounce LISTNAME
