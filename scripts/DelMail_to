@@ -1,0 +1,11 @@
+#!/bin/sh
+# Remove mails to one user who are into mail queue
+
+# $Id$
+
+USER=$1
+MAIL_ID_LIST=`mailq | grep -B1 $USER | awk '/^.*[0-9a-zA-Z]/ {print $3}'`
+COUNT=`echo $MAIL_ID_LIST | wc -w | tr -d " "`
+echo "Going to remove $COUNT mail(s) for $USER in 5 seconds"
+sleep 5
+echo $MAIL_ID_LIST | xargs exim -Mrm
