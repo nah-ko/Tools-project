@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/python
+
 #
 # Script permettant de donner le temps ecoule entre deux appels
 #
@@ -7,7 +8,7 @@
 
 import os, time, email, sys
 
-progname = sys.argv[0]
+progname = os.path.basename(sys.argv[0])
 timefile = '/tmp/elapsedtime'
 logfile  = '/home/toffe/public_html/log_adsl'
 sender   = 'toffe@nah-ko.org'
@@ -17,7 +18,7 @@ receiver = sender
 # le nom sera donc: elapsedtime-{up|down}.py
 # [0] sur le premier split pour avoir le nom sans l'extension
 # [1] sur le second pour obtenir le suffixe
-suffix = progname.split('.')[0].split('-')[1]
+suffix = progname.split('.', 1)[0].split('-', 1)[1]
 
 # on considere que c'est le premier lancement.
 # (pas de timefile, suffix a up)
@@ -43,7 +44,9 @@ elif os.path.exists(timefile) and suffix == 'down':
 	elapsed_hour += 24 * ( elapsed_time[2] - 1 )
     os.remove(timefile)
     # creation du message
-    message = "%d hour(s) %d minute(s) %d second(s)" % (elapsed_hour, elapsed_min, elapsed_sec)
+    message = "Reconnected the %s: %d hour(s) %d minute(s) %d second(s)" % \
+	       (time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime()), \
+	       elapsed_hour, elapsed_min, elapsed_sec)
     fd = open(logfile, "a+")
     fd.write(message+"\n")
     fd.close()
