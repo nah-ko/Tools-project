@@ -22,9 +22,11 @@ SOURCE=/source/of/websites/
 # Gestion des erreur du RSYNC, si le code de retour est different de 0
 # on relance la manip. Ceci est gere automatiquement par la boucle
 # while.
-while
+RSYNCERR=-1
+while [ $RSYNCERR != 0 ]
 do
     echo "Lancement `date`"
     echo "Program path: $PROGPATH, exclude file: $EXCLUDEFILE"
     /usr/bin/rsync -avz -e ssh --bwlimit=2 --delete-after --exclude-from=$EXCLUDEFILE $SOURCE $DESTINATION
+    RSYNCERR="$?"
 done
