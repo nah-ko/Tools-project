@@ -79,12 +79,19 @@ attributetype ( 2.16.840.1.113730.3.2.11
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26
 	SINGLE-VALUE )
 
+attributetype ( 2.16.840.1.113730.3.2.12
+	NAME 'pipe'
+	DESC 'Pipe mail address'
+	EQUALITY caseIgnoreMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+	SINGLE-VALUE )
+
 objectclass ( 2.16.840.1.113730.3.2
 	NAME 'eximAttributes'
 	SUP top STRUCTURAL 
 	DESC 'Mail account object (SHOULD be {crypt})'
 	MUST ( eximMail $ status $ boxQuota )
-	MAY ( spoolDirectory $ forward $ vacationSubject $ vacationText $ userPassword ) )
+	MAY ( spoolDirectory $ forward $ pipe $ vacationSubject $ vacationText $ userPassword ) )
 
 objectclass ( 2.16.840.1.113730.3.3
 	NAME 'eximDomain'
