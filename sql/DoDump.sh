@@ -18,6 +18,8 @@ then
     DA_PATH="/usr/lib/postgresql/bin"
 fi
 
+BZIP2=`which bzip2`
+
 NO_ARGS=0
 E_OPTERROR=65
 
@@ -141,3 +143,5 @@ then
     DumpLO
     warning
 fi
+
+$BZIP2 -z9v ${PREFIX}*.out
