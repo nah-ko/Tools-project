@@ -144,4 +144,4 @@ then
     warning
 fi
 
-$BZIP2 -z9v ${PREFIX}*.out
+$BZIP2 -z9v $PROG_PATH/${PREFIX}*.out
