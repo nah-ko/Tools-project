@@ -1,0 +1,22 @@
+# Config de l'auth ldap
+
+# $Id$
+
+LDAP_SERVER		ldapmaster.home
+LDAP_PORT		389
+LDAP_BASEDN		ou=mail, dc=nah-ko, dc=org
+LDAP_BINDDN		cn=imap_user,ou=ldapadmins,dc=nah-ko,dc=org
+LDAP_BINDPW		XXXX
+LDAP_TIMEOUT		5
+LDAP_MAIL		eximMail
+LDAP_FILTER           (objectClass=eximAttributes)
+LDAP_GLOB_UID		Debian-exim
+LDAP_GLOB_GID		Debian-exim
+LDAP_HOMEDIR		spoolDirectory
+LDAP_MAILROOT        /var/mail
+LDAP_MAILDIR		mailbox
+LDAP_DEFAULTDELIVERY	defaultDelivery
+LDAP_CRYPTPW		userPassword
+LDAP_DEREF		never
+LDAP_TLS		0
+LDAP_EMAILMAP_ATTRIBUTE eximMail, spoolDirectory

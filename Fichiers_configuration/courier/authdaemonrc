@@ -1,0 +1,9 @@
+# Config du demon d'authentification
+
+# $Id$
+
+authmodulelist="authldap authpam"
+authmodulelistorig="authcustom authcram authuserdb authldap authpgsql authmysql authpam"
+daemons=5
+version=""
+authdaemonvar=/var/run/courier/authdaemon
