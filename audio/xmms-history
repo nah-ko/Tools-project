@@ -1,0 +1,26 @@
+#! /bin/bash
+
+if [ $# -ne 1 ]
+then
+	prog=`basename $0`
+	echo "usage: $prog <logfile>"
+	exit
+else
+	logfile=$1
+fi
+
+delay=60
+current=""
+
+while :
+do
+	date=`date +"%a %d/%m %H:%M"`
+	T_title=`xmms-shell -e status | head -1 | sed -e 's/Playing: //' -e 's/([^(]*)$//'`
+	title=`xmms-shell -e status | awk '/Playing:/ { print substr($0,10) }'`
+	if test "$T_title" != "$current"
+	then
+		echo "$date - $title" >> $logfile
+		current=$T_title
+	fi
+	sleep $delay
+done

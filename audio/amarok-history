@@ -1,0 +1,31 @@
+#! /bin/bash
+
+if [ $# -ne 1 ]
+then
+	prog=`basename $0`
+	echo "usage: $prog <logfile>"
+	exit
+else
+	logfile=$1
+fi
+
+delay=60
+current=""
+
+while :
+do
+	date=`date +"%a %d/%m %H:%M"`
+	delay=$(expr `dcop amarok player trackTotalTime` - `dcop amarok player trackCurrentTime `)
+	T_title=`dcop amarok player nowPlaying`
+	title=`dcop amarok player nowPlaying`
+	if test "$T_title" != "$current"
+	then
+		jaquette=`dcop amarok player coverImage`
+		album=`dcop amarok player album`
+		year=`dcop amarok player year`
+		bitrate=`dcop amarok player bitrate`
+		echo "$date - [$album $year] $title ($bitrate) $jaquette" >> $logfile
+		current=$T_title
+	fi
+	sleep $delay
+done
