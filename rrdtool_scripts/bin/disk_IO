@@ -15,12 +15,12 @@ do
 	# Definitions
 	DEFS="DEF:ligne$I=$RRDFILE:read_sec:AVERAGE \
 	      DEF:ligne$J=$RRDFILE:write_sec:AVERAGE "$DEFS
-	INFOS="LINE1:ligne$I#${COLORS[$I]}:$DISC(lus)\: \
+	INFOS="LINE2:ligne$I#${COLORS[$I]}:$DISC(lus)\: \
 	       GPRINT:ligne$I:LAST:%8.2lf \
 	       GPRINT:ligne$I:MIN:Minimum\:%8.0lf \
 	       GPRINT:ligne$I:AVERAGE:Moyenne\:%8.0lf \
 	       GPRINT:ligne$I:MAX:Maximum\:%8.0lf\n \
-	       LINE1:ligne$J#${COLORS[$J]}:$DISC(ecrits)\: \
+	       LINE2:ligne$J#${COLORS[$J]}:$DISC(ecrits)\: \
 	       GPRINT:ligne$J:LAST:%8.2lf \
 	       GPRINT:ligne$J:MIN:Minimum\:%8.0lf \
 	       GPRINT:ligne$J:AVERAGE:Moyenne\:%8.0lf \
