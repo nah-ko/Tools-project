@@ -9,7 +9,9 @@ export LANG=fr_FR@euro
 HOST=../data/`hostname`
 LGDATE=`date +%s`
 
-SAR=`which sar` 
+SAR=`which sar` # we need sysstat package >= 5.0.6 because of swap
+#memory fetching, sar 4.0.3 put swap memory info onto 10th column and
+#this version (5.0.6) put it on the 9th one.
 if test $SAR && test -x $SAR # some update depends of sar tool
 then
     #--------------------------------------------------------------------------------------
@@ -49,8 +51,8 @@ then
     RRDFILE=$HOST.memory.rrd
     if [ -e $RRDFILE ]
     then
-	RM_percent=`sar -r | tail -2 | head -1 | awk '{ print $4 }' | sed 's/\,/\./g'`
-	SM_percent=`sar -r | tail -2 | head -1 | awk '{ print $10 }' | sed 's/\,/\./g'`
+	RM_percent=`sar -r | tail -2 | head -1 | awk '{ sub('/\,/', ".", $4); print $4 }'`
+	SM_percent=`sar -r | tail -2 | head -1 | awk '{ sub('/\,/', ".", $9); print $9 }'`
 	rrdtool update $RRDFILE $LGDATE:$RM_percent:$SM_percent
     else
 	rrdtool create $RRDFILE --start $LGDATE DS:RMpercent:GAUGE:600:0:U DS:SMpercent:GAUGE:600:0:U RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
@@ -61,7 +63,7 @@ fi # if sar does not exists it ends here.
 # Espace disque
 #--------------------------------------------------------------------------------------
 echo "---> disque"
-PARTITIONS=`df -l | grep ^.dev | awk '{ print $6 }'`
+PARTITIONS=`df -l | awk '/^.dev/{ print $6 }'`
 for P in $PARTITIONS
 do  
     RRDFILE=$HOST.hd_part.`echo $P | sed -e 's/\//_slash_/g'`.rrd
@@ -219,7 +221,7 @@ then
 	    esac
 	done
     fi
-    HARDDRIVES=`df -l | awk '/^\/dev/{ print $1 }' | sed -e 's/[0-9]\+$//g' | sort -u`
+    HARDDRIVES=`df -l | awk '/^\/dev/{ sub('/[0-9]\+$/', "", $1); print $1 }' | sort -u`
     for HD in $HARDDRIVES
     do
 	RRDFILE=$HOST.hd_io.`echo $HD | sed -e 's/\//_slash_/g'`.rrd
