@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# $Id$
+
 SOURCE=$1
 DESTINATION=NewEncoding_${SOURCE}
 
