@@ -19,6 +19,12 @@ EXCLUDEFILE=$PROGPATH"/rsync_exclude.conf"
 DESTINATION=$HOME/dev/perso/SitesWeb/
 SOURCE=/source/of/websites/
 
-echo "Lancement `date`"
-echo "Program path: $PROGPATH, exclude file: $EXCLUDEFILE"
-/usr/bin/rsync -avz -e ssh --bwlimit=2 --delete-after --exclude-from=$EXCLUDEFILE $SOURCE $DESTINATION
+# Gestion des erreur du RSYNC, si le code de retour est different de 0
+# on relance la manip. Ceci est gere automatiquement par la boucle
+# while.
+while
+do
+    echo "Lancement `date`"
+    echo "Program path: $PROGPATH, exclude file: $EXCLUDEFILE"
+    /usr/bin/rsync -avz -e ssh --bwlimit=2 --delete-after --exclude-from=$EXCLUDEFILE $SOURCE $DESTINATION
+done
