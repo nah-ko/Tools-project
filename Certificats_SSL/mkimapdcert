@@ -1,0 +1,45 @@
+#! /bin/sh
+#
+# Id: mkimapdcert.in,v 1.4 2001/08/26 15:49:50 mrsam Exp 
+#
+# Copyright 2000 Double Precision, Inc.  See COPYING for
+# distribution information.
+#
+# This is a short script to quickly generate a self-signed X.509 key for
+# IMAP over SSL.  Normally this script would get called by an automatic
+# package installation routine.
+#
+# Modification for personnal use
+
+# $Id$
+
+test -x /usr/bin/openssl || exit 0
+
+DAYS=730
+CERTIFCONF=certif-imap.conf
+CERTIF=imap.nah-ko.org.pem
+RANDFILE=randfile
+
+if test -f $CERTIF
+then
+	echo "$CERTIF already exists."
+	exit 1
+fi
+
+cp /dev/null $CERTIF
+chmod 600 $CERTIF
+chown daemon $CERTIF
+
+cleanup() {
+	rm -f $CERTIF
+	rm -f $RANDFILE
+	exit 1
+}
+
+#cd /usr/lib/courier
+dd if=/dev/urandom of=$RANDFILE count=1 2>/dev/null
+/usr/bin/openssl req -new -x509 -days $DAYS -nodes \
+	-config $CERTIFCONF -out $CERTIF -keyout $CERTIF || cleanup
+/usr/bin/openssl gendh -rand $RANDFILE 512 >> $CERTIF || cleanup
+/usr/bin/openssl x509 -subject -dates -fingerprint -noout -in $CERTIF || cleanup
+rm -f $RANDFILE

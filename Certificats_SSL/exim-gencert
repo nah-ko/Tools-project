@@ -1,0 +1,55 @@
+#!/bin/sh -e
+# Script from exim4 to generate certificate files
+
+# $Id$
+
+[ -n "$EX4DEBUG" ] && set -x
+
+DIR=/etc/exim4
+DIR=./
+CERT=$DIR/exim.crt
+KEY=$DIR/exim.key
+
+# This exim binary was built with GnuTLS which does not support dhparams
+# from a file. See /usr/share/doc/exim4-base/README.TLS*
+#DH=$DIR/exim.dhparam
+
+if ! which openssl > /dev/null ;then
+	echo "$0: openssl is not installed, exiting" 1>&2
+	exit 1
+fi
+
+# valid for three years
+DAYS=1095
+
+if [ "$1" != "--force" -a -f $CERT -a -f $KEY ]; then
+  echo "[*] $CERT and $KEY exists!"
+  echo "    Use \"$0 --force\" to force generation!"
+  exit 0
+fi
+
+if [ "$1" = "--force" ]; then
+  shift
+fi     
+
+SSLEAY=$DIR/certif-exim.conf
+
+echo "[*] Creating a self signed SSL certificate for Exim!"
+echo "    This may be sufficient to establish encrypted connections but for"
+echo "    secure identification you need to buy a real certificate!"
+echo "    "
+echo "    Please enter the hostname of your MTA at the Common Name (CN) prompt!"
+echo "    "
+
+openssl req -config $SSLEAY -x509 -newkey rsa:1024 -keyout $KEY -out $CERT -days $DAYS -nodes
+#see README.TLS*# openssl dhparam -check -text -5 512 -out $DH
+#rm -f $SSLEAY
+
+chown root:Debian-exim $KEY $CERT $DH
+chmod 640 $KEY $CERT $DH
+
+echo "[*] Done generating self signed certificates for exim!"
+echo "    Refer to the documentation and example configuration files"
+echo "    over at /usr/share/doc/exim4-base/ for an idea on how to enable TLS"
+echo "    support in your mail transfer agent."
+
