@@ -28,6 +28,27 @@ EOF
     exit $E_OPTERROR
 }
 
+warning() {
+cat << EOF
+
+!! WARNING !!
+You have dumped databases in which where stored large objects, in order
+to restore them correctly you will have to do some special operations.
+
+1- Be sure that those tables are empty, if not do a TRUNCATE TABLE
+yourtable.
+
+2- Use correct options for restoration, large object database will need
+only the format option: -Fc (see stdout for informations about used
+commands).
+
+These information are important since you've done a restore of the whole
+SQL server with the pg_dumpall dump before. Otherwise dropping tables
+and sequences before restoring them must be efficient.
+
+EOF
+}
+
 DumpAll() {
     # Default options: -c Include SQL commands to clean (drop) the
     # databases before recreating them. -i Ignore version mismatch
@@ -38,19 +59,22 @@ DumpAll() {
     then
 	DA_opts=`echo $DA_opts -v`
     fi
+    echo "--- Global dump ---"
     echo "pg_dumpall $DA_opts > ${PREFIX}_DumpAll.`date -I`.out"
     pg_dumpall $DA_opts > ${PREFIX}_DumpAll.`date -I`.out
 }
 
 DumpLO() {
-    # Default options: -Ft Selects the format of the output. Here it's a
-    # tar archive suitable for input into  pg_restore. -b Include large
+    # Default options: -Fc Selects the format of the output. Output a
+    # custom archive suitable for input into pg_restore. -b Include large
     # objects in dump. -o Dump object identifiers (OIDs) for every
     # table. -c Output  commands  to clean (drop) database objects prior
     # to (the commands for) creating them. -C Begin the output with a
     # command to create  the  database  itself and  reconnect  to  the
-    # created database. Read pg_dump manpage for more informations.
-    DLO_opts="-i -Ft -b -o -c -C"
+    # created database. -s Dump only the schema (data definitions), no
+    # data. -a Dump only the data, not the schema (data definitions).
+    # Read pg_dump manpage for more informations.
+    DLO_opts="-i -Fc -b -o"
     if [ $VERBOSE ]
     then
 	DLO_opts=`echo $DLO_opts -v`
@@ -58,8 +82,14 @@ DumpLO() {
     for ARGS in $LO_NAMES
     do
 	eval `echo $ARGS | sed -r 's/^(.*)\/(.*)$/DBNAME=\1 TBLNAME=\2/g'`
-	echo "pg_dump $DLO_opts ${DBNAME} > ${PREFIX}_${DBNAME}-${TBLNAME}_DumpLO.`date -I`.out"
-	pg_dump $DLO_opts ${DBNAME} > ${PREFIX}_${DBNAME}-${TBLNAME}_DumpLO.`date -I`.out
+	echo "--- Schema dump of ${DBNAME} ---"
+	opts=`echo $DLO_opts -c -C -s`
+	echo "pg_dump $opts ${DBNAME} > ${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema.`date -I`.out"
+	pg_dump $opts ${DBNAME} > ${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema.`date -I`.out
+	echo "--- Data dump of ${DBNAME} ---"
+	opts=`echo $DLO_opts -a`
+	echo "pg_dump $opts ${DBNAME} > ${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata.`date -I`.out"
+	pg_dump $opts ${DBNAME} > ${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata.`date -I`.out
     done
 }
 
@@ -99,6 +129,5 @@ DumpAll
 if [ "$LO_NAMES" != "" ]
 then
     DumpLO
-else
-    echo "No large object to dump."
+    warning
 fi
