@@ -26,9 +26,9 @@ do
 		delay=$(expr `dcop amarok player trackTotalTime` - `dcop amarok player trackCurrentTime `)
 		BLOCK_INFO='<div style="{ width:400px; '
 		jaquette=`dcop amarok player coverImage`
-		if test -s $jaquette
+		if test -s "$jaquette"
 		then
-		    convert -resize 120x90 $jaquette $logfile_rep/$jaquette_rep/`basename $jaquette`
+		    convert -resize 120x90 "$jaquette" $logfile_rep/$jaquette_rep/`basename "$jaquette"`
 		    image="<img src=\"$jaquette_rep/`basename $jaquette`\" style=\"{float: left; clear: left; margin: 0 1em 0 0;}\">"
 		    BLOCK_INFO=${BLOCK_INFO}'height:100px; border: dashed 1px #3C63DC; font-weight:bold; background-color:#eee; margin:0px; padding:2px; }" align="left" valign="top">'$image
 		else
@@ -37,7 +37,7 @@ do
 		album=`dcop amarok player album`
 		year=`dcop amarok player year`
 		bitrate=`dcop amarok player bitrate`
-		BLOCK_INFO=${BLOCK_INFO}"$date - [$album $year] $title ($bitrate) </div></div>"
+		BLOCK_INFO=${BLOCK_INFO}"$date - [$album $year] $title ($bitrate) </div>"
 		echo $BLOCK_INFO >> $logfile
 		current=$T_title
 		sleep $delay
