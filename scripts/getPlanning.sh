@@ -19,5 +19,5 @@ OBJET="Planning"
 # Recuperation, envoi du planning suivi de l'effacement du fichier
 # temporaire.
 /usr/bin/links -dump '$URL' | tail -20 | sed -r 's/^.{23}//g' > $PLANNING
-/bin/cat $PLANNING | /usr/bin/mail -s $OBJET -a "From: $EXPE" $DEST
+/bin/cat $PLANNING | /usr/bin/mail -s "$OBJET" -a "From: $EXPE" $DEST
 rm $PLANNING
