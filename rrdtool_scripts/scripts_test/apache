@@ -1,0 +1,10 @@
+#!/bin/bash
+# Mesure des process apache, cnx etablies et en time wait
+
+# $Id$
+
+PROCHTTP=`ps ax | grep -cE '(httpd|apache)'`
+CONESTABLISHED=`netstat -n | grep -cE '(:80 |:443 ).*ESTABLISHED'`
+CONTIMEWAIT=`netstat -n | grep -cE '(:80 |:443 ).*TIME_WAIT'`
+
+echo $PROCHTTP, $CONESTABLISHED, $CONTIMEWAIT
