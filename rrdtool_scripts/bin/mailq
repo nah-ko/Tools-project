@@ -6,7 +6,7 @@
 
 source ../Common
 I=0
-for F in $(ls ../data/$HOST.mail.*.rrd)
+for F in $(ls ../data/$HOST.net.mail.*.rrd)
 do
     MAILINFO=`basename $F .rrd | sed -e 's:^.*mail.::g'`
     RRDFILE=$F
