@@ -1,9 +1,9 @@
-; Creation des alias mail pour les listes de diffusion gerees par
-; Ecartis.
+# Creation des alias mail pour les listes de diffusion gerees par
+# Ecartis.
 
-; $Id$
+# $Id$
 
-; Liste
+# Liste
 dn: eximMail=LISTNAME@nah-ko.org,domain=nah-ko.org,ou=mail,dc=nah-ko,dc=org
 objectClass: top
 objectClass: eximAttributes
@@ -12,7 +12,7 @@ status: active
 boxQuota: 0M
 pipe: |/usr/lib/ecartis/ecartis -s LISTNAME
 
-; Liste-request
+# Liste-request
 dn: eximMail=LISTNAME-request@nah-ko.org,domain=nah-ko.org,ou=mail,dc=nah-ko,dc=org
 objectClass: top
 objectClass: eximAttributes
@@ -21,7 +21,7 @@ status: active
 boxQuota: 0M
 pipe: |/usr/lib/ecartis/ecartis -r LISTNAME
 
-; Liste-repost
+# Liste-repost
 dn: eximMail=LISTNAME-repost@nah-ko.org,domain=nah-ko.org,ou=mail,dc=nah-ko,dc=org
 objectClass: top
 objectClass: eximAttributes
@@ -30,7 +30,7 @@ status: active
 boxQuota: 0M
 pipe: |/usr/lib/ecartis/ecartis -a LISTNAME
 
-; Liste-admins
+# Liste-admins
 dn: eximMail=LISTNAME-admins@nah-ko.org,domain=nah-ko.org,ou=mail,dc=nah-ko,dc=org
 objectClass: top
 objectClass: eximAttributes
@@ -39,7 +39,7 @@ status: active
 boxQuota: 0M
 pipe: |/usr/lib/ecartis/ecartis -admins LISTNAME
 
-; Liste-moderators
+# Liste-moderators
 dn: eximMail=LISTNAME-moderators@nah-ko.org,domain=nah-ko.org,ou=mail,dc=nah-ko,dc=org
 objectClass: top
 objectClass: eximAttributes
@@ -48,7 +48,7 @@ status: active
 boxQuota: 0M
 pipe: |/usr/lib/ecartis/ecartis -moderators LISTNAME
 
-; Liste-bounce
+# Liste-bounce
 dn: eximMail=LISTNAME-bounce@nah-ko.org,domain=nah-ko.org,ou=mail,dc=nah-ko,dc=org
 objectClass: top
 objectClass: eximAttributes
