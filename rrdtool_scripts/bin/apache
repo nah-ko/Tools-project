@@ -25,17 +25,17 @@ then
 	# Creation du graph
 	rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
 	AREA:ligne1#00a000:"Process apache\:" \
-	GPRINT:ligne1:LAST:"Actuel\:%8.0f" \
-	GPRINT:ligne1:AVERAGE:"Moyenne\:%8.0f" \
-	GPRINT:ligne1:MAX:"Maximum\:%8.0f" \
+	GPRINT:ligne1:LAST:"Actuel\:%8.0lf" \
+	GPRINT:ligne1:AVERAGE:"Moyenne\:%8.0lf" \
+	GPRINT:ligne1:MAX:"Maximum\:%8.0lf\n" \
 	LINE2:ligne2#00cccc:"Established  \:" \
-	GPRINT:ligne2:LAST:"Actuel\:%8.0f" \
-	GPRINT:ligne2:AVERAGE:"Moyenne\:%8.0f" \
-	GPRINT:ligne2:MAX:"Maximum\:%8.0f" \
+	GPRINT:ligne2:LAST:"Actuel\:%8.0lf" \
+	GPRINT:ligne2:AVERAGE:"Moyenne\:%8.0lf" \
+	GPRINT:ligne2:MAX:"Maximum\:%8.0lf\n" \
 	LINE2:ligne3#ff0000:"Time Wait    \:" \
-	GPRINT:ligne3:LAST:"Actuel\:%8.0f" \
-	GPRINT:ligne3:AVERAGE:"Moyenne\:%8.0f" \
-	GPRINT:ligne3:MAX:"Maximum\:%8.0f" \
+	GPRINT:ligne3:LAST:"Actuel\:%8.0lf" \
+	GPRINT:ligne3:AVERAGE:"Moyenne\:%8.0lf" \
+	GPRINT:ligne3:MAX:"Maximum\:%8.0lf\n" \
 	COMMENT:"$STR_DATE\c"
     done
 fi # the RRDFILE does not exists
