@@ -9,8 +9,10 @@
 
 PROG=`basename $0`
 PROG_PATH=`dirname $0`
-DA_PATH=`dirname $(which pg_dumpall)`
-DLO_PATH=`dirname $(which pg_dump)`
+A=`which pg_dumpall`
+DA_PATH=`dirname $A`
+A=`which pg_dump`
+DLO_PATH=`dirname $A`
 
 NO_ARGS=0
 E_OPTERROR=65
@@ -65,7 +67,7 @@ DumpAll() {
     fi
     echo "--- Global dump ---"
     echo "pg_dumpall $DA_opts > $PROG_PATH/${PREFIX}_DumpAll.`date -I`.out"
-    $(DA_PATH)/pg_dumpall $DA_opts > $PROG_PATH/${PREFIX}_DumpAll.`date -I`.out
+    $DA_PATH/pg_dumpall $DA_opts > $PROG_PATH/${PREFIX}_DumpAll.`date -I`.out
 }
 
 DumpLO() {
@@ -89,11 +91,11 @@ DumpLO() {
 	echo "--- Schema dump of ${DBNAME} ---"
 	opts=`echo $DLO_opts -c -C -s`
 	echo "pg_dump $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema.`date -I`.out"
-	$(DLO_PATH)/pg_dump $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema.`date -I`.out
+	$DLO_PATH/pg_dump $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema.`date -I`.out
 	echo "--- Data dump of ${DBNAME} ---"
 	opts=`echo $DLO_opts -a`
 	echo "pg_dump $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata.`date -I`.out"
-	$(DLO_PATH)/pg_dump $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata.`date -I`.out
+	$DLO_PATH/pg_dump $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata.`date -I`.out
     done
 }
 
@@ -103,7 +105,7 @@ then
     usage
 fi
 
-while getopts ":vp:l:" OPTIONS
+while getopts ":dvp:l:" OPTIONS
 do
     case $OPTIONS in
 	d)
