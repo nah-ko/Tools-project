@@ -1,0 +1,33 @@
+# Compte FTP
+# 
+# $Id$
+
+attributetype ( 1.3.6.1.4.1.20105.2.1
+    NAME 'ftpAccountUsername'
+    DESC 'FTP account username'
+    EQUALITY caseExactMatch
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+    )
+
+attributetype ( 1.3.6.1.4.1.20105.2.2
+    NAME 'ftpAccountPassword'
+    DESC 'FTP account password'
+    EQUALITY octetStringMatch
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.40
+    )
+
+attributetype ( 1.3.6.1.4.1.20105.2.3
+    NAME 'ftpAccountDirectory'
+    DESC 'FTP account directory'
+    EQUALITY caseIgnoreMatch
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+    )
+
+objectClass ( 1.3.6.1.4.1.20105.2
+    NAME 'ftpAccount'
+	DESC 'FTP account informations'
+    SUP inetOrgPerson
+    STRUCTURAL
+	MAY (
+	    ftpAccountUsername $ ftpAccountPassword $ ftpAccountDirectory )
+    )
