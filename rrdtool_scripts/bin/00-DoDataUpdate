@@ -26,34 +26,19 @@ rrdtool update $RRDFILE $LGDATE:$nb_processes:$CPU_user:$CPU_nice:$CPU_system:$C
 # Espace disque
 #--------------------------------------------------------------------------------------
 echo "---> disque"
-# ---- Partition /
-RRDFILE=$HOST.slash.rrd
-VALUE=`df / | tail -1 | awk '{ print $5 }' | sed -e s/%//`
-rrdtool update $RRDFILE $LGDATE:$VALUE
-# ---- Partition /var
-RRDFILE=$HOST.var.rrd
-VALUE=`df /var | tail -1 | awk '{ print $5 }' | sed -e s/%//`
-rrdtool update $RRDFILE $LGDATE:$VALUE
-# ---- Partition /var/mail
-RRDFILE=$HOST.var_mail.rrd
-VALUE=`df /var/mail | tail -1 | awk '{ print $5 }' | sed -e s/%//`
-rrdtool update $RRDFILE $LGDATE:$VALUE
-# ---- Partition /home
-RRDFILE=$HOST.home.rrd
-VALUE=`df /home | tail -1 | awk '{ print $5 }' | sed -e s/%//`
-rrdtool update $RRDFILE $LGDATE:$VALUE
-# ---- Partition /usr2/web
-RRDFILE=$HOST.VG1_web.rrd
-VALUE=`df /usr2/web | tail -1 | awk '{ print $5 }' | sed -e s/%//`
-rrdtool update $RRDFILE $LGDATE:$VALUE
-# ---- Partition /usr2/ftp
-RRDFILE=$HOST.VG1_ftp.rrd
-VALUE=`df /usr2/ftp | tail -1 | awk '{ print $5 }' | sed -e s/%//`
-rrdtool update $RRDFILE $LGDATE:$VALUE
-# ---- Partition /usr2/samba
-RRDFILE=$HOST.VG1_samba.rrd
-VALUE=`df /usr2/samba | tail -1 | awk '{ print $5 }' | sed -e s/%//`
-rrdtool update $RRDFILE $LGDATE:$VALUE
+PARTITIONS=`df -l | grep ^.dev | awk '{ print $6 }'`
+
+for P in $PARTITIONS
+do  
+    RRDFILE=$HOST.`echo $P | sed -e 's/\//_slash_/g'`.rrd
+    if [ -e $RRDFILE ]
+    then
+        VALUE=`df $P | tail -1 | awk '{ print $5 }' | sed -e s/%//`
+        rrdtool update $RRDFILE $LGDATE:$VALUE
+    else
+        rrdtool create $RRDFILE --start $LGDATE DS:percent:GAUGE:600:0:100 RRA:AVERAGE:0.5:1:576 RRA:AVERAGE:0.5:6:576 RRA:AVERAGE:0.5:24:576 RRA:AVERAGE:0.5:288:576
+    fi
+done
 
 #--------------------------------------------------------------------------------------
 # Charge Machine (load average)
