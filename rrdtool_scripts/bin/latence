@@ -4,34 +4,42 @@
 # $Id$
 
 source ../Common
-RRDFILE=../data/$HOST.latence.rrd
-if [ -e $RRDFILE ]
-then
-    # Definitions
-    DEFS="DEF:ligne5=$RRDFILE:lat-min:AVERAGE \
-          DEF:ligne6=$RRDFILE:lat-max:AVERAGE"
+I=0
+J=1
+for F in $(ls ../data/*net.ppp*latence*)
+do
+    IFACE=$(basename $F .rrd | sed -e 's:^.*net.::g')
+    RRDFILE=$F
+    if [ -e $RRDFILE ]
+    then
+	# Definitions
+	DEFS="DEF:ligne$I=$RRDFILE:lat-min:AVERAGE  \
+	      DEF:ligne$J=$RRDFILE:lat-max:AVERAGE "$DEFS
+	INFOS="LINE2:ligne$I#${COLORS[$I]}:${IFACE}_Latence_Max: \
+	       GPRINT:ligne$I:LAST:Cur=%8.2lf%sms \
+	       GPRINT:ligne$I:AVERAGE:Moy=%8.2lf%sms \
+	       GPRINT:ligne$I:MAX:Max=%8.2lf%sms\n \
+	       LINE2:ligne$J#${COLORS[$J]}:${IFACE}_Latence_Min: \
+	       GPRINT:ligne$J:LAST:Cur=%8.2lf%sms \
+	       GPRINT:ligne$J:AVERAGE:Moy=%8.2lf%sms \
+	       GPRINT:ligne$J:MAX:Max=%8.2lf%sms\n "$INFOS
+	I=$(expr $J + 1 )
+	J=$(expr $I + 1 )
+    fi
+done
 
-    #----------------
-    # latence sur nerim
-    #----------------
-    LEGENDE="millisecondes"
-    GRAPHFILE=$HOST.network.latence
+#----------------
+# latence sur nerim
+#----------------
+LEGENDE="millisecondes"
+GRAPHFILE=$HOST.network.WAN_lat
 
-    for VAR in $LISTE
-    do
-	TITRE="Latence sur $VAR"
-	GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
-	START=e-$VAR
-	# Creation du graph
-	rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
-	LINE2:ligne5#FF9752:"Min  \:"                                                \
-	GPRINT:ligne5:LAST:"Cur=%8.2lf%sms"                                          \
-	GPRINT:ligne5:AVERAGE:"Moy=%8.2lf%sms"                                       \
-	GPRINT:ligne5:MAX:"Max=%8.2lf%sms\n"                                         \
-	LINE2:ligne6#829BFF:"Max  \:"                                                \
-	GPRINT:ligne6:LAST:"Cur=%8.2lf%sms"                                          \
-	GPRINT:ligne6:AVERAGE:"Moy=%8.2lf%sms"                                       \
-	GPRINT:ligne6:MAX:"Max=%8.2lf%sms\n"                                         \
-	COMMENT:"$STR_DATE\c"
-    done
-fi
+for VAR in $LISTE
+do
+    TITRE="Latence sur $VAR"
+    GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
+    START=e-$VAR
+    # Creation du graph
+    rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS $INFOS \
+    COMMENT:"$STR_DATE\c"
+done

@@ -4,36 +4,44 @@
 # $Id$
 
 source ../Common
-RRDFILE=../data/$HOST.network.rrd
-if [ -e $RRDFILE ]
-then
-    # Definitions
-    DEFS="DEF:ligne3=$RRDFILE1:INppp0:AVERAGE  \
-    DEF:ligne4=$RRDFILE1:OUTppp0:AVERAGE"
+I=0
+J=1
+for F in $(ls ../data/*net.ppp?.rrd)
+do
+    IFACE=$(basename $F .rrd | sed -e 's:^.*net.::g')
+    RRDFILE=$F
+    if [ -e $RRDFILE ]
+    then
+	# Definitions
+	DEFS="DEF:ligne$I=$RRDFILE:IN:AVERAGE  \
+	      DEF:ligne$J=$RRDFILE:OUT:AVERAGE "$DEFS
+	INFOS="LINE2:ligne$I#${COLORS[$I]}:${IFACE}_In: \
+	       GPRINT:ligne$I:LAST:Cur=%8.2lf%so/s \
+	       GPRINT:ligne$I:AVERAGE:Moy=%8.2lf%so/s \
+	       GPRINT:ligne$I:MAX:Max=%8.2lf%so/s\n \
+	       LINE2:ligne$J#${COLORS[$J]}:${IFACE}_Out: \
+	       GPRINT:ligne$J:LAST:Cur=%8.2lf%so/s \
+	       GPRINT:ligne$J:AVERAGE:Moy=%8.2lf%so/s \
+	       GPRINT:ligne$J:MAX:Max=%8.2lf%so/s\n "$INFOS
+	I=$(expr $J + 1 )
+	J=$(expr $I + 1 )
+    fi
+done
 
-    #----------------
-    # lien WAN
-    #----------------
-    LEGENDE="octets/sec"
-    GRAPHFILE=$HOST.network.WAN
+#----------------
+# lien WAN
+#----------------
+LEGENDE="octets/sec"
+GRAPHFILE=$HOST.network.WAN
 
-    for VAR in $LISTE
-    do
-	TITRE="Debit internet sur $VAR"
-	GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
-	START=e-$VAR
-	# Creation du graph
-	rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
-	HRULE:64000#000DFF:"Limite download (512kbps) 64Ko/s\n"                      \
-	HRULE:16000#00FF11:"Limite upload (128kbps) 16Ko/s\n"                        \
-	LINE2:ligne3#FFF000:"In   \:"                                                \
-	GPRINT:ligne3:LAST:"Cur=%8.2lf%so/s"                                         \
-	GPRINT:ligne3:AVERAGE:"Moy=%8.2lf%so/s"                                      \
-	GPRINT:ligne3:MAX:"Max=%8.2lf%so/s\n"                                        \
-	LINE2:ligne4#FF0000:"Out  \:"                                                \
-	GPRINT:ligne4:LAST:"Cur=%8.2lf%so/s"                                         \
-	GPRINT:ligne4:AVERAGE:"Moy=%8.2lf%so/s"                                      \
-	GPRINT:ligne4:MAX:"Max=%8.2lf%so/s\n"                                        \
-	COMMENT:"$STR_DATE\c"
-    done
-fi
+for VAR in $LISTE
+do
+    TITRE="Debit internet sur $VAR"
+    GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
+    START=e-$VAR
+    # Creation du graph
+    rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS $INFOS \
+    HRULE:64000#000DFF:"Limite download (512kbps) 64Ko/s\n"                      \
+    HRULE:16000#00FF11:"Limite upload (128kbps) 16Ko/s\n"                        \
+    COMMENT:"$STR_DATE\c"
+done
