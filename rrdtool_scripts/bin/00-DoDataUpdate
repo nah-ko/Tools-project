@@ -34,6 +34,10 @@ rrdtool update $RRDFILE $LGDATE:$VALUE
 RRDFILE=$HOST.var.rrd
 VALUE=`df /var | tail -1 | awk '{ print $5 }' | sed -e s/%//`
 rrdtool update $RRDFILE $LGDATE:$VALUE
+# ---- Partition /var/mail
+RRDFILE=$HOST.var_mail.rrd
+VALUE=`df /var/mail | tail -1 | awk '{ print $5 }' | sed -e s/%//`
+rrdtool update $RRDFILE $LGDATE:$VALUE
 # ---- Partition /home
 RRDFILE=$HOST.home.rrd
 VALUE=`df /home | tail -1 | awk '{ print $5 }' | sed -e s/%//`
@@ -86,7 +90,8 @@ ligne_ppp0=`cat /proc/net/dev | grep ppp0 | cut -d":" -f 2`
 rrdtool update $RRDFILE $LGDATE:$IN_eth0:$OUT_eth0:$IN_ppp0:$OUT_ppp0
 
 RRDFILE=$HOST.latence.rrd
-P=`ping -c3 62.4.16.248|grep round`
+FIRSTHOP=`traceroute -n www.nerim.net 2>&1 | awk -F" " '{ print $2 }' | head -2 | tail -1`
+P=`ping -c3 $FIRSTHOP | grep round`
 	LATmin=`echo $P | cut -d" " -f4 | cut -d"/" -f1`
 	LATmax=`echo $P | cut -d"/" -f5 | cut -d" " -f1`
 rrdtool update $RRDFILE $LGDATE:$LATmin:$LATmax
