@@ -1,30 +1,40 @@
 #!/bin/sh
-# Creation graph queue de message
+# Creation graph mail: nommage des fichiers rrd HOST.mail.TEST.rrd
+# TEST : queue, virus, rejets ...
 
 # $Id$
 
 source ../Common
-RRDFILE=../data/$HOST.mailq.rrd
-if [ -e $RRDFILE ]
-then
-    # Definitions
-    DEFS="DEF:ligne1=$RRDFILE:mailq:AVERAGE"
+I=0
+for F in $(ls ../data/$HOST.mail.*.rrd)
+do
+    MAILINFO=`basename $F .rrd | sed -e 's:^.*mail.::g'`
+    RRDFILE=$F
+    if [ -e $RRDFILE ]
+    then
+	# Definitions
+	DEFS="DEF:ligne$I=$RRDFILE:value:AVERAGE "$DEFS
+	INFOS="LINE2:ligne$I#${COLORS[$I]}:$MAILINFO\: \
+	       GPRINT:ligne$I:LAST:%8.0lf\n \
+	       GPRINT:ligne$I:MIN:Minimum\:%8.0lf \
+	       GPRINT:ligne$I:AVERAGE:Moyenne\:%8.0lf \
+	       GPRINT:ligne$I:MAX:Maximum\:%8.0lf\n "$INFOS
+	I=`expr $I + 1`
+    fi
+done
 
-    #-------------------------------------------
-    # Charge Machine (load average)
-    #-------------------------------------------
-    LEGENDE="# msg"
-    GRAPHFILE=$HOST.mailq
+#-------------------------------------------
+# Status mail
+#-------------------------------------------
+LEGENDE="# msg"
+GRAPHFILE=$HOST.mail
 
-    for VAR in $LISTE
-    do
-	TITRE="Queue de message sur $VAR"
+for VAR in $LISTE
+do
+	TITRE="Messagerie sur $VAR"
 	GRAPH=$GRAPHDIR/$GRAPHFILE.$VAR.png
 	START=e-$VAR
 	# Creation du graph
-	rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS \
-	AREA:ligne1#559FE2:"Queue de message \:" GPRINT:ligne1:LAST:"%8.0lf\n" \
-	GPRINT:ligne1:MIN:"Minimum\:%8.0lf" GPRINT:ligne1:AVERAGE:"Moyenne\:%8.0lf" GPRINT:ligne1:MAX:"Maximum\:%8.0lf\n" \
+	rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS $INFOS\
 	COMMENT:"$STR_DATE\c"
-    done
-fi
+done
