@@ -1,0 +1,14 @@
+
+# $Id$
+
+# Common variables
+PATH=/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin
+LANG=fr_FR@euro
+HOST=`hostname`
+DATE=`date +%s`
+LISTE="3h 6h 12h 24h 48h 12d 48d 576d"
+GRAPHDIR=/usr2/web/rrd/graphs
+GRAPHDIR=~/public_html/rrdtool_tests
+STR_DATE="Derniere mise a jour le `date +\"%A %d %B %Y a %T\"`"
+COULEURS="-c BACK#000000 -c FONT#AAAAAA -c FRAME#FFFFFF -c CANVAS#000000"
+OPTIONS="-w 576 -a PNG -l 0 --alt-autoscale-max $COULEURS"
