@@ -19,7 +19,6 @@ attributetype ( 1.3.6.1.4.1.20105.1.2
 objectClass ( 1.3.6.1.4.1.20105.1
     NAME 'httpAuth'
 	DESC 'Authentication for http web server'
-    SUP inetOrgPerson
     STRUCTURAL
 	MAY (
 	    httpAuthUsername $ httpAuthPassword )
