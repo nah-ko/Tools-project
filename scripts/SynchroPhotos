@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# script de copie de photos depuis une machine Windows
+
+# $Id$
+
+#set -x
+
+# infos sur l'utilisateur windows
+U=winuser
+P=winuserpassword
+# User et Group ID
+UID=1000
+GID=100
+
+MOUNTPOINT=/mymountpoint
+SHARESMB=//station/share
+SYNCOPT="-av --delete-after"
+SMBOPT="username=$U,password=$P,uid=$UID,gid=$GID"
+
+smbmount $SHARESMB $MOUNTPOINT -o $SMBOPT
+rsync $SYNCOPT $MOUNTPOINT/photos/Images/ /mnt/samba/images/Perso/Mes_Photos/Numerique/
+smbumount $MOUNTPOINT
