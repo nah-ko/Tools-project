@@ -1,0 +1,8 @@
+#!/bin/sh
+# Mail queue count
+
+# $Id$
+
+COUNT=`mailq | grep -c -E '<.*>'`
+
+echo "There is $COUNT mail into the mail queue"
