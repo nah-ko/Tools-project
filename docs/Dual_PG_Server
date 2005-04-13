@@ -1,0 +1,34 @@
+$Id$
+
+Mise en place de deux serveurs PostgreSQL sur une seule machine.
+
+Pré-requis
+Tout d'abord il faut tenir compte du fait que cette opération a été
+réalisée sur un système Debian, toutes références et indications ayant
+attrait à des répertoires et des fichiers système sont donc en rapport
+avec cette distribution.
+
+Première phase
+Pour commencer il faut installer le serveur ainsi que la contribution
+permettant d'avoir l'autovaccum, outil fort utile ! Jetez un oeil à la
+documentation, elle est très clair sur son utilitée:
+http://www.postgresql.org/docs/7.4/interactive/maintenance.html#ROUTINE-VACUUMING
+Nous avons donc à éxecuter la commande suivante:
+    apt-get install postgresql postgresql-contrib
+Très logiquement le paquet postgresql-client est installé également, ce
+dernier contient le shell psql entre autres.
+Suivez les instructions et faites votre installation «normalement».
+Nous pouvons passer à la suite.
+
+Seconde phase
+Une fois que l'installation standard est finie il est temps d'entamer la
+mise en place de notre futur second service postgresql. Pour ce faire il
+faut commencer par copier la totalitée du répertoire de configuration:
+    cp -rv /etc/postgresql/ /etc/postgresql_R
+Comme on peut le voir, la nouvelle configuration sera donc dans
+/etc/postgresql_R, à partir de maintenant le suffixe «_R» sera utilisé
+pour indiqué tout répertoire ou programme servant à ce serveur. Pourquoi
+«_R» me direz-vous ? En fait l'idée principale était de mettre en place
+un service de réplication de base de donnée et d'avoir, en parallèle, un
+service db pour un intranet, les deux indépendants.
+
