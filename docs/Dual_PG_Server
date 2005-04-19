@@ -31,4 +31,55 @@ pour indiqué tout répertoire ou programme servant à ce serveur. Pourquoi
 «_R» me direz-vous ? En fait l'idée principale était de mettre en place
 un service de réplication de base de donnée et d'avoir, en parallèle, un
 service db pour un intranet, les deux indépendants.
+Il faut alors modifier les fichiers qui font référence à ce répertoire
+de configuration, à savoir postgresql.env et postmaster.conf.
+    postgresql.env:
+	La ligne
+	« [ -r /etc/postgresql/postmaster.conf ] &&
+	        . /etc/postgresql/postmaster.conf »
+	devient
+	« [ -r /etc/postgresql_R/postmaster.conf ] &&
+	        . /etc/postgresql_R/postmaster.conf »
+    postmaster.conf:
+	La ligne
+	« POSTGRES_DATA="/opt/data" »
+	devient
+	« POSTGRES_DATA="/opt/data_R" »
+	Une configuration de base a généralement ces données dans
+	/var/lib/postgresql/, pour ma part j'utilise /opt pour ce genre
+	de service. Question de choix, à chacun d'adapter à sa
+	convenance.
+En suivant il faut modifier la configuration afin d'utiliser un autre
+port pour ce serveur SQL, ici il faut modifier le fichier
+postgresql.conf:
+    La ligne
+    « port = 5432 »
+    devient
+    « port = 5433 »
+Dans ce même fichier il faut aussi, mais ce n'est pas obligatoire,
+définir sur quelle IP le nouveau serveur va écouter:
+    La ligne
+    « virtual_host = '' »
+    devient
+    « virtual_host = '127.0.0.1 172.24.8.4 192.168.2.10' »
+
+Phase trois
+Maintenant que les fichiers de configuration sont modifiés il faut
+également modifier le script d'initialisation.
+Il faut comme précédement faire les modifications nécessaires au niveau
+de l'entrée du répertoire de configuration:
+« PGPORT=$(grep -si '^port *=' /etc/postgresql_R/postgresql.conf | cut
+-f2 -d=) »
+et aussi:
+« if [ -r /etc/postgresql_R/postmaster.conf ]
+then
+    . /etc/postgresql_R/postmaster.conf
+else    
+    echo "/etc/postgresql_R/postmaster.conf is missing; \
+    cannot start postgresql"
+    exit 1
+fi »
+De la même manière il faut faire référence à CE script d'init:
+« echo "Usage: /etc/init.d/postgresql_R {start|stop|autovac-start| \
+  autovac-stop|restart|autovac-restart|reload|force-reload|status}" »
 
