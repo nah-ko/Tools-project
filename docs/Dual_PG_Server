@@ -82,4 +82,15 @@ fi »
 De la même manière il faut faire référence à CE script d'init:
 « echo "Usage: /etc/init.d/postgresql_R {start|stop|autovac-start| \
   autovac-stop|restart|autovac-restart|reload|force-reload|status}" »
+Dans le même registre il faut changer le nom du script de démarrage:
+« PG_STARTUP=$PREFIX/bin/postgresql-startup_R »
+Puis les fichiers de log:
+« LOGFILE=${POSTGRES_LOG:-/var/log/postgresql/postgres_R.log} »
+« AVAC_LOG=/var/log/postgresql/autovacuum_R_log »
+Il faut également s'occuper du script suivant, qui change de nom
+également:
+« /usr/share/postgresql/startup-checks-root.sh_R »
+J'ai également fait une modification afin de faire référence au port
+d'écoute par défaut:
+« OPTS="-D -p ${PGPORT:=5433}" »
 
