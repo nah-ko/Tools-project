@@ -22,6 +22,8 @@ acl_smtp_data = check_message
 #!!# Other domain and host lists may follow.
 
 HOSTNAME = hostname.de.la.machine.en.smarthost
+DOMAIN = nom.de.domaine
+DOMAINMX = nom.du.mx.du.domaine
 
 domainlist local_domains = @ : \
     @[] : \
@@ -314,14 +316,14 @@ check_message:
 
 begin rewrite
 
-*@HOSTNAME ${1}@nah-ko.org Ffr
-*@localhost ${1}@nah-ko.org Ffr
+*@HOSTNAME ${1}@DOMAIN Ffr
+*@localhost ${1}@DOMAIN Ffr
 
 # This rewriting rule is particularly useful for dialup users who
 # don't have their own domain, but could be useful for anyone.
 # It looks up the real address of all local users in a file
 
-*@nah-ko.org    ${lookup{$1}lsearch{/etc/email-addresses}\
+*@DOMAIN    ${lookup{$1}lsearch{/etc/email-addresses}\
 						{$value}fail} frFs
 
 
@@ -352,7 +354,7 @@ smarthost:
   driver = manualroute
   domains = ! +local_domains
   #route_list = * mail.home bydns
-  route_list = * mx.domain.tld bydns
+  route_list = * DOMAINMX bydns
   transport = remote_smtp
   no_more
 
