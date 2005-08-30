@@ -15,14 +15,15 @@
 
 test -x /usr/bin/openssl || exit 0
 
+FQDN=full.qualified.domain.name.for.imaps
 DAYS=730
 CERTIFCONF=certif-imap.conf
-CERTIF=imap.nah-ko.org.pem
+CERTIF=$FQDN.pem
 RANDFILE=randfile
 
 if test -f $CERTIF
 then
-	echo "$CERTIF already exists."
+	echo "$CERTIF already exists. Remove it if you want to regenerate it."
 	exit 1
 fi
 
