@@ -1,5 +1,7 @@
 
 # $Id$
+#
+# File where update and graph scripts find common data.
 
 # Common variables
 PATH=/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin
