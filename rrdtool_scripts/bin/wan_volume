@@ -41,6 +41,6 @@ do
     START=e-$VAR
     # Creation du graph
     rrdtool graph $GRAPH -s $START $OPTIONS --title="$TITRE" -v "$LEGENDE" $DEFS $INFOS\
-    COMMENT:"Volume de transit sur lien internet :\n"                            \
+    COMMENT:"Volume de transit sur lien internet \:\n"                            \
     COMMENT:"$STR_DATE\c"
 done
