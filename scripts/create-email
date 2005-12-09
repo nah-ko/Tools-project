@@ -1,0 +1,65 @@
+#!/bin/sh
+
+# Create mail account into ldap tree.
+# This script have only one argument, the account owner.
+
+# $Id$
+
+# Test if script's called correctly with the account name
+# and only one
+if [ ! $# -eq 1 ]
+then
+	cat << EOF
+Missing account username !
+
+Usage: `basename $0` USERNAME
+
+	USERNAME email to create (like john.doe@somewhere.here.com)
+EOF
+	exit 1
+fi
+
+# Verify sed and ldapadd existence before processing
+if [ -x /bin/sed ]
+then
+	SED=/bin/sed
+else
+	echo "sed binary missing, correct this before using this script"
+	exit 1
+fi
+if [ -x /usr/bin/ldapadd ]
+then
+	LDAPADD=/usr/bin/ldapadd
+else
+	echo "ldapadd binary missing, correct this before using this script"
+	exit 1
+fi
+
+USER=$1
+BASELDAPTREE="dc=example,dc=com" # put here your base dn
+BINDDN="cn=admin,$BASELDAPTREE"  # you can put here another user that have
+				 # write rights into ldap.
+MAILACCOUNT=/tmp/$$
+
+# E-mail cut
+# get username, domain and top-level domain into three vars.
+eval `echo $USER | sed -r 's/^(.*)\@(.*)\.(.*)$/USER=\1 DOMAIN=\2 TLD=\3/g'`
+# so we get $USER, $DOMAIN and $TLD according to E-mail address
+
+$SED -e "s/USER/${USER}/g" -e "s/DOMAIN/$DOMAIN/g" -e "s/TLD/$TLD/g" << EOF > "$MAILACCOUNT"
+dn: eximMail=USER@DOMAIN.TLD,domain=DOMAIN.TLD,ou=mail,$BASELDAPTREE
+status: active
+objectClass: top
+objectClass: eximAttributes
+userPassword: {CRYPT}SWWxM/GpUiX92
+eximMail: USER@DOMAIN.TLD
+boxQuota: 2048M
+spoolDirectory: DOMAIN.TLD/USER
+EOF
+
+echo "Proccessing entry..."
+cat $MAILACCOUNT
+
+$LDAPADD -x -D $BINDDN -W -f $MAILACCOUNT
+
+rm -v $MAILACCOUNT

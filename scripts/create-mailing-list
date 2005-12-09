@@ -1,0 +1,121 @@
+#!/bin/sh
+
+# Create mailing list for Ecartis into ldap tree.
+# This script have only one argument, the ML name.
+
+# $Id$
+
+# Test if script's called correctly with the account name
+# and only one
+if [ ! $# -eq 1 ]
+then
+	cat << EOF
+Missing mailing list name !
+
+Usage: `basename $0` ML
+
+	ML email to create (like john.doe@somewhere.here.com)
+EOF
+	exit 1
+fi
+
+# Verify sed and ldapadd existence before processing
+if [ -x /bin/sed ]
+then
+	SED=/bin/sed
+else
+	echo "sed binary missing, correct this before using this script"
+	exit 1
+fi
+if [ -x /usr/bin/ldapadd ]
+then
+	LDAPADD=/usr/bin/ldapadd
+else
+	echo "ldapadd binary missing, correct this before using this script"
+	exit 1
+fi
+if [ -x /usr/lib/ecartis/ecartis ]
+then
+	ECARTIS=/usr/lib/ecartis/ecartis
+else
+	echo "ecartis binary missing, correct this before using this script"
+	exit 1
+fi
+
+USER=$1
+BASELDAPTREE="dc=example,dc=com" # put here your base dn
+BINDDN="cn=admin,$BASELDAPTREE"  # you can put here another user that have
+				 # write rights into ldap.
+LISTADMIN=admin-for-list@somewhere.com
+MAILACCOUNT=/tmp/$$
+
+# E-mail cut
+# get username, domain and top-level domain into three vars.
+eval `echo $USER | sed -r 's/^(.*)\@(.*)\.(.*)$/LISTNAME=\1 DOMAIN=\2 TLD=\3/g'`
+# so we get $LISTNAME, $DOMAIN and $TLD according to E-mail address
+
+$SED -e "s/LISTNAME/${LISTNAME}/g" -e "s/DOMAIN/$DOMAIN/g" -e "s/TLD/$TLD/g" << EOF > "$MAILACCOUNT"
+# Liste
+dn: eximMail=LISTNAME@DOMAIN.TLD,domain=DOMAIN.TLD,ou=mail,$BASELDAPTREE
+objectClass: top
+objectClass: eximAttributes
+eximMail: LISTNAME@DOMAIN.TLD
+status: active
+boxQuota: 0M
+pipe: |/usr/lib/ecartis/ecartis -s LISTNAME
+
+# Liste-request
+dn: eximMail=LISTNAME-request@DOMAIN.TLD,domain=DOMAIN.TLD,ou=mail,$BASELDAPTREE
+objectClass: top
+objectClass: eximAttributes
+eximMail: LISTNAME-request@DOMAIN.TLD
+status: active
+boxQuota: 0M
+pipe: |/usr/lib/ecartis/ecartis -r LISTNAME
+
+# Liste-repost
+dn: eximMail=LISTNAME-repost@DOMAIN.TLD,domain=DOMAIN.TLD,ou=mail,$BASELDAPTREE
+objectClass: top
+objectClass: eximAttributes
+eximMail: LISTNAME-repost@DOMAIN.TLD
+status: active
+boxQuota: 0M
+pipe: |/usr/lib/ecartis/ecartis -a LISTNAME
+
+# Liste-admins
+dn: eximMail=LISTNAME-admins@DOMAIN.TLD,domain=DOMAIN.TLD,ou=mail,$BASELDAPTREE
+objectClass: top
+objectClass: eximAttributes
+eximMail: LISTNAME-admins@DOMAIN.TLD
+status: active
+boxQuota: 0M
+pipe: |/usr/lib/ecartis/ecartis -admins LISTNAME
+
+# Liste-moderators
+dn: eximMail=LISTNAME-moderators@DOMAIN.TLD,domain=DOMAIN.TLD,ou=mail,$BASELDAPTREE
+objectClass: top
+objectClass: eximAttributes
+eximMail: LISTNAME-moderators@DOMAIN.TLD
+status: active
+boxQuota: 0M
+pipe: |/usr/lib/ecartis/ecartis -moderators LISTNAME
+
+# Liste-bounce
+dn: eximMail=LISTNAME-bounce@DOMAIN.TLD,domain=DOMAIN.TLD,ou=mail,$BASELDAPTREE
+objectClass: top
+objectClass: eximAttributes
+eximMail: LISTNAME-bounce@DOMAIN.TLD
+status: active
+boxQuota: 0M
+pipe: |/usr/lib/ecartis/ecartis -bounce LISTNAME
+EOF
+
+echo "Creating Ecartis list..."
+$ECARTIS -newlist $LISTNAME -admin $LISTADMIN
+
+echo "Proccessing entry..."
+cat $MAILACCOUNT
+
+$LDAPADD -x -D $BINDDN -W -f $MAILACCOUNT
+
+rm -v $MAILACCOUNT
