@@ -9,9 +9,11 @@
 FICHIERS=$1
 PLANCHECONTACT=$2
 
-montage -label "%f" \
+montage -verbose \
+        -label "%f" \
         -background black \
 	-fill yellow \
 	-bordercolor white \
-	-borderwidth +2 \
+	-border +2 \
+	-geometry 320x240 \
 	$FICHIERS $PLANCHECONTACT
