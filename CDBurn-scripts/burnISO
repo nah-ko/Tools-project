@@ -4,4 +4,20 @@
 #
 # $Id$
 
-cdrecord -v speed=4 dev=0,3,0 -eject -data $1
+APPEL=`basename $0`
+ISOFILE=$1
+# Gravage de CD en IDE avec un kernel 2.6
+ATADEV="dev=ATAPI:0,1,0"
+CDSPEED=24
+# Gravage de DVD en IDE avec un kernel 2.6
+STDDEV="/dev/hdb"
+DVDSPEED=8
+
+case $APPEL in
+	burnISO)
+		cdrecord -v speed=$CDSPEED $ATADEV -eject -data $ISOFILE
+		;;
+	burnISO2DVD)
+		growisofs -speed=$DVDSPEED -Z ${STDDEV}=$ISOFILE -eject
+		;;
+esac
