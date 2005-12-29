@@ -10,10 +10,10 @@ FICHIERS=$1
 PLANCHECONTACT=$2
 
 montage -verbose \
-        -label "%f" \
+        -label "APN: %[EXIF:Model] - Date: %[EXIF:DateTime]\nIso: %[EXIF:ISOSpeedRatings] - Ouverture: %[EXIF:ApertureValue]\nFocale: %[EXIF:FocalLength] - Temps de pose: %[EXIF:ExposureTime]" \
         -background black \
 	-fill yellow \
 	-bordercolor white \
 	-border +2 \
-	-geometry 320x240 \
+	-geometry 800x600+5+5 \
 	$FICHIERS $PLANCHECONTACT
