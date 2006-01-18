@@ -11,6 +11,11 @@ PATH=/bin:/usr/bin:/usr/lib/postgresql/bin
 
 PROG=`basename $0`
 PROG_PATH=`dirname $0`
+#DUMP_PATH=`dirname $0` # a decommenter si l'on desire mettre les dump ailleurs.
+if [ "$DUMP_PATH" == "" ]
+then
+    DUMP_PATH=$PROG_PATH
+fi
 A=`which pg_dumpall`
 DA_PATH=`dirname $A`
 A=`which pg_dump`
@@ -80,8 +85,8 @@ DumpAll() {
 	DA_opts=`echo $DA_opts -v`
     fi
     echo "--- Global dump ---"
-    echo "pg_dumpall --host=$MYHOSTNAME $DA_opts > $PROG_PATH/${PREFIX}_DumpAll.`date -I`.out"
-    $DA_PATH/pg_dumpall --host=$MYHOSTNAME $DA_opts > $PROG_PATH/${PREFIX}_DumpAll.`date -I`.out
+    echo "pg_dumpall --host=$MYHOSTNAME $DA_opts > $DUMP_PATH/${PREFIX}_DumpAll.`date -I`.out"
+    $DA_PATH/pg_dumpall --host=$MYHOSTNAME $DA_opts > $DUMP_PATH/${PREFIX}_DumpAll.`date -I`.out
 }
 
 DumpLO() {
@@ -104,12 +109,12 @@ DumpLO() {
 	eval `echo $ARGS | sed -r 's/^(.*)\/(.*)$/DBNAME=\1 TBLNAME=\2/g'`
 	echo "--- Schema dump of ${DBNAME} ---"
 	opts=`echo $DLO_opts -cCs`
-	echo "pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema.`date -I`.out"
-	$DLO_PATH/pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema.`date -I`.out
+	echo "pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema.`date -I`.out"
+	$DLO_PATH/pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema.`date -I`.out
 	echo "--- Data dump of ${DBNAME} ---"
 	opts=`echo $DLO_opts -abo`
-	echo "pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata.`date -I`.out"
-	$DLO_PATH/pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata.`date -I`.out
+	echo "pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata.`date -I`.out"
+	$DLO_PATH/pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata.`date -I`.out
     done
 }
 
@@ -155,5 +160,5 @@ then
     warning
 fi
 
-$BZIP2 -z9v $PROG_PATH/${PREFIX}*.out
-find $PROG_PATH/ -type f -follow -mtime +7 -name "*.out.bz2" -exec rm -v {} \;
+$BZIP2 -z9v $DUMP_PATH/${PREFIX}*.out
+find $DUMP_PATH/ -type f -follow -mtime +7 -name "*.out.bz2" -exec rm -v {} \;
