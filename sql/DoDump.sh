@@ -25,6 +25,11 @@ BZIP2=`which bzip2`
 NO_ARGS=0
 E_OPTERROR=65
 
+PREFIX_FILENAME=NoPrefix_
+MYHOSTNAME=localhost
+DBNAME=template1
+TABLENAME=pg_database
+
 usage() {
 cat << EOF
 
@@ -32,6 +37,7 @@ $PROG, dump all databases including those who contains large object
 
 Usage : $PROG -p PREFIX_FILENAME [-l DBNAME/TABLENAME -v]
     -p PREFIX_FILENAME	    Give a prefix to output filename.
+    -h HOSTNAME             Same as pg_dump and pg_dumpall
     -l DBNAME/TABLENAME	    Give the name of database and table where to
 			    dump large object. You may have two or more
 			    couple here. Then you'll need to put it into
@@ -74,8 +80,8 @@ DumpAll() {
 	DA_opts=`echo $DA_opts -v`
     fi
     echo "--- Global dump ---"
-    echo "pg_dumpall $DA_opts > $PROG_PATH/${PREFIX}_DumpAll.`date -I`.out"
-    $DA_PATH/pg_dumpall $DA_opts > $PROG_PATH/${PREFIX}_DumpAll.`date -I`.out
+    echo "pg_dumpall --host=$MYHOSTNAME $DA_opts > $PROG_PATH/${PREFIX}_DumpAll.`date -I`.out"
+    $DA_PATH/pg_dumpall --host=$MYHOSTNAME $DA_opts > $PROG_PATH/${PREFIX}_DumpAll.`date -I`.out
 }
 
 DumpLO() {
@@ -98,12 +104,12 @@ DumpLO() {
 	eval `echo $ARGS | sed -r 's/^(.*)\/(.*)$/DBNAME=\1 TBLNAME=\2/g'`
 	echo "--- Schema dump of ${DBNAME} ---"
 	opts=`echo $DLO_opts -cCs`
-	echo "pg_dump $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema.`date -I`.out"
-	$DLO_PATH/pg_dump $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema.`date -I`.out
+	echo "pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema.`date -I`.out"
+	$DLO_PATH/pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema.`date -I`.out
 	echo "--- Data dump of ${DBNAME} ---"
 	opts=`echo $DLO_opts -abo`
-	echo "pg_dump $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata.`date -I`.out"
-	$DLO_PATH/pg_dump $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata.`date -I`.out
+	echo "pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata.`date -I`.out"
+	$DLO_PATH/pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $PROG_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata.`date -I`.out
     done
 }
 
@@ -127,6 +133,9 @@ do
 	    ;;
 	l)
 	    LO_NAMES=$OPTARG
+	    ;;
+	h)
+	    MYHOSTNAME=$OPTARG
 	    ;;
 	*)
 	    echo "No matching option for -$OPTARG, retry."
