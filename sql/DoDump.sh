@@ -119,7 +119,7 @@ then
     usage
 fi
 
-while getopts ":dvp:l:" OPTIONS
+while getopts ":dvh:p:l:" OPTIONS
 do
     case $OPTIONS in
 	d)
