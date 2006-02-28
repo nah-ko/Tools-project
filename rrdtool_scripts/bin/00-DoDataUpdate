@@ -25,7 +25,7 @@ then
 	CPU_user=`sar -u | tail -2 | head -1 | awk '{ print $3 }' | sed 's/\,/\./g'`
 	CPU_nice=`sar -u | tail -2 | head -1 | awk '{ print $4 }' | sed 's/\,/\./g'`
 	CPU_system=`sar -u | tail -2 | head -1 | awk '{ print $5 }' | sed 's/\,/\./g'`
-	CPU_idle=`sar -u | tail -2 | head -1 | awk '{ print $7 }' | sed 's/\,/\./g'`
+	CPU_idle=`sar -u | tail -2 | head -1 | awk '{ print $8 }' | sed 's/\,/\./g'`
 	rrdtool update $RRDFILE $LGDATE:$nb_processes:$CPU_user:$CPU_nice:$CPU_system:$CPU_idle 
     else
 	rrdtool create $RRDFILE --start $LGDATE \
