@@ -161,5 +161,5 @@ then
     warning
 fi
 
-$BZIP2 -z9v $DUMP_PATH/${PREFIX}*.out
+$BZIP2 -z9vf $DUMP_PATH/${PREFIX}*.out
 find $DUMP_PATH/ -type f -follow -mtime +7 -name "*.out.bz2" -exec rm -v {} \;
