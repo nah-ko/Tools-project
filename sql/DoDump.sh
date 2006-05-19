@@ -9,6 +9,7 @@
 
 PATH=/bin:/usr/bin:/usr/lib/postgresql/bin
 
+TODAY=`date -I`
 PROG=`basename $0`
 PROG_PATH=`dirname $0`
 #DUMP_PATH=`dirname $0` # a decommenter si l'on desire mettre les dump ailleurs.
@@ -85,8 +86,8 @@ DumpAll() {
 	DA_opts=`echo $DA_opts -v`
     fi
     echo "--- Global dump ---"
-    echo "pg_dumpall --host=$MYHOSTNAME $DA_opts > $DUMP_PATH/${PREFIX}_DumpAll.`date -I`.out"
-    $DA_PATH/pg_dumpall --host=$MYHOSTNAME $DA_opts > $DUMP_PATH/${PREFIX}_DumpAll.`date -I`.out
+    echo "pg_dumpall --host=$MYHOSTNAME $DA_opts > $DUMP_PATH/${PREFIX}_DumpAll_$TODAY.out"
+    $DA_PATH/pg_dumpall --host=$MYHOSTNAME $DA_opts > $DUMP_PATH/${PREFIX}_DumpAll_$TODAY.out
 }
 
 DumpLO() {
@@ -109,12 +110,12 @@ DumpLO() {
 	eval `echo $ARGS | sed -r 's/^(.*)\/(.*)$/DBNAME=\1 TBLNAME=\2/g'`
 	echo "--- Schema dump of ${DBNAME} ---"
 	opts=`echo $DLO_opts -cCs`
-	echo "pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema.`date -I`.out"
-	$DLO_PATH/pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema.`date -I`.out
+	echo "pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema_$TODAY.out"
+	$DLO_PATH/pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema_$TODAY.out
 	echo "--- Data dump of ${DBNAME} ---"
 	opts=`echo $DLO_opts -abo`
-	echo "pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata.`date -I`.out"
-	$DLO_PATH/pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata.`date -I`.out
+	echo "pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata_$TODAY.out"
+	$DLO_PATH/pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata_$TODAY.out
     done
 }
 
