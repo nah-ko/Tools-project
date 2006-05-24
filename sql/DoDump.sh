@@ -32,7 +32,9 @@ NO_ARGS=0
 E_OPTERROR=65
 
 PREFIX_FILENAME=NoPrefix_
-MYHOSTNAME="--host=localhost"
+# Par defaut cette variable est vide => connection via une socket pour
+# eviter le pb avec identd (MYHOSTNAME="--host=localhost")
+MYHOSTNAME=""
 DBNAME=template1
 TABLENAME=pg_database
 
