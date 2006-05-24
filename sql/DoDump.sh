@@ -32,7 +32,7 @@ NO_ARGS=0
 E_OPTERROR=65
 
 PREFIX_FILENAME=NoPrefix_
-MYHOSTNAME=localhost
+MYHOSTNAME="--host=localhost"
 DBNAME=template1
 TABLENAME=pg_database
 
@@ -86,8 +86,8 @@ DumpAll() {
 	DA_opts=`echo $DA_opts -v`
     fi
     echo "--- Global dump ---"
-    echo "pg_dumpall --host=$MYHOSTNAME $DA_opts > $DUMP_PATH/${PREFIX}_DumpAll_$TODAY.out"
-    $DA_PATH/pg_dumpall --host=$MYHOSTNAME $DA_opts > $DUMP_PATH/${PREFIX}_DumpAll_$TODAY.out
+    echo "pg_dumpall $MYHOSTNAME $DA_opts > $DUMP_PATH/${PREFIX}_DumpAll_$TODAY.out"
+    $DA_PATH/pg_dumpall $MYHOSTNAME $DA_opts > $DUMP_PATH/${PREFIX}_DumpAll_$TODAY.out
 }
 
 DumpLO() {
@@ -110,12 +110,12 @@ DumpLO() {
 	eval `echo $ARGS | sed -r 's/^(.*)\/(.*)$/DBNAME=\1 TBLNAME=\2/g'`
 	echo "--- Schema dump of ${DBNAME} ---"
 	opts=`echo $DLO_opts -cCs`
-	echo "pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema_$TODAY.out"
-	$DLO_PATH/pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema_$TODAY.out
+	echo "pg_dump $MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema_$TODAY.out"
+	$DLO_PATH/pg_dump $MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema_$TODAY.out
 	echo "--- Data dump of ${DBNAME} ---"
 	opts=`echo $DLO_opts -abo`
-	echo "pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata_$TODAY.out"
-	$DLO_PATH/pg_dump --host=$MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata_$TODAY.out
+	echo "pg_dump $MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata_$TODAY.out"
+	$DLO_PATH/pg_dump $MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata_$TODAY.out
     done
 }
 
@@ -141,7 +141,7 @@ do
 	    LO_NAMES=$OPTARG
 	    ;;
 	h)
-	    MYHOSTNAME=$OPTARG
+	    MYHOSTNAME="--host=$OPTARG"
 	    ;;
 	*)
 	    echo "No matching option for -$OPTARG, retry."
