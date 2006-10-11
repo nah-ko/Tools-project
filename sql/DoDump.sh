@@ -13,20 +13,15 @@ TODAY=`date -I`
 PROG=`basename $0`
 PROG_PATH=`dirname $0`
 #DUMP_PATH=`dirname $0` # a decommenter si l'on desire mettre les dump ailleurs.
-if [ "$DUMP_PATH" == "" ]
-then
-    DUMP_PATH=$PROG_PATH
-fi
+/usr/bin/test -n "$DUMP_PATH" || DUMP_PATH=$PROG_PATH
 A=`which pg_dumpall`
 DA_PATH=`dirname $A`
 A=`which pg_dump`
 DLO_PATH=`dirname $A`
-if [ "$DA_PATH" == "" ]
-then
-    DA_PATH="/usr/lib/postgresql/bin"
-fi
+/usr/bin/test -n "$DA_PATH" || DA_PATH="/usr/lib/postgresql/bin"
 
 BZIP2=`which bzip2`
+BZOPT="-z9f"
 
 NO_ARGS=0
 E_OPTERROR=65
@@ -37,6 +32,8 @@ PREFIX_FILENAME=NoPrefix_
 MYHOSTNAME=""
 DBNAME=template1
 TABLENAME=pg_database
+
+VERBOSE=false
 
 usage() {
 cat << EOF
@@ -83,12 +80,9 @@ DumpAll() {
     # between  pg_dumpall  and  the  database server. Read pg_dumpall
     # manpage for more informations.
     DA_opts="-c -i"
-    if [ $VERBOSE ]
-    then
-	DA_opts=`echo $DA_opts -v`
-    fi
-    echo "--- Global dump ---"
-    echo "pg_dumpall $MYHOSTNAME $DA_opts > $DUMP_PATH/${PREFIX}_DumpAll_$TODAY.out"
+    $VERBOSE && DA_opts=`echo $DA_opts -v`
+    $VERBOSE && echo "--- Global dump ---"
+    $VERBOSE && echo "pg_dumpall $MYHOSTNAME $DA_opts > $DUMP_PATH/${PREFIX}_DumpAll_$TODAY.out"
     $DA_PATH/pg_dumpall $MYHOSTNAME $DA_opts > $DUMP_PATH/${PREFIX}_DumpAll_$TODAY.out
 }
 
@@ -103,20 +97,17 @@ DumpLO() {
     # data. -a Dump only the data, not the schema (data definitions).
     # Read pg_dump manpage for more informations.
     DLO_opts="-i -Fc"
-    if [ $VERBOSE ]
-    then
-	DLO_opts=`echo $DLO_opts -v`
-    fi
+    $VERBOSE && DLO_opts=`echo $DLO_opts -v`
     for ARGS in $LO_NAMES
     do
 	eval `echo $ARGS | sed -r 's/^(.*)\/(.*)$/DBNAME=\1 TBLNAME=\2/g'`
-	echo "--- Schema dump of ${DBNAME} ---"
+	$VERBOSE && echo "--- Schema dump of ${DBNAME} ---"
 	opts=`echo $DLO_opts -cCs`
-	echo "pg_dump $MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema_$TODAY.out"
+	$VERBOSE && echo "pg_dump $MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema_$TODAY.out"
 	$DLO_PATH/pg_dump $MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema_$TODAY.out
-	echo "--- Data dump of ${DBNAME} ---"
+	$VERBOSE && echo "--- Data dump of ${DBNAME} ---"
 	opts=`echo $DLO_opts -abo`
-	echo "pg_dump $MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata_$TODAY.out"
+	$VERBOSE && echo "pg_dump $MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata_$TODAY.out"
 	$DLO_PATH/pg_dump $MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata_$TODAY.out
     done
 }
@@ -163,5 +154,7 @@ then
     warning
 fi
 
-$BZIP2 -z9vf $DUMP_PATH/${PREFIX}*.out
+$VERBOSE && BZOPT="-z9vf"
+
+$BZIP2 $BZOPT $DUMP_PATH/${PREFIX}*.out
 find $DUMP_PATH/ -type f -follow -mtime +7 -name "*.out.bz2" -exec rm -v {} \;
