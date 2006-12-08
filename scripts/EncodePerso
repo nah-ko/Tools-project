@@ -7,7 +7,7 @@ DESTINATION=NewEncoding_${SOURCE}
 
 mencoder -oac mp3lame \
          -lameopts preset=medium \
-	 -ovc divx4 \
-	 -xvidencopts vhq=3 \
+	 -ovc xvid \
+	 -xvidencopts bitrate=687000:vhq=3 \
 	 $SOURCE \
 	 -o $DESTINATION
