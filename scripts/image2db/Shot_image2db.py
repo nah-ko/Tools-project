@@ -2,6 +2,7 @@
 
 import Image, os, re, sys, getopt
 import pg
+from optparse import OptionParser
 
 # Default values
 ProgPath  = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -102,34 +103,66 @@ def main():
    """ Main code """
 
    global file, desc, ConfFile
+   global CONFIG_FILE, SCREENSHOT_FILE, DESCRIPTION
 
-   try:
-      opts, args = getopt.getopt(sys.argv[1:], "f:d:c:")
-   except getopt.GetoptError:
-      # print help information and exit:
-      usage()
-      sys.exit(2)
+   Usage = " Usage: %prog [options] "
+   Parser = OptionParser(usage = Usage)
+   Parser.add_option("-f", "--screenshotfile",
+                     action = "store",
+		     type   = "string",
+		     dest   = "ShotFile",
+		     metavar = "SHOTFILE",
+		     default = SCREENSHOT_FILE,
+		     help    = "Path to the screenshot file")
+   Parser.add_option("-d", "--description",
+                     action = "store",
+		     type   = "string",
+		     dest   = "Description",
+		     metavar = "DESC",
+		     default = DESCRIPTION,
+		     help    = "Description of the screenshot")
+   Parser.add_option("-c", "--configfile",
+                     action = "store",
+		     type   = "string",
+		     dest   = "Conf_File",
+		     metavar = "FILE",
+		     default = CONFIG_FILE,
+		     help    = "Path to the configuration file")
+   (options, args) = Parser.parse_args()
 
-   for o, a in opts:
-      if o == "-c":
-         if os.path.exists(a):
-            ConfFile = a
-	 else:
-	    print "Configuration file %s does not exists" % a
-	    usage()
-	    sys.exit(2)
-      elif o == "-f":
-         if os.path.exists(a):
-            file = a
-	 else:
-	    print "%s: File does not exists" % a
-	    usage()
-	    sys.exit(2)
-      elif o == "-d":
-         desc = a
+   # Use configuration file given or default one
+   if os.path.exists(options.Conf_File):
+   	ConfFile = options.Conf_File
+   else:
+   	Parser.error( "Sorry, configuration file \"%s\" "\
+		      "missing or unreadable"\
+		      % options.Conf_File)
+
+   # Use given screenshot file
+   if os.path.exists(options.ShotFile):
+   	file = options.ShotFile
+   elif len(options.ShotFile) == 0:
+   	Parser.error( "No image !" )
+   else:
+   	Parser.error( "Sorry, image file \"%s\" "\
+		      "missing or unreadable"\
+		      % options.ShotFile )
+ 
+   # Get description for screenshot
+   if len(options.Description) > 0:
+   	desc = options.Description
+   else:
+	Parser.error( "No description or empty description" )
    
    ReadConf(ConfFile)
    InsertFile(file, desc)
 
 if __name__ == "__main__":
-	main()
+   global CONFIG_FILE, DESCRIPTION, SCREENSHOT_FILE
+
+   ProgPath     = os.path.dirname(os.path.realpath(sys.argv[0]))
+   CONFIG_FILE  = ProgPath + "/image2db.conf"
+   DESCRIPTION  = ""
+   SCREENSHOT_FILE = ""
+
+   main()
