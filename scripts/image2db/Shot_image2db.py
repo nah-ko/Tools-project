@@ -39,7 +39,6 @@ def InsertFile(myfile, mydesc):
 
    if myfile == None:
       print "No <file> !"
-      usage()
       sys.exit(2)
 
    print "We're going to add %s to %s" % (myfile, img_table)
@@ -94,18 +93,13 @@ def InsertFile(myfile, mydesc):
    print "%s added with id : %s" % (INFILE, id)
    db.close()
 
-def usage():
-   """ Give usage if needec """
-   command = os.path.basename(sys.argv[0])
-   print "%s -f <image_file> -d <description>" % command
-
 def main():
    """ Main code """
 
    global file, desc, ConfFile
    global CONFIG_FILE, SCREENSHOT_FILE, DESCRIPTION
 
-   Usage = " Usage: %prog [options] "
+   Usage = " Usage: %prog -f image -d description [-h] [-c config] "
    Parser = OptionParser(usage = Usage)
    Parser.add_option("-f", "--screenshotfile",
                      action = "store",
