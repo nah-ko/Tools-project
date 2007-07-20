@@ -1,5 +1,7 @@
 #!/bin/sh
 #
+# $Id$
+#
 # Script de generation automatique des pages de stats par virtual hosts
 #
 
@@ -7,7 +9,8 @@ echo "`date` : Generation de statistiques web"
 
 for conf_file in /opt/tools/scripts/conf/*.conf
 do
-	echo "`date +%T`: `basename $conf_file .conf`"
-	/usr/local/sbin/webalizer -c $conf_file 2>&1 > /opt/tools/scripts/`basename $conf_file .conf`_wbr
+	F=`basename $conf_file .conf`
+	echo "`date +%T`: $F"
+	/usr/local/sbin/webalizer -c $conf_file 2>&1 > /opt/tools/scripts/${F}_wbr
 done
 echo "`date +%T`: Termine"
