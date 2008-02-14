@@ -4,6 +4,22 @@
 # 
 # $Id$
 
+PROG=`basename $0`
+E_OPTERROR=65
+
+usage() {
+cat << EOF
+
+$PROG, Manage LUKS volume file (u)mount
+
+Usage: $PROG -a ACTION VOLUME_FILE
+    -a ACTION	What to do, mount or umount volume file
+    VOLUME_FILE	Name of LUKS volume file (extension has to be ".vol")
+
+EOF
+    exit $E_OPTERROR
+}
+
 error() {
     echo $2
     exit $1
@@ -90,7 +106,7 @@ then
     error 1 "ERROR: Missing arguments"
 fi
 
-while getopts ":dva:" OPTIONS
+while getopts ":dvha:" OPTIONS
 do
     case $OPTIONS in
 	d)
@@ -98,6 +114,9 @@ do
 	    ;;
 	v)
 	    BEVERBOSE=true
+	    ;;
+	h)
+	    usage
 	    ;;
 	a)
 	    eval PARAMETER="`echo \\$$OPTIND`"
