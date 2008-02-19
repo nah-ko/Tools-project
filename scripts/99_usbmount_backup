@@ -11,6 +11,9 @@ PROGNAME=`basename $0`
 PID=$$
 
 case ${ID_SERIAL_SHORT} in
+    00D0B87B400107050)
+	/usr/bin/rsync -av /home/toffe/perso/Pictures ${UM_MOUNTPOINT}/backup/
+	;;
     *)
 	logger -p syslog.info -t "$PROGNAME[$PID]:" "No backup for $UM_VENDOR $UM_MODEL ($UM_DEVICE) key"
 	;;
