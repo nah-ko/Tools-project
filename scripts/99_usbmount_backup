@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# Automatic backup script
+#
+# $Id$
+#
+# This script will automatically backup directory to an usb drive just
+# plugged in.
+
+PROGNAME=`basename $0`
+PID=$$
+
+case ${ID_SERIAL_SHORT} in
+    *)
+	logger -p syslog.info -t "$PROGNAME[$PID]:" "No backup for $UM_VENDOR $UM_MODEL ($UM_DEVICE) key"
+	;;
+esac
+
+
