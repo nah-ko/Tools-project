@@ -19,7 +19,7 @@ EOD
 # Delete temporary files
 trap "rm -f $MyMuttrc" 0 1 2 5 15
 
-$MyMutt -F $MyMuttrc -s "UPS Problem" $Receiver << EOM
+$MyMutt -F $MyMuttrc -s "UPS Problem" "$Receiver" << EOM
 $MSG
 EOM
 
