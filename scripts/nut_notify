@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# Mail notification if nut detect UPS down
+#
+# $Id$
+
+MSG="$*"
+
+# Prepare mail
+MyMutt=/usr/bin/mutt
+MyMuttrc=/tmp/muttrc_nut_notify_$$
+Sender="user@dom.tld"
+Receiver="user2@dom.tld"
+cat << EOD > $MyMuttrc
+set reverse_name
+my_hdr From: Notification UPS <$Sender>
+EOD
+
+# Delete temporary files
+trap "rm -f $MyMuttrc" 0 1 2 5 15
+
+$MyMutt -F $MyMuttrc -s "UPS Problem" $Receiver << EOM
+$MSG
+EOM
+
