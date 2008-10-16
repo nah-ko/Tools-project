@@ -30,6 +30,9 @@ PREFIX_FILENAME=NoPrefix_
 # Par defaut cette variable est vide => connection via une socket pour
 # eviter le pb avec identd (MYHOSTNAME="--host=localhost")
 MYHOSTNAME=""
+# Idem, variable vide par defaut, si necessaire il faut indiquer quel
+# cluster est a sauvegarder
+MYCLUSTER=""
 DBNAME=template1
 TABLENAME=pg_database
 
@@ -79,11 +82,11 @@ DumpAll() {
     # databases before recreating them. -i Ignore version mismatch
     # between  pg_dumpall  and  the  database server. Read pg_dumpall
     # manpage for more informations.
-    DA_opts="-c -i"
+    DA_opts="$MYHOSTNAME $MYCLUSTER -c -i"
     $VERBOSE && DA_opts=`echo $DA_opts -v`
     $VERBOSE && echo "--- Global dump ---"
-    $VERBOSE && echo "pg_dumpall $MYHOSTNAME $DA_opts > $DUMP_PATH/${PREFIX}_DumpAll_$TODAY.out"
-    $DA_PATH/pg_dumpall $MYHOSTNAME $DA_opts > $DUMP_PATH/${PREFIX}_DumpAll_$TODAY.out
+    $VERBOSE && echo "pg_dumpall $DA_opts > $DUMP_PATH/${PREFIX}_DumpAll_$TODAY.out"
+    $DA_PATH/pg_dumpall $DA_opts > $DUMP_PATH/${PREFIX}_DumpAll_$TODAY.out
 }
 
 DumpLO() {
@@ -96,19 +99,19 @@ DumpLO() {
     # created database. -s Dump only the schema (data definitions), no
     # data. -a Dump only the data, not the schema (data definitions).
     # Read pg_dump manpage for more informations.
-    DLO_opts="-i -Fc"
+    DLO_opts="$MYHOSTNAME $MYCLUSTER -i -Fc"
     $VERBOSE && DLO_opts=`echo $DLO_opts -v`
     for ARGS in $LO_NAMES
     do
 	eval `echo $ARGS | sed -r 's/^(.*)\/(.*)$/DBNAME=\1 TBLNAME=\2/g'`
 	$VERBOSE && echo "--- Schema dump of ${DBNAME} ---"
 	opts=`echo $DLO_opts -cCs`
-	$VERBOSE && echo "pg_dump $MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema_$TODAY.out"
-	$DLO_PATH/pg_dump $MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema_$TODAY.out
+	$VERBOSE && echo "pg_dump $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema_$TODAY.out"
+	$DLO_PATH/pg_dump $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOschema_$TODAY.out
 	$VERBOSE && echo "--- Data dump of ${DBNAME} ---"
 	opts=`echo $DLO_opts -abo`
-	$VERBOSE && echo "pg_dump $MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata_$TODAY.out"
-	$DLO_PATH/pg_dump $MYHOSTNAME $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata_$TODAY.out
+	$VERBOSE && echo "pg_dump $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata_$TODAY.out"
+	$DLO_PATH/pg_dump $opts ${DBNAME} > $DUMP_PATH/${PREFIX}_${DBNAME}-${TBLNAME}_DumpLOdata_$TODAY.out
     done
 }
 
@@ -118,7 +121,7 @@ then
     usage
 fi
 
-while getopts ":dvh:p:l:" OPTIONS
+while getopts ":c:dvh:p:l:" OPTIONS
 do
     case $OPTIONS in
 	d)
@@ -135,6 +138,9 @@ do
 	    ;;
 	h)
 	    MYHOSTNAME="--host=$OPTARG"
+	    ;;
+	c)
+	    MYCLUSTER="--cluster $OPTARG"
 	    ;;
 	*)
 	    echo "No matching option for -$OPTARG, retry."
