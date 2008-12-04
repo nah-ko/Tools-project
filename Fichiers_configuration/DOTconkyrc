@@ -52,7 +52,7 @@ ${color lightgrey}Iface up:${color #00aa55}${if_up lo}lo (${addr lo})${offset 10
 ${if_up lo}${color #00aa55}lo:${color #8844ee}${downspeed lo}${color #22ccff}${upspeed lo}${offset 80}$endif${if_up eth0}${color #00aa55}eth0:${color #8844ee}${downspeed eth0}${color #22ccff}${upspeed eth0}${offset 80}$endif${if_up eth0:0}${color #00aa55}eth0:0:${color #8844ee}${downspeed eth0:0}${color #22ccff}${upspeed eth0:0}${offset 80}$endif${if_up eth1}${color #00aa55}eth1:${color #8844ee}${downspeed eth1}${color #22ccff}${upspeed eth1}${offset 80}$endif${if_up eth1:0}${color #00aa55}eth1:0:${color #8844ee}${downspeed eth1:0}${color #22ccff}${upspeed eth1:0}${offset 80}$endif${if_up tap0}${color #00aa55}tap0:${color #8844ee}${downspeed tap0}${color #22ccff}${upspeed tap0}${offset 80}$endif
 ${if_up lo}${color #8844ee}${downspeedgraph lo 32,75 ff0000 0000ff}${offset 10}${color #22ccff}${upspeedgraph lo 32,75 0000ff ff0000}${offset 10}$endif${if_up eth0}${color #8844ee}${downspeedgraph eth0 32,75 ff0000 0000ff}${offset 10}${color #22ccff}${upspeedgraph eth0 32,75 0000ff ff0000}${offset 10}$endif${if_up eth0:0}${color #8844ee}${downspeedgraph eth0:0 32,75 ff0000 0000ff}${offset 10}${color #22ccff}${upspeedgraph eth0:0 32,75 0000ff ff0000}${offset 10}$endif${if_up eth1}${color #8844ee}${downspeedgraph eth1 32,75 ff0000 0000ff}${offset 10}${color #22ccff}${upspeedgraph eth1 32,75 0000ff ff0000}${offset 10}$endif${if_up eth1:0}${color #8844ee}${downspeedgraph eth1:0 32,75 ff0000 0000ff}${offset 10}${color #22ccff}${upspeedgraph eth1:0 32,75 0000ff ff0000}${offset 10}$endif${if_up tap0}${color #8844ee}${downspeedgraph tap0 32,75 ff0000 0000ff}${offset 10}${color #22ccff}${upspeedgraph tap0 32,75 0000ff ff0000}${offset 10}$endif
 ${color orange}WIRELESS ${hr 3}$color
-${if_up eth0}ESSID: ${wireless_essid eth0} Bitrate: ${wireless_bitrate eth0} ${wireless_link_bar eth0}${else}No wireless device up$endif
+${if_up eth0}ESSID: ${wireless_essid eth0} Bitrate: ${wireless_bitrate eth0} ${wireless_link_bar eth0}${else}${alignc}No wireless device up$endif
 ${color orange}FILE SYSTEMS ${hr 3}
 ${color lightgrey}Mount point (free/total):$color
  /     ${fs_free /} /${fs_size /} ${fs_bar /}
@@ -71,6 +71,6 @@ ${color orange}SYSTEM LOGS ${hr 3}
 ${color blue}${tail /var/log/syslog 3 30}
 ${color green}${tail /var/log/daemon.log 3 30}
 ${color orange}LISTENING TO ${hr 3}
-${if_running amarokapp}${color}${execi 10 ~/.conky/amarok artist} - "${execi 10 ~/.conky/amarok album}" (${execi 10 ~/.conky/amarok year} - ${execi 10 ~/.conky/amarok genre}) - ${execi 10 ~/.conky/amarok title} ${execi 1 ~/.conky/amarok progress}% ${execibar 1 ~/.conky/amarok progress}${else}Amarok not running$endif
+${if_running amarokapp}${color}${execi 10 ~/.conky/amarok artist} - "${execi 10 ~/.conky/amarok album}" (${execi 10 ~/.conky/amarok year} - ${execi 10 ~/.conky/amarok genre}) - ${execi 10 ~/.conky/amarok title} ${execi 1 ~/.conky/amarok progress}% ${execibar 1 ~/.conky/amarok progress}${else}${color red}${alignc}Amarok not running$endif
 ${if_existing /usr/games/fortune}${color orange}FORTUNE ${hr 3}$color
 ${execi 120 /usr/games/fortune -s}$endif
