@@ -38,7 +38,7 @@ use_spacer		left
 if_up_strictness	address
 
 TEXT
-$nodename - $sysname $kernel on $machine ${alignr}${color lightgrey}Uptime:$color $uptime
+$nodename - $sysname $kernel on $machine ${alignr}${time %k:%M %d/%m/%Y }${color lightgrey}Uptime:$color $uptime
 ${color orange}SYSTEM ${hr 3}
 ${color lightgrey}CPU:$color $freq_dyn_g GHz ${color #cc2222} $cpu% ${cpubar 6,75} ${alignr}${color lightgrey}Load:$color $loadavg
 ${color red}${cpugraph 0000ff 00ff00}
@@ -51,6 +51,8 @@ ${color lightgrey}Gateway:${color}${gw_iface}/${gw_ip} ${alignr}${color lightgre
 ${color lightgrey}Iface up:${color #00aa55}${if_up lo}lo (${addr lo})${offset 10}$endif${if_up eth0}eth0 (${addr eth0})${offset 10}$endif${if_up eth0:0}eth0:0 (${addr eth0:0})${offset 10}$endif${if_up eth1}eth1 (${addr eth1})${offset 10}$endif${if_up eth1:0}eth1:0 (${addr eth1:0})${offset 10}$endif${if_up tap0}tap0 (${addr tap0})${offset 10}$endif
 ${if_up lo}${color #00aa55}lo:${color #8844ee}${downspeed lo}${color #22ccff}${upspeed lo}${offset 80}$endif${if_up eth0}${color #00aa55}eth0:${color #8844ee}${downspeed eth0}${color #22ccff}${upspeed eth0}${offset 80}$endif${if_up eth0:0}${color #00aa55}eth0:0:${color #8844ee}${downspeed eth0:0}${color #22ccff}${upspeed eth0:0}${offset 80}$endif${if_up eth1}${color #00aa55}eth1:${color #8844ee}${downspeed eth1}${color #22ccff}${upspeed eth1}${offset 80}$endif${if_up eth1:0}${color #00aa55}eth1:0:${color #8844ee}${downspeed eth1:0}${color #22ccff}${upspeed eth1:0}${offset 80}$endif${if_up tap0}${color #00aa55}tap0:${color #8844ee}${downspeed tap0}${color #22ccff}${upspeed tap0}${offset 80}$endif
 ${if_up lo}${color #8844ee}${downspeedgraph lo 32,75 ff0000 0000ff}${offset 10}${color #22ccff}${upspeedgraph lo 32,75 0000ff ff0000}${offset 10}$endif${if_up eth0}${color #8844ee}${downspeedgraph eth0 32,75 ff0000 0000ff}${offset 10}${color #22ccff}${upspeedgraph eth0 32,75 0000ff ff0000}${offset 10}$endif${if_up eth0:0}${color #8844ee}${downspeedgraph eth0:0 32,75 ff0000 0000ff}${offset 10}${color #22ccff}${upspeedgraph eth0:0 32,75 0000ff ff0000}${offset 10}$endif${if_up eth1}${color #8844ee}${downspeedgraph eth1 32,75 ff0000 0000ff}${offset 10}${color #22ccff}${upspeedgraph eth1 32,75 0000ff ff0000}${offset 10}$endif${if_up eth1:0}${color #8844ee}${downspeedgraph eth1:0 32,75 ff0000 0000ff}${offset 10}${color #22ccff}${upspeedgraph eth1:0 32,75 0000ff ff0000}${offset 10}$endif${if_up tap0}${color #8844ee}${downspeedgraph tap0 32,75 ff0000 0000ff}${offset 10}${color #22ccff}${upspeedgraph tap0 32,75 0000ff ff0000}${offset 10}$endif
+${color orange}WIRELESS ${hr 3}$color
+${if_up eth0}ESSID: ${wireless_essid eth0} Bitrate: ${wireless_bitrate eth0} ${wireless_link_bar eth0}${else}No wireless device up$endif
 ${color orange}FILE SYSTEMS ${hr 3}
 ${color lightgrey}Mount point (free/total):$color
  /     ${fs_free /} /${fs_size /} ${fs_bar /}
@@ -58,14 +60,17 @@ ${color lightgrey}Mount point (free/total):$color
  /boot ${fs_free /boot} /${fs_size /boot} ${fs_bar /boot}
 ${color orange}RUNNING PROCESSES ${hr 3}$color
 CPU usage                            ${alignr}Memory usage                         
-Name              PID     CPU%   MEM%${alignr}Name              PID     CPU%   MEM%
+Name              PID    CPU%   MEM% ${alignr}Name               PID    CPU%   MEM%
 ${color #ff3300} ${top name 1} ${top pid 1} ${top cpu 1} ${top mem 1}${alignr}${color #ddaa00} ${top_mem name 1} ${top_mem pid 1} ${top_mem cpu 1} ${top_mem mem 1}
 ${color lightgrey} ${top name 2} ${top pid 2} ${top cpu 2} ${top mem 2}${alignr} ${top_mem name 2} ${top_mem pid 2} ${top_mem cpu 2} ${top_mem mem 2}
 ${color lightgrey} ${top name 3} ${top pid 3} ${top cpu 3} ${top mem 3}${alignr} ${top_mem name 3} ${top_mem pid 3} ${top_mem cpu 3} ${top_mem mem 3}
 ${color lightgrey} ${top name 4} ${top pid 4} ${top cpu 4} ${top mem 4}${alignr} ${top_mem name 4} ${top_mem pid 4} ${top_mem cpu 4} ${top_mem mem 4}
-${color lightgrey} ${top name 5} ${top pid 5} ${top cpu 5} ${top mem 5}${alignr} ${top_mem name 5} ${top_mem pid 5} ${top_mem cpu 5} ${top_mem mem 5}
 ${color orange}X LOGS ${hr 3}
 ${color yellow}${tail /var/log/Xorg.0.log 3 30}
 ${color orange}SYSTEM LOGS ${hr 3}
 ${color blue}${tail /var/log/syslog 3 30}
 ${color green}${tail /var/log/daemon.log 3 30}
+${color orange}LISTENING TO ${hr 3}
+${if_running amarokapp}${color}${execi 10 ~/.conky/amarok artist} - "${execi 10 ~/.conky/amarok album}" (${execi 10 ~/.conky/amarok year} - ${execi 10 ~/.conky/amarok genre}) - ${execi 10 ~/.conky/amarok title} ${execi 1 ~/.conky/amarok progress}% ${execibar 1 ~/.conky/amarok progress}${else}Amarok not running$endif
+${if_existing /usr/games/fortune}${color orange}FORTUNE ${hr 3}$color
+${execi 120 /usr/games/fortune -s}$endif
