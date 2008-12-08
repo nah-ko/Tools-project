@@ -38,14 +38,13 @@ use_spacer		left
 if_up_strictness	address
 
 TEXT
-$nodename - $sysname $kernel on $machine ${alignr}${color darkblue}${time %a %k:%M %d/%m/%Y }${color lightgrey}Uptime:$color $uptime
+$nodename - $sysname $kernel on $machine ${alignr}${color #0077ff}${time %a %k:%M %d/%m/%Y }${color lightgrey}Uptime:$color $uptime
 ${color orange}SYSTEM ${hr 3}
-${color lightgrey}CPU:$color $freq_dyn_g GHz ${color #cc2222} $cpu% ${cpubar 6,75} ${alignr}${color lightgrey}Load:$color $loadavg
+${color lightgrey}CPU:$color $freq_dyn_g GHz ${color #cc2222} $cpu% ${cpubar 6,75} $color${acpitemp}°C ${alignr}${color lightgrey}Load:$color $loadavg
 ${color red}${cpugraph 0000ff 00ff00}
 ${color lightgrey}RAM :$color $memperc% [Used]$mem / [Available]$memmax $alignr [Buffers]$buffers / [Cache]$cached - [Free]$memeasyfree
 ${color lightgrey}Swap:$color $swapperc% [Used]$swap / [Available]$swapmax
-${color lightgrey}Processes:$color $processes  ${color grey}Running:$color $running_processes
-${color lightgrey}Temperature:$color ${acpitemp}°C ${alignc}${color lightgrey}AC:$color ${acpiacadapter} ${alignr}${color lightgrey}Battery:${color #cc6666} ${battery BAT1} ${battery_bar 6,75 BAT1} ${battery_time BAT1}
+${color lightgrey}Processes:$color $processes  ${color grey}Running:$color $running_processes ${alignc}${color lightgrey}AC:$color ${acpiacadapter} ${alignr}${color lightgrey}Battery:${color #cc6666} ${battery BAT1} ${battery_bar 6,75 BAT1} ${battery_time BAT1}
 ${color orange}NETWORKING ${hr 3}
 ${color lightgrey}Gateway:${color}${gw_iface}/${gw_ip} ${alignr}${color lightgrey}Legend:${color #00aa55}If Name ${color #8844ee}Down (kBps)${color #22ccff}Up (kBps)
 ${color lightgrey}Iface up:${color #00aa55}${if_up lo}lo (${addr lo})${offset 10}$endif${if_up eth0}eth0 (${addr eth0})${offset 10}$endif${if_up eth0:0}eth0:0 (${addr eth0:0})${offset 10}$endif${if_up eth1}eth1 (${addr eth1})${offset 10}$endif${if_up eth1:0}eth1:0 (${addr eth1:0})${offset 10}$endif${if_up tap0}tap0 (${addr tap0})${offset 10}$endif
