@@ -54,11 +54,12 @@ ${color orange}WIRELESS ${hr 3}$color
 ESSID: ${wireless_essid eth0} Bitrate: ${wireless_bitrate eth0} ${wireless_link_bar eth0}$endif
 ${color orange}FILE SYSTEMS ${hr 3}
 ${color lightgrey}Space -->          free     total   mountpoint${alignr}read     write            <-- IO$color
-${fs_bar 6,75 /} ${fs_free /} ${fs_size /}    / ${alignr}${diskio_read hda2} ${diskio_write hda2} ${diskiograph hda2 6,100 0000ff ff0000}
-${fs_bar 6,75 /boot} ${fs_free /boot} ${fs_size /boot}    /boot ${alignr}${diskio_read hda1} ${diskio_write hda1} ${diskiograph hda1 6,100 0000ff ff0000}
-${fs_bar 6,75 /home} ${fs_free /home} ${fs_size /home}    /home ${alignr}${diskio_read hda3} ${diskio_write hda3} ${diskiograph hda3 6,100 0000ff ff0000}${if_mounted /media/usb0}
-${fs_bar 6,75 /media/usb0} ${fs_free /media/usb0} ${fs_size /media/usb0}    /media/usb0 ${alignr}${diskio_read sda1} ${diskio_write sda1} ${diskiograph sda1 6,100 0000ff ff0000}$color$endif${if_mounted /media/usb1}
-${fs_bar 6,75 /media/usb1} ${fs_free /media/usb1} ${fs_size /media/usb1}    /media/usb1 ${alignr}${diskio_read sdb1} ${diskio_write sdb1} ${diskiograph sdb1 6,100 0000ff ff0000}$color$endif
+${fs_bar 6,75 /} ${fs_free /} ${fs_size /}    / ${alignr}${diskio_read hda2} ${diskio_write hda2} ${diskiograph hda2 10,100 0000ff ff0000}
+${fs_bar 6,75 /boot} ${fs_free /boot} ${fs_size /boot}    /boot ${alignr}${diskio_read hda1} ${diskio_write hda1} ${diskiograph hda1 10,100 0000ff ff0000}
+${fs_bar 6,75 /home} ${fs_free /home} ${fs_size /home}    /home ${alignr}${diskio_read hda3} ${diskio_write hda3} ${diskiograph hda3 10,100 0000ff ff0000}${if_empty ${if_mounted /media/Iomega160g}$endif}$else
+${fs_bar 6,75 /media/Iomega160g} ${fs_free /media/Iomega160g} ${fs_size /media/Iomega160g}    /media/Iomega160g ${alignr}${diskio_read /dev/disk/by-label/Iomega160g} ${diskio_write /dev/disk/by-label/Iomega160g} ${diskiograph /dev/disk/by-label/Iomega160g 10,100 0000ff ff0000}$color$endif${if_empty ${if_mounted /media/CRUZER}$endif}$else
+${fs_bar 6,75 /media/CRUZER} ${fs_free /media/CRUZER} ${fs_size /media/CRUZER}    /media/CRUZER ${alignr}${diskio_read /dev/disk/by-label/CRUZER} ${diskio_write /dev/disk/by-label/CRUZER} ${diskiograph /dev/disk/by-label/CRUZER 10,100 0000ff ff0000}$color$endif${if_empty ${if_mounted /media/KDT1G}$endif}$else
+${fs_bar 6,75 /media/KDT1G} ${fs_free /media/KDT1G} ${fs_size /media/KDT1G}    /media/KDT1G ${alignr}${diskio_read /dev/disk/by-label/KDT1G} ${diskio_write /dev/disk/by-label/KDT1G} ${diskiograph /dev/disk/by-label/KDT1G 10,100 0000ff ff0000}$color$endif
 ${color orange}RUNNING PROCESSES ${hr 3}$color
 CPU usage                            ${alignr}Memory usage                         
 Name              PID    CPU%   MEM% ${alignr}Name               PID    CPU%   MEM%
