@@ -69,7 +69,6 @@ ${color lightgrey} ${top name 3} ${top pid 3} ${top cpu 3} ${top mem 3}${alignr}
 ${color lightgrey} ${top name 4} ${top pid 4} ${top cpu 4} ${top mem 4}${alignr} ${top_mem name 4} ${top_mem pid 4} ${top_mem cpu 4} ${top_mem mem 4}
 ${color orange}X LOGS ${hr 3}
 ${color yellow}${tail /var/log/Xorg.0.log 3 30}
-${color yellow}${execi 10 tail -3 ~/.xsession-errors | fold -w 100}
 ${color orange}SYSTEM LOGS ${hr 3}
 ${color blue}${tail /var/log/syslog 3 30}
 ${color green}${tail /var/log/daemon.log 3 30}${if_running amarokapp}
