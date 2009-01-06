@@ -8,6 +8,7 @@ from optparse import OptionParser
 ProgPath  = os.path.dirname(os.path.realpath(sys.argv[0]))
 ConfFile  = ProgPath + "/image2db.conf"
 HOST      = "localhost"
+PORT      = 5432
 img_db    = "Images"
 img_dbus  = "image"
 img_dbpw  = "passwd"
@@ -20,7 +21,7 @@ def ReadConf( configuration_file = ConfFile ):
    """ Read configuration file """
    
    import ConfigParser
-   global HOST
+   global HOST, PORT
    global img_db, img_dbus, img_dbpw, img_table, img_tblsq
 
    config = ConfigParser.ConfigParser()
@@ -28,6 +29,7 @@ def ReadConf( configuration_file = ConfFile ):
 
    # Reading options
    HOST      = config.get('GLOBAL', 'host')
+   PORT      = int(config.get('GLOBAL', 'port'))
    img_db    = config.get('GLOBAL', 'img_db')
    img_dbus  = config.get('GLOBAL', 'img_dbus')
    img_dbpw  = config.get('GLOBAL', 'img_dbpw')
@@ -67,7 +69,7 @@ def InsertFile(myfile, mydesc):
 
    # Put images into DB
    try:
-      db = pg.connect(dbname=img_db, host=HOST, user=img_dbus, passwd=img_dbpw)
+      db = pg.connect(dbname=img_db, host=HOST, port=PORT, user=img_dbus, passwd=img_dbpw)
    except pg.InternalError, connectError:
       print "CONNECT PROBLEM:\r\n %s\n" % connectError
       print "Please correct %s and retry\n" % ConfFile
