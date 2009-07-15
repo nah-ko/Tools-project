@@ -40,7 +40,7 @@ if_up_strictness	address
 TEXT
 $nodename - $sysname $kernel on $machine ${alignr}${color #0077ff}${time %a %k:%M %d/%m/%Y }${color lightgrey}Uptime:$color $uptime
 ${color orange}SYSTEM ${hr 3}
-${color lightgrey}CPU:$color $freq_dyn_g GHz ${color #cc2222} $cpu% ${cpubar 6,75} $color${acpitemp}°C ${alignr}${color lightgrey}Load:$color $loadavg
+${color lightgrey}CPU:$color $freq_g GHz ${color #cc2222} $cpu% ${cpubar 6,75} $color${acpitemp}°C ${alignr}${color lightgrey}Load:$color $loadavg
 ${color red}${cpugraph 0000ff 00ff00}
 ${color lightgrey}RAM :$color $memperc% [Used]$mem / [Available]$memmax $alignr [Buffers]$buffers / [Cache]$cached - [Free]$memeasyfree
 ${color lightgrey}Swap:$color $swapperc% [Used]$swap / [Available]$swapmax
