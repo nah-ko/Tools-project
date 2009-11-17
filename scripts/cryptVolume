@@ -92,10 +92,10 @@ myumount() {
     is_mounted ${VOLDEV}_crypt
     has_mapper ${VOLDEV}_crypt
     MAPDEV=`sudo cryptsetup status ${VOLDEV}_crypt|awk '/is active:/ { print $1 }'`
-    LOOP00=`losetup --all | grep ${MAPDEV} | cut -d":" -f1`
+    LOOP00=`losetup --associated ${MAPDEV} | cut -d":" -f1`
     losetup --detach $LOOP00
 
-    LOOP01=`losetup --all | grep ${VOL} | cut -d":" -f1`
+    LOOP01=`losetup --associated ${VOL} | cut -d":" -f1`
     sudo cryptsetup luksClose ${VOLDEV}_crypt
     losetup --detach $LOOP01
 }
