@@ -83,11 +83,28 @@ mymount() {
     has_loop /dev/mapper/${VOL_DEVICE}_crypt && losetup $LOOP01 /dev/mapper/${VOL_DEVICE}_crypt
 
     # Now device ready to be mounted, with root mount or by fstab file
+    # We do mount the device using pmount command; mountpoint will be
+    # under /media
+    pmount /dev/mapper/${VOL_DEVICE}_crypt ${VOL_DEVICE}
+    RES=$(echo $?)
+    if [ $RES -eq 0 ]
+    then
+	return 0
+    else
+	# Problem mounting device, revert process
+	losetup --detach $LOOP01
+	sudo cryptsetup luksClose ${VOL_DEVICE}_crypt
+	losetup --detach $LOOP00
+	return $RES
+    fi
 }
 
 myumount() {
     VOL=$1
     VOLDEV=`basename $VOL .vol`
+
+    # Try to umount device, then check if it's ok
+    sync; pumount /media/${VOLDEV}
 
     is_mounted ${VOLDEV}_crypt
     has_mapper ${VOLDEV}_crypt
