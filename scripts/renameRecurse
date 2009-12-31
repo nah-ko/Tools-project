@@ -1,0 +1,45 @@
+#!/bin/bash
+#
+# $Id$
+
+# Default value
+rep=.   # if not set, stay in current directory
+delay=2 # time in sec between sets
+
+while getopts ":dhr:" OPTIONS
+do
+    case $OPTIONS in
+	d) # Debug mode
+	    set -x
+	    ;;
+	h) # Help
+	    echo "Usage..."
+	    ;;
+	r) #
+	    rep=$OPTARG
+	    ;;
+        *)
+	    error 1 "No matching option for -$OPTARG, retry."
+	    ;;
+	:)
+	    error 1 "Missing parameter for $OPTARG"
+	    ;;
+    esac
+done
+
+cd $rep
+
+ls -b | while read lsEntry
+do
+    entryType=$(file --brief "$lsEntry")
+    if [ "$entryType" == "directory" ]
+    then
+	cd "$lsEntry"
+	$0
+	cd ..
+	rename.py "$lsEntry"
+    else
+	rename.py "$lsEntry"
+    fi
+    echo "Next" ; sleep $delay
+done
