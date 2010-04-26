@@ -163,4 +163,9 @@ fi
 $VERBOSE && BZOPT="-z9vf"
 
 $BZIP2 $BZOPT $DUMP_PATH/${PREFIX}*.out
+# Delete files older than 7 days
 find $DUMP_PATH/ -type f -follow -mtime +7 -name "*.out.bz2" -exec rm -v {} \;
+# Sync files to another system
+SYNCOPT="-avz"
+RemoteSrv="user@srv.dom.tld:/path/to/storage/"
+rsync $SYNCOPT "*.out.bz2" $RemoteSrv
