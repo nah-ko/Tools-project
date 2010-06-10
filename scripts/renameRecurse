@@ -27,7 +27,7 @@ do
     esac
 done
 
-cd $rep
+cd "${rep}"
 
 ls -b | while read lsEntry
 do
