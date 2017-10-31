@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# $Id$
+# $Id: xmms-history,v 1.2 2004/10/28 16:13:33 toffe Exp $
 
 if [ $# -ne 1 ]
 then

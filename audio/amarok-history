@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# $Id$
+# $Id: amarok-history,v 1.6 2004/11/03 07:33:31 toffe Exp $
 
 if [ $# -ne 1 ]
 then
