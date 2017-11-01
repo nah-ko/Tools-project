@@ -1,0 +1,7 @@
+#!/bin/bash
+#
+# Burn Iso file.
+#
+# $Id: burnISO,v 1.1 2004/03/24 15:28:00 toffe Exp $
+
+cdrecord -v speed=4 dev=0,3,0 -eject -data $1
