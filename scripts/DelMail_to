@@ -1,7 +1,7 @@
 #!/bin/sh
 # Remove mails to one user who are into mail queue
 
-# $Id$
+# $Id: DelMail_to,v 1.1 2004/05/25 20:51:54 toffe Exp $
 
 USER=$1
 MAIL_ID_LIST=`mailq | grep -B1 $USER | awk '/^.*[0-9a-zA-Z]/ {print $3}'`

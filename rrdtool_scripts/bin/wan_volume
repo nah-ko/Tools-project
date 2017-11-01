@@ -1,7 +1,7 @@
 #!/bin/sh
 # Creation graph volume passant sur l'interface internet
 
-# $Id$
+# $Id: wan_volume,v 1.6 2005/10/20 13:32:55 toffe Exp $
 
 source ../Common
 I=0

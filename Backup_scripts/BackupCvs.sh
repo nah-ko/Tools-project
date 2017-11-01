@@ -1,7 +1,7 @@
 #! /bin/sh
 # Script de backup d'une arbo CVSROOT
 
-# $Id$
+# $Id: BackupCvs.sh,v 1.1 2004/06/25 14:54:33 toffe Exp $
 
 # Chemin d'acces aux programmes et fichiers
 PATH=$HOME/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/X11R6/bin

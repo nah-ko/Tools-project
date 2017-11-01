@@ -4,7 +4,7 @@
 # Script permettant de donner le temps ecoule entre deux appels
 #
 
-# $Id$
+# $Id: elapsedtime.py,v 1.5 2004/09/29 14:54:11 toffe Exp $
 
 import os, time, email, sys
 

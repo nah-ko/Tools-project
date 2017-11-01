@@ -1,7 +1,7 @@
 #!/bin/sh
 # Creation graph LAN
 
-# $Id$
+# $Id: lan,v 1.5 2005/02/12 23:39:56 toffe Exp $
 
 source ../Common
 I=0

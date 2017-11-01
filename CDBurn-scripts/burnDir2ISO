@@ -2,7 +2,7 @@
 #
 # Make Iso file from a directory.
 #
-# $Id$
+# $Id: burnDir2ISO,v 1.1 2004/03/24 15:28:00 toffe Exp $
 
 TITRE=$1
 REP=/home/toffe/a_graver/

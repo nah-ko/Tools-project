@@ -1,7 +1,7 @@
 #!/bin/sh -e
 # Script from exim4 to generate certificate files
 
-# $Id$
+# $Id: exim-gencert,v 1.1 2004/05/14 14:59:53 toffe Exp $
 
 [ -n "$EX4DEBUG" ] && set -x
 

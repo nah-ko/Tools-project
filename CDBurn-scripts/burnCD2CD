@@ -2,6 +2,6 @@
 #
 # Copy CD to another on the fly.
 #
-# $Id$
+# $Id: burnCD2CD,v 1.1 2004/03/24 17:24:23 toffe Exp $
 
 /usr/bin/sudo /usr/bin/cdrdao copy --source-driver generic-mmc --source-device 0,3,0 --device 0,0,0 --on-the-fly

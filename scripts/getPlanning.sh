@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 # Recuperation du planning hebdo pour envoi par mail.
 
-# $Id$
+# $Id: getPlanning.sh,v 1.3 2004/05/23 19:09:33 toffe Exp $
 
 PATH=/usr/bin:/bin:/usr/local/bin
 

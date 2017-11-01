@@ -1,6 +1,6 @@
 # Authentification HTTP
 # 
-# $Id$
+# $Id: httpauth.schema,v 1.3 2004/06/04 08:29:00 toffe Exp $
 
 attributetype ( 1.3.6.1.4.1.20105.1.1
     NAME 'httpAuthUsername'

@@ -2,7 +2,7 @@
 #
 # Burn Iso file that contains software compilation.
 #
-# $Id$
+# $Id: burnCompil,v 1.1 2004/03/24 15:28:00 toffe Exp $
 
 set -x
 

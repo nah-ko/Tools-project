@@ -1,7 +1,7 @@
 #!/bin/bash
 # Transfert des graphs vers un serveur externe
 
-# $Id$
+# $Id: zz-DoTransfert,v 1.1 2005/02/14 22:27:31 toffe Exp $
 
 source ../Common
 

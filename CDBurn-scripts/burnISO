@@ -2,7 +2,7 @@
 #
 # Burn Iso file.
 #
-# $Id$
+# $Id: burnISO,v 1.2 2005-12-29 16:55:56 toffe Exp $
 
 APPEL=`basename $0`
 ISOFILE=$1

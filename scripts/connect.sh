@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# $Id$
+# $Id: connect.sh,v 1.1 2005/11/14 15:49:57 toffe Exp $
 #
 # Se connecter depuis la clef et une machine linux sur des machines avec
 # lesquelles j'ai echange une clef.

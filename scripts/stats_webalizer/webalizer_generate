@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id$
+# $Id: webalizer_generate,v 1.3 2007-07-20 11:44:21 toffe Exp $
 #
 # Script de generation automatique des pages de stats par virtual hosts
 #

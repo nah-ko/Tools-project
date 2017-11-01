@@ -1,7 +1,7 @@
 #!/bin/bash
 # Mesure des process apache, cnx etablies et en time wait
 
-# $Id$
+# $Id: apache,v 1.1 2005/02/14 13:35:58 toffe Exp $
 
 PROCHTTP=`ps ax | grep -cE '(httpd|apache)'`
 CONESTABLISHED=`netstat -n | grep -cE '(:80 |:443 ).*ESTABLISHED'`

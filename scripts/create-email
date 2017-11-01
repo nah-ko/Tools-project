@@ -3,7 +3,7 @@
 # Create mail account into ldap tree.
 # This script have only one argument, the account owner.
 
-# $Id$
+# $Id: create-email,v 1.1 2005-12-09 15:30:47 toffe Exp $
 
 # Test if script's called correctly with the account name
 # and only one

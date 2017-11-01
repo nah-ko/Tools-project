@@ -1,7 +1,7 @@
 # Exim ldap schema
 # given by S. Gross
 
-# $Id$
+# $Id: exim.schema,v 1.2 2004/05/25 08:57:24 toffe Exp $
 
 attributetype ( 2.16.840.1.113730.3.2.1
 	NAME 'spoolDirectory'

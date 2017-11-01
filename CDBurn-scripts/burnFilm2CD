@@ -2,7 +2,7 @@
 #
 # Burn Iso file that is a movie.
 #
-# $Id$
+# $Id: burnFilm2CD,v 1.1 2004/03/24 15:28:00 toffe Exp $
 
 FICHIER=$1
 TITRE=$2

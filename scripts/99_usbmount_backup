@@ -2,7 +2,7 @@
 #
 # Automatic backup script
 #
-# $Id$
+# $Id: 99_usbmount_backup,v 1.2 2008-02-19 23:05:31 toffe Exp $
 #
 # This script will automatically backup directory to an usb drive just
 # plugged in.

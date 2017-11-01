@@ -3,7 +3,7 @@
 # Create mail account into ldap tree.
 # This script have only one argument, the account owner.
 
-# $Id$
+# $Id: create_mail_account,v 1.1 2005/08/22 15:05:46 toffe Exp $
 
 #set -x
 

@@ -2,7 +2,7 @@
 #
 # Mail notification if nut detect UPS down
 #
-# $Id$
+# $Id: nut_notify,v 1.2 2008-06-19 15:25:07 toffe Exp $
 
 MSG="$*"
 

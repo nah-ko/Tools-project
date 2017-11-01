@@ -2,7 +2,7 @@
 #
 # Burn mp3 files to make a music compilation.
 #
-# $Id$
+# $Id: burnMusic2CD,v 1.1 2004/03/24 15:28:00 toffe Exp $
 
 #set -x
 

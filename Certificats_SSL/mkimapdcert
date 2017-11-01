@@ -11,7 +11,7 @@
 #
 # Modification for personnal use
 
-# $Id$
+# $Id: mkimapdcert,v 1.2 2005/08/30 13:40:50 toffe Exp $
 
 test -x /usr/bin/openssl || exit 0
 

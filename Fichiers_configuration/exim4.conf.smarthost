@@ -1,6 +1,6 @@
 # Exim configuration file for smarthosts.
 
-# $Id$
+# $Id: exim4.conf.smarthost,v 1.2 2005/08/03 09:52:45 toffe Exp $
 
 #!!# This file is output from the convert4r4 script, which tries
 #!!# to convert Exim 3 configurations into Exim 4 configurations.

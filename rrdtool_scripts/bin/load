@@ -1,7 +1,7 @@
 #!/bin/sh
 # Creation graph charge machine
 
-# $Id$
+# $Id: load,v 1.4 2005/02/07 23:38:07 toffe Exp $
 
 source ../Common
 RRDFILE=../data/$HOST.sys.load.rrd

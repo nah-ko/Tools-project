@@ -4,7 +4,7 @@
 # l'aide de la commande montage de ImageMagick
 #
 
-# $Id$
+# $Id: planche-contact.sh,v 1.3 2005-12-29 13:16:28 toffe Exp $
 
 FICHIERS=$1
 PLANCHECONTACT=$2

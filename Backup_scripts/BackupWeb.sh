@@ -2,7 +2,7 @@
 # Script de backup d'une arbo complete de sites web (plusieurs sites web
 # dans le meme repertoire).
 
-# $Id$
+# $Id: BackupWeb.sh,v 1.3 2004/11/05 09:01:18 toffe Exp $
 
 # Chemin d'acces aux programmes et fichiers
 PATH=$HOME/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/X11R6/bin

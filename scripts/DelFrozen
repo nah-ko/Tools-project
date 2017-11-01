@@ -1,7 +1,7 @@
 #!/bin/sh
 # Remove frozen mails from queue
 
-# $Id$
+# $Id: DelFrozen,v 1.2 2004/05/01 08:02:46 toffe Exp $
 
 FROZEN_COUNT=`mailq | grep -c -E '<.*>.*frozen'`
 echo "Going to remove $FROZEN_COUNT mail(s) in 5 seconds"

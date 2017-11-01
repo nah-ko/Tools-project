@@ -2,7 +2,7 @@
 # Creation graph mail: nommage des fichiers rrd HOST.mail.TEST.rrd
 # TEST : queue, virus, rejets ...
 
-# $Id$
+# $Id: mailq,v 1.6 2005/02/13 18:39:17 toffe Exp $
 
 source ../Common
 I=0
