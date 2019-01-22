@@ -45,7 +45,7 @@ openssl req -config $SSLEAY -x509 -newkey rsa:1024 -keyout $KEY -out $CERT -days
 #see README.TLS*# openssl dhparam -check -text -5 512 -out $DH
 #rm -f $SSLEAY
 
-chown root:Debian-exim $KEY $CERT $DH
+#chown root:Debian-exim $KEY $CERT $DH
 chmod 640 $KEY $CERT $DH
 
 echo "[*] Done generating self signed certificates for exim!"
