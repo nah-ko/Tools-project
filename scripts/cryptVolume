@@ -122,6 +122,7 @@ myumount() {
 # ---------------
 if [ $# -eq 0 ]
 then
+    usage
     error 1 "ERROR: Missing arguments"
 fi
 
