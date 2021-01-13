@@ -1,10 +1,9 @@
-$Id$
-
-Comment faire sont fichier de fortunes:
+Comment faire son fichier de fortunes:
 
 Creer un fichier avec les différents texte séparés d'une ligne contenant un unique caractere : %.
 Ensuite, il suffit de faire : strfile FICHIER_FORTUNE
 là, le fichier .dat est créé, il serviera à fortune.
 
-Voilà, il reste à copier les fichiers ainsi créés dans le répertoire adequat.
-/usr/share/games/fortunes-fr/
+Voilà, il ne reste plus qu'à copier les fichiers ainsi créés dans le répertoire adequat.
+/usr/share/games/fortunes-fr/ par exemple !
+
