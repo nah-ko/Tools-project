@@ -2,7 +2,6 @@
 #
 # "little" shell-script to mount/umount an encrypted LUKS volume file,
 # 
-# $Id: cryptVolume,v 1.5 2009-12-03 17:10:19 toffe Exp $
 
 PROG=`basename $0`
 E_OPTERROR=65
@@ -117,7 +116,10 @@ myumount() {
     losetup --detach $LOOP01
 }
 
+
+# ---------------
 # Main code
+# ---------------
 if [ $# -eq 0 ]
 then
     error 1 "ERROR: Missing arguments"
