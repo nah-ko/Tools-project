@@ -3,7 +3,9 @@
 # "little" shell-script to mount/umount an encrypted LUKS volume file,
 # 
 
-PROG=`basename $0`
+PROG=$(basename $0)
+MYPID=$$
+BEVERBOSE=false
 E_OPTERROR=65
 
 usage() {
@@ -24,9 +26,30 @@ error() {
     exit $1
 }
 
+# Control if file given as parameter exist and is readable
+checkFile() {
+    test -r $1 || error 1 "$1 do not exists or unreadable"
+}
+
+# Control if a given command exists
+requireCmd() {
+    if [ -n "$1" ] ; then
+	CMD=`which $1`
+	if [ -x "$CMD" ] ; then
+	    logger -t "$PROG[MYPID]" "Command [ $CMD ] : OK"
+	else
+	    error 1 "Command [ $1 ] unknown"
+	fi
+    fi
+}
+
+
 # Check if volume is linked to any loop device
 has_loop() {
-    losetup --all|grep $1 2>&1 > /dev/null
+    # Verbose
+    $BEVERBOSE && echo "--- has_loop ---"
+    # Get loop device list, trying to find ours...
+    sudo losetup --all|grep $1 2>&1 > /dev/null
     RES=`echo $?`
     if [ $RES -eq 0 ]
     then
@@ -38,6 +61,8 @@ has_loop() {
 
 # Check... if volume mounted ?
 is_mounted() {
+    # Verbose
+    $BEVERBOSE && echo "--- is_mounted ---"
     mount|grep $1 2>&1 > /dev/null
     RES=`echo $?`
     if [ $RES -eq 0 ]
@@ -48,19 +73,10 @@ is_mounted() {
     fi
 }
 
-# Do volume has a device-mapper ?
-has_mapper() {
-    ls /dev/mapper/${VOLDEV}_crypt > /dev/null 2>&1
-    RES=`echo $?`
-    if [ $RES -eq 0 ]
-    then
-	return 0
-    else
-	error $RES "FAILED: Crypto device doesn't exists for $1"
-    fi
-}
-
+# All operations needed before mounting the crypted device
 mymount() {
+    # Verbose
+    $BEVERBOSE && echo "--- mymount ---"
     VOL=$1
     VOL_DEVICE=`basename $VOL .vol`
 
@@ -69,57 +85,48 @@ mymount() {
     LOOP00=`losetup --find`
 
     # Check loop device and even loop volume on it
-    has_loop $VOL && losetup $LOOP00 $VOL
+    has_loop $VOL && sudo losetup $LOOP00 $VOL
 
+    # Check LUKS volume, if not assume it's a tcrypt one
+    VOL_TYPE=luks
+    sudo cryptsetup isLuks $VOL || VOL_TYPE=tcrypt
     # Open LUKS volume, associate it to device-mapper
-    sudo cryptsetup luksOpen $LOOP00 ${VOL_DEVICE}_crypt
-
-    # Find another free loop device
-    LOOP01=`losetup --find`
-
-    # Check if device-mapper associated to a loop device, if not then do
-    # it
-    has_loop /dev/mapper/${VOL_DEVICE}_crypt && losetup $LOOP01 /dev/mapper/${VOL_DEVICE}_crypt
-
-    # Now device ready to be mounted, with root mount or by fstab file
-    # We do mount the device using pmount command; mountpoint will be
-    # under /media
-    pmount /dev/mapper/${VOL_DEVICE}_crypt ${VOL_DEVICE}
+    sudo cryptsetup open --type $VOL_TYPE $LOOP00 ${VOL_DEVICE}_crypt
+    # Is open command ok ? fallback if not
     RES=$(echo $?)
     if [ $RES -eq 0 ]
     then
 	return 0
     else
 	# Problem mounting device, revert process
-	losetup --detach $LOOP01
-	sudo cryptsetup luksClose ${VOL_DEVICE}_crypt
-	losetup --detach $LOOP00
+	sudo cryptsetup close ${VOL_DEVICE}_crypt
+	sudo losetup --detach $LOOP00
 	return $RES
     fi
 }
 
 myumount() {
+    # Verbose
+    $BEVERBOSE && echo "--- myumount ---"
     VOL=$1
     VOLDEV=`basename $VOL .vol`
 
-    # Try to umount device, then check if it's ok
-    sync; pumount /media/${VOLDEV}
-
+    # VOL must be umounted before closing crypted device
     is_mounted ${VOLDEV}_crypt
-    has_mapper ${VOLDEV}_crypt
-    MAPDEV=`sudo cryptsetup status ${VOLDEV}_crypt|awk '/is active:/ { print $1 }'`
-    LOOP00=`losetup --associated ${MAPDEV} | cut -d":" -f1`
-    losetup --detach $LOOP00
 
     LOOP01=`losetup --associated ${VOL} | cut -d":" -f1`
-    sudo cryptsetup luksClose ${VOLDEV}_crypt
-    losetup --detach $LOOP01
+    sudo cryptsetup close ${VOLDEV}_crypt
+    sudo losetup --detach $LOOP01
 }
 
 
 # ---------------
 # Main code
 # ---------------
+# Require some commands before going forward
+requireCmd losetup
+requireCmd cryptsetup
+
 if [ $# -eq 0 ]
 then
     usage
@@ -140,12 +147,18 @@ do
 	    ;;
 	a)
 	    eval PARAMETER="`echo \\$$OPTIND`"
+	    # be sure that the given file exists and is readable...
+	    checkFile $PARAMETER
+	    # just to be readable
+	    volDev=$(basename $PARAMETER)
 	    case $OPTARG in
 		mount)
 		    mymount $PARAMETER
+		    echo "Now you can mount ${volDev}"
 		    ;;
 		umount)
 		    myumount $PARAMETER
+		    echo "Now ${volDev} is closed"
 		    ;;
 	    esac
 	    ;;
