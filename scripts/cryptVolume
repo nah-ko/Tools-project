@@ -96,6 +96,8 @@ mymount() {
     RES=$(echo $?)
     if [ $RES -eq 0 ]
     then
+    # Other way to mount :
+	udisksctl mount  --block-device /dev/mapper/${VOL_DEVICE}_crypt
 	return 0
     else
 	# Problem mounting device, revert process
@@ -112,7 +114,9 @@ myumount() {
     VOLDEV=`basename $VOL .vol`
 
     # VOL must be umounted before closing crypted device
-    is_mounted ${VOLDEV}_crypt
+    #is_mounted ${VOLDEV}_crypt
+    # Other way to unmount
+    udisksctl unmount --block-device /dev/mapper/${VOLDEV}_crypt
 
     LOOP01=`losetup --associated ${VOL} | cut -d":" -f1`
     sudo cryptsetup close ${VOLDEV}_crypt
@@ -126,6 +130,7 @@ myumount() {
 # Require some commands before going forward
 requireCmd losetup
 requireCmd cryptsetup
+requireCmd udisksctl
 
 if [ $# -eq 0 ]
 then
